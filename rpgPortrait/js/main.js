@@ -237,8 +237,8 @@ $(function() {
 
   // make image
   input_w1 = mean['3'];
-  input_w2 = mean['2'];
-  input_w3 = mean['10'];
+  input_w2 = mean['42'];
+  input_w3 = mean['6'];
 
   var canvas1 = document.getElementById('z_canvas1');
   var canvas2 = document.getElementById('z_canvas2');
@@ -264,10 +264,10 @@ $(function() {
   firstSelectedIndex = 3;
   $('#button' + firstSelectedIndex.toString()).addClass('red');
 
-  secondSelectedIndex = 2;
+  secondSelectedIndex = 42;
   $('#button' + secondSelectedIndex.toString()).addClass('blue');
 
-  thirdSelectedIndex = 10;
+  thirdSelectedIndex = 6;
   $('#button' + thirdSelectedIndex.toString()).addClass('green');
 
 });

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang=en>
+<meta charset='utf-8'>
+<head>
+  <h1>NDC17 - Online Demo - 2. Generate RPG Portrait</h1>
+  <link rel='stylesheet' href='main.css' />
+</head>
+<body>
+  <a href='../index.html'><< Back</a>
+  <div>
+    <table>
+      <tr>
+        <th>1st</th>
+        <th>2nd</th>
+        <th>3rd</th>
+      </tr>
+      <tr>
+        <td>
+          <canvas id='z_canvas1' width='80' height='80'></canvas>
+        </td>
+        <td>
+          <canvas id='z_canvas2' width='80' height='80'></canvas>
+        </td>
+        <td>
+          <canvas id='z_canvas3' width='80' height='80'></canvas>
+        </td>
+      </tr>
+    </table>
+    <div>
+      <input type="radio" name="frameSelect" value="firstChange" id="firstChange" checked='true'>
+      <label for="firstChange">1st Change</label>
+    </div>
+    <div>
+      <input type="radio" name="frameSelect" value="secondChange" id="secondChange">
+      <label for="secondChange">2nd Change</label>
+    </div>
+    <div>
+      <input type="radio" name="frameSelect" value="thirdChange" id="thirdChange">
+      <label for="thirdChange">3rd Change</label>
+    </div>
+    <p>
+    <div>
+      <canvas id='lerpCanvas' width='1152' height='128'></canvas>
+      lerp
+    </div>
+    <div>
+      <canvas id='slerpCanvas' width='1152' height='128'></canvas>
+      slerp
+    </div>
+    <div>
+      <canvas id='jDiagramCanvas' width='896' height='640'></canvas>
+      J-Diagram(slerp)
+    </div>
+  </div>
+
+  <input id='getRandom' type='submit' value='set random' onclick='getRandom();' style='width:200px; height:30px;'/>
+  <input id='getZero' type='submit' value='set zero mean' onclick='getZero();' style='width:200px; height:30px;'/>
+  <p>
+  <input id='getLerp' type='submit' value='get lerp' onclick='getLerp();' style='width:200px; height:30px;'/>
+  <input id='getSlerp' type='submit' value='get slerp' onclick='getSlerp();' style='width:200px; height:30px;'/>
+  <input id='getJDiagram' type='submit' value='get J-Diagram' onclick='getJDiagram();' style='width:200px; height:30px;'/>
+  <div id='imageHolder'>
+
+  </div>
+  <script src='jquery-3.1.1.min.js'></script>
+  <script src='main.js'></script>
+  <script src='convnet.js'></script>
+  <script src='layer0.js'></script>
+  <script src='layer1.js'></script>
+  <script src='layer2.js'></script>
+  <script src='layer3.js'></script>
+  <script src='mean100.js'></script>
+  <script src='imageList.js'></script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('send', 'pageview', '2_rpgPortrait');
+  </script>
+</body>
+</html>

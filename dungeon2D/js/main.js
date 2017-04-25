@@ -36,7 +36,7 @@ function getZero() {
   if (firstFrame == true) {
     canvas = document.getElementById('dungeonCanvas0');
     for (var i = 0; i < 800; i += 1) {
-      input_w1[i] = 0;
+      input_w1[i] = 1e-5;
     }
 
     canvas.width = canvas.width;
@@ -45,7 +45,7 @@ function getZero() {
   else {
     canvas = document.getElementById('dungeonCanvas');
     for (var i = 0; i < 800; i += 1) {
-      input_w2[i] = 0;
+      input_w2[i] = 1e-5;
     }
 
     canvas.width = canvas.width;

@@ -46,21 +46,21 @@ function getZero() {
   switch (nowSelectedFrame) {
     case 1:
       for (var i = 0; i < 800; i += 1) {
-        input_w1[i] = 0;
+        input_w1[i] = 1e-5;
       }
       drawToCanvas(canvas, input_w1, 8, 8, 1);
       break;
 
     case 2:
       for (var i = 0; i < 800; i += 1) {
-        input_w2[i] = 0;
+        input_w2[i] = 1e-5;
       }
       drawToCanvas(canvas, input_w2, 8, 8, 1);
       break;
 
     case 3:
       for (var i = 0; i < 800; i += 1) {
-        input_w3[i] = 0;
+        input_w3[i] = 1e-5;
       }
       drawToCanvas(canvas, input_w3, 8, 8, 1);
       break;

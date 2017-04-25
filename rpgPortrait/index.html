@@ -14,7 +14,7 @@
 </head>
 <body>
   <div class="loader"></div>
-  
+
   <a href='../index.html'><< Back</a>
   <div>
     <table>
@@ -48,6 +48,13 @@
       <label for="thirdChange">3rd Change</label>
     </div>
     <p>
+    <input id='getRandom' type='submit' value='set random' onclick='getRandom();' style='width:200px; height:30px;'/>
+    <input id='getZero' type='submit' value='set zero mean' onclick='getZero();' style='width:200px; height:30px;'/>
+    <p>
+    <input id='getLerp' type='submit' value='get lerp' onclick='getLerp();' style='width:200px; height:30px;'/>
+    <input id='getSlerp' type='submit' value='get slerp' onclick='getSlerp();' style='width:200px; height:30px;'/>
+    <input id='getJDiagram' type='submit' value='get J-Diagram' onclick='getJDiagram();' style='width:200px; height:30px;'/>
+    <p>
     <div>
       <canvas id='lerpCanvas' width='1152' height='128'></canvas>
       lerp
@@ -62,12 +69,7 @@
     </div>
   </div>
 
-  <input id='getRandom' type='submit' value='set random' onclick='getRandom();' style='width:200px; height:30px;'/>
-  <input id='getZero' type='submit' value='set zero mean' onclick='getZero();' style='width:200px; height:30px;'/>
-  <p>
-  <input id='getLerp' type='submit' value='get lerp' onclick='getLerp();' style='width:200px; height:30px;'/>
-  <input id='getSlerp' type='submit' value='get slerp' onclick='getSlerp();' style='width:200px; height:30px;'/>
-  <input id='getJDiagram' type='submit' value='get J-Diagram' onclick='getJDiagram();' style='width:200px; height:30px;'/>
+
   <div id='imageHolder'>
 
   </div>
@@ -86,7 +88,7 @@
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-    ga('send', 'pageview', '2_rpgPortrait');
+    ga('send', 'pageview', 'home/2_rpgPortrait');
   </script>
 </body>
 </html>

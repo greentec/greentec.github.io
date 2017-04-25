@@ -4,8 +4,17 @@
 <head>
   <h1>NDC17 - Online Demo - 1. Generate 2D Dungeon</h1>
   <link rel='stylesheet' href='css/main.css' />
+
+  <script src='js/jquery-3.1.1.min.js'></script>
+  <script type="text/javascript">
+    $(window).on('load', function() {
+      $(".loader").fadeOut("slow");
+    });
+  </script>
 </head>
 <body>
+  <div class="loader"></div>
+
   <a href='../index.html'><< Back</a>
   <div>
     <div>
@@ -43,7 +52,6 @@
   <div id='imageHolder'>
 
   </div>
-  <script src='js/jquery-3.1.1.min.js'></script>
   <script src='js/main.js'></script>
   <script src='js/convnet.js'></script>
   <script src='js/layer0.js'></script>

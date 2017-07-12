@@ -11,6 +11,16 @@ homepage.cardList = {
     link : 'https://codepen.io/greentec/pen/qjQebe',
     desc : 'Javascript, CodePen link'
   },
+  'NN - Black Jack' : {
+    imageSrc : 'playground/image/NNBlackJack.png',
+    link : 'playground/html/NNBlackJack.html',
+    desc : 'Actionscript'
+  },
+  'GA - N-Queen Solver' : {
+    imageSrc : 'playground/image/NqueenSolverGA.png',
+    link : 'playground/html/NqueenSolverGA.html',
+    desc : 'Actionscript'
+  },
   '3D Cube DFS Maze' : {
     imageSrc : 'playground/image/3DMazeWithDFS.png',
     link : 'playground/html/3DMazeWithDFS.html',

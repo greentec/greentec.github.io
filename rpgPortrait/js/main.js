@@ -15,6 +15,7 @@ function getRandom() {
   var input_w;
   switch (nowSelectedFrame) {
     case 1:
+      input_w1 = [];
       for (var i = 0; i < 800; i += 1) {
         input_w1[i] = rnd2();
       }
@@ -22,6 +23,7 @@ function getRandom() {
       break;
 
     case 2:
+      input_w2 = [];
       for (var i = 0; i < 800; i += 1) {
         input_w2[i] = rnd2();
       }
@@ -29,6 +31,7 @@ function getRandom() {
       break;
 
     case 3:
+      input_w3 = [];
       for (var i = 0; i < 800; i += 1) {
         input_w3[i] = rnd2();
       }
@@ -45,6 +48,7 @@ function getZero() {
   var input_w;
   switch (nowSelectedFrame) {
     case 1:
+      input_w1 = [];
       for (var i = 0; i < 800; i += 1) {
         input_w1[i] = 1e-5;
       }
@@ -52,6 +56,7 @@ function getZero() {
       break;
 
     case 2:
+      input_w2 = [];
       for (var i = 0; i < 800; i += 1) {
         input_w2[i] = 1e-5;
       }
@@ -59,6 +64,7 @@ function getZero() {
       break;
 
     case 3:
+      input_w3 = [];
       for (var i = 0; i < 800; i += 1) {
         input_w3[i] = 1e-5;
       }

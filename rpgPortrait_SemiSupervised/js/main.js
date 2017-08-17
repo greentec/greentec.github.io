@@ -4,13 +4,12 @@ var n_y = 18;
 var input_w;
 var input_y;
 var step = 6;
-var r;
-
+var copyR;
 
 var controls = new function() {
   this.scale = 2;
   this.gender = 'male';
-  this.hairColor = 'black';
+  this.hairColor = 'red';
   this.skinColor = 'white';
   this.beard = false;
   this.smile = false;
@@ -77,13 +76,13 @@ var controls = new function() {
       this.smile = false;
     }
 
-    rand = Math.random();
-    if (rand < 0.5) {
-      this.hood = true;
-    }
-    else {
+    // rand = Math.random();
+    // if (rand < 0.5) {
+    //   this.hood = true;
+    // }
+    // else {
       this.hood = false;
-    }
+    // }
 
     this.setFeature();
   }
@@ -170,35 +169,61 @@ var controls = new function() {
   }
 
   this.getImage = function() {
-    drawToCanvas(true);
+    var canvas = document.getElementById('imageCanvas');
+    drawToCanvas(canvas, controls.scale, true, 0, 0, true, input_w, input_y);
+  }
+
+  this.getSample = function() {
+
+    sampleCount = 0;
+    sampleGenLoop();
+
+    // var canvas = document.getElementById('sampleCanvas');
+    //
+    // for (var i = 0; i < 100; i += 1) {
+    //   getRandom();
+    //   input_y = JSON.parse(JSON.stringify(sample_y[i]));
+    //   drawToCanvas(canvas, 1, true, (i % 10) * 64, Math.floor(i / 10) * 64, false, input_w, input_y);
+    // }
+    //
+    // for (var i = 0; i < 100; i += 1) {
+    //   getRandom();
+    //   input_y = JSON.parse(JSON.stringify(sample_y[i]));
+    //   drawToCanvas(canvas, 1, true, (i % 10) * 64 + 640, Math.floor(i / 10) * 64, false, input_w, input_y);
+    // }
+
+    // drawNoise();
   }
 }
 
-function drawToCanvas(calc=true) {
-  var scale = controls.scale;
-  var canvas = document.getElementById('imageCanvas');
-  canvas.width = canvas.width;
+function drawToCanvas(canvas, scale, calc, tx = 0, ty = 0, copy = true, input_w, input_y) {
+  // var canvas = document.getElementById('imageCanvas');
+  // canvas.width = canvas.width;
   var ctx = canvas.getContext('2d');
 
   var input = new convnetjs.Vol(1, 1, 818, 0.0);
 
   // input.w = JSON.parse(JSON.stringify(input_w));
   for (var i = 0; i < n_z; i += 1) {
-    input.w[i] = input_w[i];
+    input.w[i] += input_w[i];
   }
   for (var i = 0; i < n_y; i += 1) {
-    input.w[i + n_z] = input_y[i];
+    input.w[i + n_z] += input_y[i];
   }
 
   var dimension = 64 * 64 * 3;
 
-  result = [];
+  var result = [];
   for (var i = 0; i < dimension; i += 1) {
     result.push(0.0);
   }
 
+  var r;
   if (calc) {
     r = net.forward(input);
+  }
+  else {
+    r = copyR;
   }
 
   for (var i = 0; i < dimension; i += 1) {
@@ -233,12 +258,18 @@ function drawToCanvas(calc=true) {
     }
   }
 
-  ctx.putImageData(g, 0, 0);
+  ctx.putImageData(g, tx, ty);
+
+  if (copy) {
+    copyR = JSON.parse(JSON.stringify(r));
+  }
 }
 
 var gui = new dat.GUI();
 gui.add(controls, 'scale', [1, 2, 3, 4]).onChange(function() {
-  drawToCanvas(false);
+  var canvas = document.getElementById('imageCanvas');
+  canvas.width = canvas.width;
+  drawToCanvas(canvas, controls.scale, false, 0, 0, false, input_w, input_y);
 }).listen();
 var featureFolder = gui.addFolder('Feature(Y)');
 featureFolder.add(controls, 'gender', ['male', 'female']).onChange(controls.setFeature).listen();
@@ -246,17 +277,19 @@ featureFolder.add(controls, 'hairColor', ['black', 'brown', 'red', 'yellow', 'gr
 featureFolder.add(controls, 'skinColor', ['white', 'brown', 'black']).onChange(controls.setFeature).listen();
 featureFolder.add(controls, 'beard').onChange(controls.setFeature).listen();
 featureFolder.add(controls, 'smile').onChange(controls.setFeature).listen();
-featureFolder.add(controls, 'hood').onChange(controls.setFeature).listen();
+featureFolder.add(controls, 'hood').name('hood (not recommended)').onChange(controls.setFeature).listen();
+featureFolder.open();
 gui.add(controls, 'getRandomFeature');
 gui.add(controls, 'getRandomNoise');
 gui.add(controls, 'getMean');
 gui.add(controls, 'getImage');
+gui.add(controls, 'getSample');
 
 
 function getRandom() {
   input_w = [];
   for (var i = 0; i < n_z; i += 1) {
-    input_w[i] = rnd2();
+    input_w[i] = rnd2() + rnd2() * rnd2();
   }
 
 }
@@ -305,6 +338,31 @@ function drawFeature() {
     canvas.fillRect(0, i * 5, 5, 5);
     canvas.fill();
     canvas.closePath();
+  }
+}
+
+var sampleCount = 0;
+function sampleGenLoop() {
+
+  var canvas = document.getElementById('sampleCanvas');
+
+  for (var j = 0; j < 2; j += 1) {
+    if (sampleCount < 100) {
+      getRandom();
+    }
+    else {
+      getZero();
+    }
+    input_y = JSON.parse(JSON.stringify(sample_y[sampleCount % 100]));
+
+    var i = sampleCount % 100;
+    drawToCanvas(canvas, 1, true, (i % 10) * 64 + Math.floor(sampleCount / 100) * 640, Math.floor(i / 10) * 64, false, input_w, input_y);
+
+    sampleCount += 1;
+  }
+
+  if (sampleCount < 200) {
+    window.requestAnimationFrame(sampleGenLoop);
   }
 }
 

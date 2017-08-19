@@ -5,6 +5,8 @@ var input_w;
 var input_y;
 var step = 6;
 var copyR;
+var stream = new Random(parseInt(Math.random() * Math.pow(2, 31)));
+var buffer_z = [];
 
 var controls = new function() {
   this.scale = 2;
@@ -176,6 +178,8 @@ var controls = new function() {
   this.getSample = function() {
 
     sampleCount = 0;
+    buffer_z = [];
+    buffer_y = [];
     sampleGenLoop();
 
     // var canvas = document.getElementById('sampleCanvas');
@@ -289,7 +293,8 @@ gui.add(controls, 'getSample');
 function getRandom() {
   input_w = [];
   for (var i = 0; i < n_z; i += 1) {
-    input_w[i] = rnd2() + rnd2() * rnd2();
+    // input_w[i] = rnd2() + rnd2() * rnd2();
+    input_w[i] = stream.normal(0, 1);
   }
 
 }
@@ -301,9 +306,17 @@ function getZero() {
   }
 }
 
-function rnd2() {
-  return ((Math.random() + Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) - 3) / 3;
+function getMeanData(index) {
+  input_w = [];
+  for (var i = 0; i < n_z; i += 1) {
+    input_w[i] = mean[index][i] + stddev[index][i] * stream.normal(0, 1);
+  }
+
 }
+
+// function rnd2() {
+//   return ((Math.random() + Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) - 3) / 3;
+// }
 
 function drawNoise() {
   var canvas = document.getElementById('noiseCanvas');
@@ -351,12 +364,15 @@ function sampleGenLoop() {
       getRandom();
     }
     else {
-      getZero();
+      // getZero();
+      getMeanData(sampleCount % 100);
     }
-    input_y = JSON.parse(JSON.stringify(sample_y[sampleCount % 100]));
+
+    buffer_z.push(JSON.parse(JSON.stringify(input_w)));
+    // input_y = JSON.parse(JSON.stringify(sample_y[sampleCount % 100]));
 
     var i = sampleCount % 100;
-    drawToCanvas(canvas, 1, true, (i % 10) * 64 + Math.floor(sampleCount / 100) * 640, Math.floor(i / 10) * 64, false, input_w, input_y);
+    drawToCanvas(canvas, 1, true, (i % 10) * 64 + Math.floor(sampleCount / 100) * 640, Math.floor(i / 10) * 64, false, input_w, sample_y[sampleCount % 100]);
 
     sampleCount += 1;
   }
@@ -389,4 +405,39 @@ $(function() {
   controls.setFeature();
 
   controls.getImage();
+
+
+  var canvas = document.getElementById('sampleCanvas');
+  canvas.addEventListener('mousedown', function(e) {
+
+    var canvas = document.getElementById('sampleCanvas');
+    var rect = canvas.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+
+    var index_x = Math.floor(x / 64);
+    var index_y = Math.floor(y / 64);
+    var index;
+
+    if (index_x < 10) {
+      index = index_y * 10 + index_x;
+    }
+    else {
+      index_x -= 10;
+      index_y += 10;
+      index = index_y * 10 + index_x;
+    }
+
+    if (buffer_z.length < index + 1) {
+      return;
+    }
+
+    input_y = JSON.parse(JSON.stringify(sample_y[index % 100]));
+    input_w = JSON.parse(JSON.stringify(buffer_z[index]));
+
+    drawNoise();
+    drawFeature();
+    controls.getImage();
+
+  })
 });

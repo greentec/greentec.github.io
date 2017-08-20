@@ -342,9 +342,11 @@ var sampleCount = 0;
 function sampleGenLoop() {
 
   var canvas = document.getElementById('sampleCanvas');
-  var buffer_z_w = [];
+  var buffer_z_w;
 
   for (var j = 0; j < 2; j += 1) {
+    buffer_z_w = [];
+
     if (sampleCount < 100) {
       for (var i = 0; i < n_z; i += 1) {
         // input_w[i] = rnd2() + rnd2() * rnd2();
@@ -354,6 +356,7 @@ function sampleGenLoop() {
     else {
       // getZero();
       getMeanData(sampleCount % 100);
+      buffer_z_w = JSON.parse(JSON.stringify(input_w));
     }
 
     buffer_z.push(buffer_z_w);

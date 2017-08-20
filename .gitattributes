@@ -17,4 +17,3 @@
 =======
 .js filter=lfs diff=lfs merge=lfs -text
 >>>>>>> parent of 4ea2b9e... update all
-'*.js' filter=lfs diff=lfs merge=lfs -text

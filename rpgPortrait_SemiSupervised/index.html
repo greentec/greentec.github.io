@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang=en>
+<meta charset="utf-8">
+<head>
+  <h1>NDC17 - Online Demo - 2-1. Generate RPG Portrait (semi-supervised)</h1>
+  <link rel='stylesheet' href='css/main.css' />
+
+  <script src='js/jquery-3.1.1.min.js'></script>
+  <script type="text/javascript">
+    $(window).on('load', function() {
+      $(".loader").fadeOut("slow");
+    });
+  </script>
+</head>
+<body>
+  <div class="loader"></div>
+  <a href='../index.html'><< Back</a>
+  <p>
+  <div>
+    Noise(Z)
+    <canvas id='noiseCanvas' width='200' height='100'></canvas>
+  </div>
+  <div>
+    Feature(Y)
+    <canvas id='yCanvas' width='5' height='100'></canvas>
+  </div>
+  <div>
+    <canvas id='imageCanvas' width='256' height='256'></canvas>
+  </div>
+  <canvas id='sampleCanvas' width='1280' height='640'></canvas>
+  
+  <script src='js/dat.gui.js'></script>
+  <script src='js/random.js'></script>
+  <script src='js/convnet.js'></script>
+  <script src='js/meanstd.js'></script>
+  <script src='js/label_enumerate.js'></script>
+  <script src='js/layer0.js'></script>
+  <script src='js/layer1.js'></script>
+  <script src='js/layer2.js'></script>
+  <script src='js/layer3.js'></script>
+  <script src='js/main.js'></script>
+</body>
+</html>

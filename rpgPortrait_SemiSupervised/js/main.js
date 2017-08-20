@@ -181,22 +181,6 @@ var controls = new function() {
     buffer_z = [];
     buffer_y = [];
     sampleGenLoop();
-
-    // var canvas = document.getElementById('sampleCanvas');
-    //
-    // for (var i = 0; i < 100; i += 1) {
-    //   getRandom();
-    //   input_y = JSON.parse(JSON.stringify(sample_y[i]));
-    //   drawToCanvas(canvas, 1, true, (i % 10) * 64, Math.floor(i / 10) * 64, false, input_w, input_y);
-    // }
-    //
-    // for (var i = 0; i < 100; i += 1) {
-    //   getRandom();
-    //   input_y = JSON.parse(JSON.stringify(sample_y[i]));
-    //   drawToCanvas(canvas, 1, true, (i % 10) * 64 + 640, Math.floor(i / 10) * 64, false, input_w, input_y);
-    // }
-
-    // drawNoise();
   }
 }
 
@@ -358,21 +342,25 @@ var sampleCount = 0;
 function sampleGenLoop() {
 
   var canvas = document.getElementById('sampleCanvas');
+  var buffer_z_w = [];
 
   for (var j = 0; j < 2; j += 1) {
     if (sampleCount < 100) {
-      getRandom();
+      for (var i = 0; i < n_z; i += 1) {
+        // input_w[i] = rnd2() + rnd2() * rnd2();
+        buffer_z_w[i] = stream.normal(0, 1);
+      }
     }
     else {
       // getZero();
       getMeanData(sampleCount % 100);
     }
 
-    buffer_z.push(JSON.parse(JSON.stringify(input_w)));
+    buffer_z.push(buffer_z_w);
     // input_y = JSON.parse(JSON.stringify(sample_y[sampleCount % 100]));
 
     var i = sampleCount % 100;
-    drawToCanvas(canvas, 1, true, (i % 10) * 64 + Math.floor(sampleCount / 100) * 640, Math.floor(i / 10) * 64, false, input_w, sample_y[sampleCount % 100]);
+    drawToCanvas(canvas, 1, true, (i % 10) * 64 + Math.floor(sampleCount / 100) * 640, Math.floor(i / 10) * 64, false, buffer_z_w, sample_y[sampleCount % 100]);
 
     sampleCount += 1;
   }

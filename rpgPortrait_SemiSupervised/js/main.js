@@ -170,6 +170,68 @@ var controls = new function() {
     drawFeature();
   }
 
+  this.setFeatureFromY = function() {
+    if (input_y[0] == 1) {
+      controls.gender = 'male';
+    }
+    else {
+      controls.gender = 'female';
+    }
+
+    if (input_y[2] == 1) {
+      controls.hairColor = 'black';
+    }
+    else if (input_y[3] == 1) {
+      controls.hairColor = 'brown';
+    }
+    else if (input_y[4] == 1) {
+      controls.hairColor = 'red';
+    }
+    else if (input_y[5] == 1) {
+      controls.hairColor = 'yellow';
+    }
+    else if (input_y[6] == 1) {
+      controls.hairColor = 'green';
+    }
+    else if (input_y[7] == 1) {
+      controls.hairColor = 'blue';
+    }
+    else {
+      controls.hairColor = 'white';
+    }
+
+    if (input_y[9] == 1) {
+      controls.skinColor = 'white';
+    }
+    else if (input_y[10] == 1) {
+      controls.skinColor = 'brown';
+    }
+    else {
+      controls.skinColor = 'black';
+    }
+
+    if (input_y[12] == 1) {
+      controls.beard = false;
+    }
+    else {
+      controls.beard = true;
+    }
+
+    if (input_y[14] == 1) {
+      controls.smile = false;
+    }
+    else {
+      controls.smile = true;
+    }
+
+    if (input_y[16] == 1) {
+      controls.hood = false;
+    }
+    else {
+      controls.hood = true;
+    }
+  }
+
   this.getImage = function() {
     var canvas = document.getElementById('imageCanvas');
     drawToCanvas(canvas, controls.scale, true, 0, 0, true, input_w, input_y);
@@ -426,6 +488,7 @@ $(function() {
     input_y = JSON.parse(JSON.stringify(sample_y[index % 100]));
     input_w = JSON.parse(JSON.stringify(buffer_z[index]));
 
+    controls.setFeatureFromY();
     drawNoise();
     drawFeature();
     controls.getImage();

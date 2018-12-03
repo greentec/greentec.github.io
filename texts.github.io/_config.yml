@@ -10,12 +10,12 @@ author:             Hwanhee, Kim
   email:            greentec91@gmail.com
 
 # GitHub Pages / Jekyll configuration
-baseurl:            'http://greentec.github.io/texts.github.io'
+baseurl:            'http://greentec.github.io/'
 permalink:          /:title/
 paginate:           5
 defaults:
   -
     scope:
-      path:         'http://greentec.github.io/texts.github.io'
+      path:         ''
     values:
       layout:       post

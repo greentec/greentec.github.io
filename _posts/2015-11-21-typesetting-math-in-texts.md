@@ -1,5 +1,5 @@
 ---
-title: Typesetting Math in Texts
+title: [example] Typesetting Math in Texts
 ---
 
 Basic math
@@ -154,7 +154,7 @@ Built up structures
     A big matrix:
 
     $$
-    D = \left[ 
+    D = \left[
         \begin{matrix}
           \lambda_1 & 0 & 0 & \cdots & 0 \\
           0 & \lambda_2 & 0 & \cdots & 0 \\

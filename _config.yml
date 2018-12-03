@@ -1,4 +1,3 @@
-source:             '/texts.github.io'
 title:              Blog
 tagline:            on GitHub Pages
 description:        Content-focused template for a blog hosted on GitHub Pages.
@@ -10,7 +9,7 @@ author:             Hwanhee, Kim
   email:            greentec91@gmail.com
 
 # GitHub Pages / Jekyll configuration
-baseurl:            'http://greentec.github.io/'
+baseurl:            ''
 permalink:          /:title/
 paginate:           5
 defaults:

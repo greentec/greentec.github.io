@@ -1,9 +1,10 @@
+source:             '/texts.github.io'
 title:              Blog
 tagline:            on GitHub Pages
 description:        Content-focused template for a blog hosted on GitHub Pages.
 url:                http://greentec.github.io
 
-author:
+author:             Hwanhee, Kim
   name:             Hwanhee, Kim
   url:              https://twitter.com/greentecq
   email:            greentec91@gmail.com
@@ -18,4 +19,3 @@ defaults:
       path:         'http://greentec.github.io/texts.github.io'
     values:
       layout:       post
-source: '/texts.github.io'

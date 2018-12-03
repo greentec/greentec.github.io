@@ -1,5 +1,5 @@
 ---
-title: [example] Texts + GitHub Pages = Blog
+title: example.. Texts + GitHub Pages = Blog
 ---
 
 Follow simple [instructions](<http://www.texts.io/support/0017/>) to publish

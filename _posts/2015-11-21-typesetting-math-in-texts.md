@@ -1,5 +1,5 @@
 ---
-title: [example] Typesetting Math in Texts
+title: example.. Typesetting Math in Texts
 ---
 
 Basic math

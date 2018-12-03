@@ -1,49 +1,38 @@
-<!DOCTYPE html>
-<html lang=en>
-<meta charset='utf-8'>
-<head>
-	<h1>greentec's homepage </h1>
-	<link rel='stylesheet' href='semantic.min.css'/>
-	<link rel='stylesheet' href='custom.css'/>
-	<script src='jquery-3.1.0.min.js'></script>
-	<script type="text/javascript">
-    $(window).on('load', function() {
-      $(".loader").fadeOut("slow");
-    });
-  </script>
-</head>
-<body>
-	<div class="loader"></div>
-	<h3>Conference</h3>
-	<div>
-		<h4>[NDC17] 딥러닝으로 게임 콘텐츠 제작하기 - VAE를 이용한 콘텐츠 생성 기법 연구 사례 <a href='https://www.slideshare.net/HwanheeKim2/ndc2017-vae-75419284'>[slide link]<a></h4>
-		<a href='dungeon2D/index.html'>1. Dungeon 2D</a>
-		<span> / </span>
-		<a href='rpgPortrait/index.html'>2. RPG Portrait</a>
-		<span> / </span>
-		<a href='rpgPortrait_SemiSupervised/index.html'>2-1. RPG Portrait (semi-supervised)</a>
-		<span> / </span>
-		<a href='rpgCharacter_MV/index.html'>3. RPG Character(MV)</a>
-	</div>
-	<hr>
-	<h3><a href='blog.html'>Blog</a></h3>
-	<hr>
-	<h3>Playground</h3>
-	<div class='ui stackable cards' id='playgroundCards'>
+---
+layout: default
+title: Home
+---
 
-	</div>
+<div class="posts">
+  {% for post in paginator.posts %}
+  <div class="post">
+    <h1 class="post-title">
+      <a href="{{ site.baseurl }}{{ post.url }}">
+        {{ post.title }}
+      </a>
+    </h1>
 
-	<script src='semantic.min.js'></script>
-	<script src='playground.type.js'></script>
-	<script src='main.js'></script>
-</body>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    <span class="post-date">{{ post.date | date_to_string }}</span>
 
-  ga('create', 'UA-98009790-1', 'auto');
-  ga('send', 'pageview', 'home');
-</script>
-</html>
+    {{ post.content | strip_html | truncatewords: 50 }}
+
+  </div>
+  {% endfor %}
+</div>
+
+<div class="pagination">
+  {% if paginator.next_page %}
+    <a class="pagination-item older" href="{{ site.baseurl }}/page{{paginator.next_page}}">Older</a>
+  {% else %}
+    <span class="pagination-item older">Older</span>
+  {% endif %}
+  {% if paginator.previous_page %}
+    {% if paginator.page == 2 %}
+      <a class="pagination-item newer" href="{{ site.baseurl }}/">Newer</a>
+    {% else %}
+      <a class="pagination-item newer" href="{{ site.baseurl }}/page{{paginator.previous_page}}">Newer</a>
+    {% endif %}
+  {% else %}
+    <span class="pagination-item newer">Newer</span>
+  {% endif %}
+</div>

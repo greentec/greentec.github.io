@@ -11,7 +11,7 @@ title: (공사중) 임의의 원형 경로 만들기
 - 중복되지 않는 깨끗한 1pixel의 line으로 이어질 것 (가급적 상하좌우로만)
 - 약간의 랜덤성
 
-문제 정의에 따라서 [A*](https://en.wikipedia.org/wiki/A*_search_algorithm) 같은 탐색 알고리즘을 써서 구할 수도 있겠습니다만, 이때는 좀 쉽고 procedural 한 방법으로 풀어보고 싶다는 생각이 들었습니다. 고민 끝에 만든 방법은 다음과 같습니다.
+문제 정의에 따라서 [A* ](https://en.wikipedia.org/wiki/A*_search_algorithm) 같은 탐색 알고리즘을 써서 구할 수도 있겠습니다만, 이때는 좀 쉽고 procedural 한 방법으로 풀어보고 싶다는 생각이 들었습니다. 고민 끝에 만든 방법은 다음과 같습니다.
 
 1. 랜덤한 원형 영역 구하기
 2. Cellular Automata 를 통해 영역 가장자리를 깨끗하게 만들기

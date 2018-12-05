@@ -1,5 +1,9 @@
 ---
 title: 임의의 원형 경로 만들기
+tags:
+- procedural
+- algorithm
+- path
 ---
 
 도입

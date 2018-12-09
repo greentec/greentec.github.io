@@ -321,7 +321,7 @@ let raceCount = 5;
 let hexGrid, hexDict;
 [hexGrid, hexDict] = initGrid(5);
 drawGrid(hexGrid);
-initHandler();
+initEventListener();
 
 function initEventListener() {
     let previewFrame = document.getElementById('hex_4_preview');

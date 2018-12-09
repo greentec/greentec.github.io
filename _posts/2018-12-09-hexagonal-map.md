@@ -319,7 +319,7 @@ let happyNeighborCount = [0, 1, 1, 2, 2, 2, 3];
 let neighbors = [[+1, -1, 0], [0, -1, +1], [-1, 0, +1], [-1, +1, 0], [0, +1, -1], [+1, 0, -1]];
 let raceCount = 5;
 let hexGrid, hexDict;
-[hexGrid, hexDict] = initGrid(5);
+[hexGrid, hexDict] = initGrid(8);
 drawGrid(hexGrid);
 initEventListener();
 
@@ -448,7 +448,7 @@ function initGrid(mapSize) {
 }
 
 function drawGrid(gridArray) {
-    let edgeLength = 13;
+    let edgeLength = 10;
     let edgeW = edgeLength * 3 / 2;
     let edgeH = edgeLength * Math.sqrt(3) / 2;
 

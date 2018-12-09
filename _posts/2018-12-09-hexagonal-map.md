@@ -191,3 +191,106 @@ function HexCell(x, y, z, race) {
 </script>
 &nbsp;
 이 다음에는 실제로 race 에 따라 각 hexCell 의 색상이 달라지도록 합니다.
+
+<div>
+<textarea id='hex_3' style='display:none;'>
+let raceCount = 5;
+let hexGrid = initGrid(5);
+drawGrid(hexGrid);
+
+function HexCell(x, y, z, race) {
+    this._x = x;
+    this._y = y;
+    this._z = z;
+    this._race = race;
+}
+
+function initGrid(mapSize) {
+    mapSize = Math.max(1, mapSize);
+    let gridArray = [];
+    let cnt = 0;
+
+    for (let i = -mapSize; i < mapSize + 1; i += 1) {
+        for (let j = -mapSize; j < mapSize + 1; j += 1) {
+            for (let k = -mapSize; k < mapSize + 1; k += 1) {
+                if (i + j + k == 0) {
+                    gridArray.push(new HexCell(i, j, k, Math.floor(Math.random() * raceCount)));
+                    cnt += 1;
+                }
+            }
+        }
+    }
+
+    return gridArray;
+}
+
+function drawGrid(gridArray) {
+    let edgeLength = 13;
+    let edgeW = edgeLength * 3 / 2;
+    let edgeH = edgeLength * Math.sqrt(3) / 2;
+
+    let previewFrame = document.getElementById('hex_3_preview');
+    let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+    let canvas = preview.getElementById('hex_3_canvas');
+    canvas.width = canvas.width;
+    let ctx = canvas.getContext('2d');
+    // ctx.fillStyle = 'lightgray';
+    let x, y, z;
+    let posX, posY;
+    let centerX = canvas.width / 2;
+    let centerY = canvas.height / 2;
+
+    for (let i = 0; i < gridArray.length; i++) {
+        [x, y, z] = [gridArray[i]._x, gridArray[i]._y, gridArray[i]._z];
+        posX = x * edgeW + centerX;
+        posY = (-y + z) * edgeH + centerY;
+
+        ctx.fillStyle = `hsl(Math.floor(gridArray[i]._race / raceCount * 360), 0, 1)`;
+        ctx.moveTo(posX + Math.cos(0) * edgeLength,
+                   posY + Math.sin(0) * edgeLength);
+        for (let j = 1; j <= 6; j++) {
+            ctx.lineTo(posX + Math.cos(j / 6 * (Math.PI * 2)) * edgeLength,
+                       posY + Math.sin(j / 6 * (Math.PI * 2)) * edgeLength);
+        }
+        ctx.fill();
+        ctx.stroke();
+    }
+}
+</textarea>
+<iframe id='hex_3_preview'>
+</iframe>
+</div>
+<script>
+    (function() {
+        let delay;
+        let editor = CodeMirror.fromTextArea(document.getElementById('hex_3'), {
+            mode: 'javascript',
+            lineNumbers: true,
+            lineWrapping: true,
+            theme: 'monokai'
+        });
+        editor.on("change", function() {
+            clearTimeout(delay);
+            delay = setTimeout(updatePreview, 300);
+        });
+        function updatePreview() {
+            let previewFrame = document.getElementById('hex_3_preview');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            let canvas;
+
+            if (preview.getElementById('hex_3_canvas')) {
+                canvas = preview.getElementById('hex_3_canvas');
+            }
+            else {
+                canvas = document.createElement('canvas');
+                canvas.id = 'hex_3_canvas';
+                preview.body.appendChild(canvas);
+                canvas.width = preview.body.offsetWidth;
+                canvas.height = preview.body.offsetHeight;
+            }
+
+            eval(editor.getValue());
+        }
+        setTimeout(updatePreview, 300);
+    })();
+</script>

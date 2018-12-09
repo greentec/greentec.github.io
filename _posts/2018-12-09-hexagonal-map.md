@@ -507,6 +507,7 @@ function drawGrid(gridArray) {
 
                 button = document.createElement('button');
                 button.style.position = 'absolute';
+                button.style.left = '0px';
                 button.style.top = '0px';
                 button.id = 'segregationButton';
                 button.innerHTML = '1 Step Segregation';

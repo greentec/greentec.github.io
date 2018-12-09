@@ -337,6 +337,7 @@ function initEventListener() {
 function doSegregation() {
     let neighborCount;
     let sameNeighborCount;
+    let satisfied, total;
     let dx, dy, dz;
     let x, y, z;
     let cellString;
@@ -345,6 +346,9 @@ function doSegregation() {
 
     let moveCandidate = [];
     let emptyCandidate = [];
+
+    satisfied = 0;
+    total = 0;
 
     for (let i = 0; i < hexGrid.length; i++) {
         hexCell = hexGrid[i];
@@ -375,6 +379,11 @@ function doSegregation() {
         if (happyNeighborCount[neighborCount] > sameNeighborCount) {
             moveCandidate.push(i);
         }
+        else {
+            satisfied += 1;
+        }
+
+        total += 1;
     }
 
     // shuffle
@@ -393,6 +402,11 @@ function doSegregation() {
         neighborCell._race = hexCell._race;
         hexCell._race = 0;
     }
+
+    let previewFrame = document.getElementById('hex_4_preview');
+    let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+    let p = preview.getElementById('segregationP');
+    p.innerHTML = `만족도 : ${Math.floor(satisfied / total * 10000) / 100} %`;
 }
 
 function shuffleArray(array) {
@@ -494,6 +508,7 @@ function drawGrid(gridArray) {
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
             let canvas;
             let button;
+            let p;
 
             if (preview.getElementById('hex_4_canvas')) {
                 canvas = preview.getElementById('hex_4_canvas');
@@ -512,6 +527,13 @@ function drawGrid(gridArray) {
                 button.id = 'segregationButton';
                 button.innerHTML = '1 Step Segregation';
                 preview.body.appendChild(button);
+
+                p = document.createElement('p');
+                p.style.position = 'absolute';
+                p.style.left = '0px';
+                p.style.top = '20px';
+                p.id = 'segregationP';
+                preview.body.appendChild(p);
             }
 
             eval(editor.getValue());

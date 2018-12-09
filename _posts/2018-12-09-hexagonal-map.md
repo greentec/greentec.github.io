@@ -379,12 +379,12 @@ function doSegregation() {
     shuffleArray(emptyCandidate);
 
     // move
-    for (let i = 0; i < move_candidate.length; i++) {
+    for (let i = 0; i < moveCandidate.length; i++) {
         if (emptyCandidate.length === 0) {
             break;
         }
 
-        hexCell = hexGrid[move_candidate[i]];
+        hexCell = hexGrid[moveCandidate[i]];
         neighborCell = hexGrid[emptyCandidate.pop()];
 
         neighborCell._race = hexCell._race;

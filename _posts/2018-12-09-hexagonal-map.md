@@ -245,7 +245,12 @@ function drawGrid(gridArray) {
         posX = x * edgeW + centerX;
         posY = (-y + z) * edgeH + centerY;
 
-        ctx.fillStyle = `hsl(Math.floor(gridArray[i]._race / raceCount * 360), 0, 1)`;
+        if (gridArray[i]._race === 0) {
+            ctx.fillStyle = 'lightgray';
+        }
+        else {
+            ctx.fillStyle = `hsl(Math.floor((gridArray[i]._race - 1) / raceCount * 360), 100%, 50%)`;
+        }
         ctx.moveTo(posX + Math.cos(0) * edgeLength,
                    posY + Math.sin(0) * edgeLength);
         for (let j = 1; j <= 6; j++) {

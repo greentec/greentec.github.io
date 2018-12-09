@@ -69,12 +69,14 @@ let hexCell = new HexCell(1, 2, 3);</textarea>
 </iframe>
 </div>
 <script>
-    let myCodeMirror = CodeMirror.fromTextArea(document.getElementById('hex_1'), {
-        mode: 'javascript',
-        lineNumbers: true,
-        lineWrapping: true,
-        theme: 'monokai'
-    });
+    (function() {
+        let myCodeMirror = CodeMirror.fromTextArea(document.getElementById('hex_1'), {
+            mode: 'javascript',
+            lineNumbers: true,
+            lineWrapping: true,
+            theme: 'monokai'
+        });
+    })();
 </script>
 
 

@@ -1,5 +1,5 @@
 ---
-title: 육각형으로 구성된 맵 만들기 (dice wars)
+title: 육각형으로 구성된 맵 만들기
 date: 2018-12-09
 tags:
 - procedural

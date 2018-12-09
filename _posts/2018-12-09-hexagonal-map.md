@@ -188,7 +188,7 @@ function HexCell(x, y, z, race) {
             theme: 'monokai',
             styleSelectedText: true
         });
-        editor.markText({line:5, ch:4}, {line:5, ch:22}, {className: "styled-background"});
+        editor.markText({line:4, ch:4}, {line:4, ch:22}, {className: "styled-background"});
     })();
 </script>
 &nbsp;

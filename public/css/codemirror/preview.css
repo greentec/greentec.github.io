@@ -3,12 +3,10 @@
     width: 100%;
     border: 1px solid black;
     font-size: 0.75rem;
+    height: auto;
 }
 .CodeMirror.CodeMirror-wrap {
-    float: left;
     width: 50%;
-    border: 1px solid black;
-    font-size: 0.75rem;
 }
 iframe {
     width: 49%;

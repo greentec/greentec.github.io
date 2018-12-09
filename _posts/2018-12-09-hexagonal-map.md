@@ -7,7 +7,7 @@ tags:
 ---
 
 ![](<../images/hexagonal_map_intro.png>)
-[image link](<https://www.honeycolony.com/article/against-flow-hive/>)
+<small>[image link](<https://www.honeycolony.com/article/against-flow-hive/>)</small>
 
 &nbsp;
 

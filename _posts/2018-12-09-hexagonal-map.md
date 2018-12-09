@@ -34,6 +34,7 @@ Amit Patel 은 육각형 그리드에 대해서 많은 자료 조사를 한 후�
 아래 코드는 육각형을 javascript 의 function 을 이용해서 클래스처럼 만든 것입니다. [jQuery](<https://jquery.com/>) 를 만든 존 레식이 쓴 [자바스크립트 닌자 비급](<https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=38913750>)에서는 다음과 같이 함수와 생성자를 분리하고 있습니다.
 > 함수와 메서드의 이름은 보통 그들이 하는 것을 설명하는 동사(skulk(), creep(), sneak(), doSomethingWonderful() 기타 등등)로 시작한다. 그리고 첫 글자는 소문자이다. 반면, 생성자의 이름은 보통 생성할 객체가 무엇인지를 설명하는 명사이고 대문자로 시작한다. (Ninja(), Samurai(), Ronin(), KungFuPanda() 기타 등등)  - <자바스트립트 닌자 비급>, 68p.
 
+<div>
 <textarea id='hex_0' style='display:none;'>
 function HexCell(x, y, z) {
     this._x = x;
@@ -44,6 +45,9 @@ function HexCell(x, y, z) {
 // x=1, y=2, z=3 좌표를 가지는 HexCell 을 생성합니다.
 let hexCell = new HexCell(1, 2, 3);
 </textarea>
+<iframe id='hex_preview_0'>
+</iframe>
+</div>
 <script>
     let myCodeMirror = CodeMirror.fromTextArea(document.getElementById('hex_0'), {
         mode: 'javascript',

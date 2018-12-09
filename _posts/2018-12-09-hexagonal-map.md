@@ -6,7 +6,7 @@ tags:
 - hexagonal
 ---
 
-![](<../images/hexagonal_map_intro.jpg>)
+![](<../images/hexagonal_map_intro.png>)
 
 
 도입

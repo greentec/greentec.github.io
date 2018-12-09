@@ -494,7 +494,8 @@ function drawGrid(gridArray) {
                 canvas.height = preview.body.offsetHeight;
 
                 button = document.createElement('button');
-                button.onclick = 'doSegregation()';
+                button.style.position = 'absolute';
+                button.addEventListener('click, doSegregation);
                 button.innerHTML = '1 Step Segregation';
                 preview.body.appendChild(button);
             }

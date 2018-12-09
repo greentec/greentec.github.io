@@ -245,6 +245,7 @@ function drawGrid(gridArray) {
         posX = x * edgeW + centerX;
         posY = (-y + z) * edgeH + centerY;
 
+        ctx.beginPath();
         if (gridArray[i]._race === 0) {
             ctx.fillStyle = 'lightgray';
         }
@@ -259,6 +260,7 @@ function drawGrid(gridArray) {
         }
         ctx.fill();
         ctx.stroke();
+        ctx.closePath();
     }
 }
 </textarea>

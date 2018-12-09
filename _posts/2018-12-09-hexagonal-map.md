@@ -52,6 +52,7 @@ let hexCell = new HexCell(1, 2, 3);
     let myCodeMirror = CodeMirror.fromTextArea(document.getElementById('hex_0'), {
         mode: 'javascript',
         lineNumbers: true,
+        lineWrapping: true,
         theme: 'monokai'
     });
 </script>

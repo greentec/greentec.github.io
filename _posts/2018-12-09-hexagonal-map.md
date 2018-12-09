@@ -97,6 +97,7 @@ function drawGrid(gridArray) {
     let canvas = preview.getElementById('hex_1_canvas');
     canvas.width = canvas.width;
     let ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'lightgray';
     let x, y, z;
     let posX, posY;
     let centerX = canvas.width / 2;
@@ -113,6 +114,7 @@ function drawGrid(gridArray) {
             ctx.lineTo(posX + Math.cos(j / 6 * (Math.PI * 2)) * edgeLength,
                        posY + Math.sin(j / 6 * (Math.PI * 2)) * edgeLength);
         }
+        ctx.fill();
         ctx.stroke();
     }
 }

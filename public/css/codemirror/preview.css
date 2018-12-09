@@ -1,5 +1,11 @@
 .CodeMirror {
     float: left;
+    width: 100%;
+    border: 1px solid black;
+    font-size: 0.75rem;
+}
+.CodeMirror.CodeMirror-wrap {
+    float: left;
     width: 50%;
     border: 1px solid black;
     font-size: 0.75rem;

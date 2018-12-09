@@ -43,9 +43,29 @@ function HexCell(x, y, z) {
 }
 
 // x=1, y=2, z=3 좌표를 가지는 HexCell 을 생성합니다.
-let hexCell = new HexCell(1, 2, 3);
-</textarea>
-<iframe id='hex_preview_0'>
+let hexCell = new HexCell(1, 2, 3);</textarea>
+</div>
+<script>
+    let myCodeMirror = CodeMirror.fromTextArea(document.getElementById('hex_0'), {
+        mode: 'javascript',
+        lineNumbers: true,
+        theme: 'monokai'
+    });
+</script>
+
+이렇게 HexCell 을 정의한 뒤에 HexCell 로 구성되는 HexGrid 를 만들 수 있습니다. 
+
+<div>
+<textarea id='hex_1' style='display:none;'>
+function HexCell(x, y, z) {
+    this._x = x;
+    this._y = y;
+    this._z = z;
+}
+
+// x=1, y=2, z=3 좌표를 가지는 HexCell 을 생성합니다.
+let hexCell = new HexCell(1, 2, 3);</textarea>
+<iframe id='hex_preview_1'>
 </iframe>
 </div>
 <script>

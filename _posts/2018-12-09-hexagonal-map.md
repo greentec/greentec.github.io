@@ -327,7 +327,10 @@ function initEventListener() {
     let previewFrame = document.getElementById('hex_4_preview');
     let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
     let button = preview.getElementById('segregationButton');
-    button.addEventListener('click', doSegregation);
+    button.addEventListener('click', () => {
+        doSegregation();
+        drawGrid(hexGrid);
+    });
     // button.setAttribute('onClick', 'javascript: doSegregation();');
 }
 

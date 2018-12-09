@@ -303,3 +303,6 @@ function drawGrid(gridArray) {
         setTimeout(updatePreview, 300);
     })();
 </script>
+
+&nbsp;
+그럼 이제 Schelling Segregation Model 을 적용해 보겠습니다. 간단하게 각 셀에서 이웃의 수를 센 다음에 자신과 race 가 같은 이웃의 수가 너무 적다면 임의의 빈 셀로 이동합니다. 그리고 다시 검사 후 이동을 반복해서 모든 셀이 만족하게 될 때까지 이 과정을 반복합니다.

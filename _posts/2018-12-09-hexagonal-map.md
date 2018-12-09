@@ -31,7 +31,20 @@ Amit Patel 은 육각형 그리드에 대해서 많은 자료 조사를 한 후�
 
 저는 Cube 좌표계를 주로 사용합니다. Cube 좌표계는 x, y, z 의 3개 축으로 2차원 평면의 육각형 그리드를 나타내는 표현 방법입니다. 이 좌표계에서는 회전 변환, 벡터 연산이 쉽고 원점(0, 0, 0)을 중심으로 한 대칭성도 쉽게 얻을 수 있기 때문에 여러 가지로 편리한 점이 많습니다.
 
-
+<textarea id='hex_0'>
+function HexCell(x, y, z) {
+    this._x = x;
+    this._y = y;
+    this._z = z;
+}
+</textarea>
+<script>
+    let myCodeMirror = CodeMirror.fromTextArea(document.getElementById('hex_0'), {
+        mode: 'javascript',
+        lineNumbers: true,
+        theme: 'monokai'
+    });
+</script>
 
 
 

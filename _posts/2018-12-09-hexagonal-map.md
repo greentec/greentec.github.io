@@ -185,8 +185,10 @@ function HexCell(x, y, z, race) {
         let editor = CodeMirror.fromTextArea(document.getElementById('hex_2'), {
             mode: 'javascript',
             lineNumbers: true,
-            theme: 'monokai'
+            theme: 'monokai',
+            styleSelectedText: true
         });
+        editor.markText({line:5, ch:4}, {line:5, ch:22}, {className: "styled-background"})
     })();
 </script>
 &nbsp;

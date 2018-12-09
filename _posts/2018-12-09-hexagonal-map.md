@@ -85,11 +85,13 @@ function initGrid() {
 }
 
 function drawGrid(gridArray) {
-    let edgeLength = 30;
+    let edgeLength = 15;
     let edgeW = edgeLength * 3 / 2;
     let edgeH = edgeLength * Math.sqrt(3) / 2;
 
-    let canvas = document.getElementById('hex_1_canvas');
+    let previewFrame = document.getElementById('preview');
+    let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+    let canvas = preview.getElementById('hex_1_canvas');
     canvas.width = canvas.width;
     let ctx = canvas.getContext('2d');
     let x, y, z;
@@ -102,20 +104,15 @@ function drawGrid(gridArray) {
         posX = x * edgeW + centerX;
         posY = (-y + z) * edgeH + centerY;
 
-        ctx.moveTo(posX, posY);
-        for (let j = 0; j < 6; j++) {
-            ctx.lineTo(posX + Math.cos(j / Math.PI) * edgeLength,
-                       posY + Math.sin(i / Math.PI) * edgeLength);
+        ctx.moveTo(posX + Math.cos(0) * edgeLength,
+                   posY + Math.sin(0) * edgeLength);
+        for (let j = 1; j <= 6; j++) {
+            ctx.lineTo(posX + Math.cos(j / 6 * (Math.PI * 2)) * edgeLength,
+                       posY + Math.sin(j / 6 * (Math.PI * 2)) * edgeLength);
         }
         ctx.stroke();
     }
-}
-
-let hexGrid = initGrid();
-drawGrid(hexGrid);
-
-// x=1, y=2, z=3 좌표를 가지는 HexCell 을 생성합니다.
-let hexCell = new HexCell(1, 2, 3);</textarea>
+}</textarea>
 <iframe id='hex_1_preview'>
 </iframe>
 </div>

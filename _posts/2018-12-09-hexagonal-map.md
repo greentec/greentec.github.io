@@ -112,7 +112,11 @@ function drawGrid(gridArray) {
         }
         ctx.stroke();
     }
-}</textarea>
+}
+
+let hexGrid = initGrid();
+drawGrid(hexGrid);
+</textarea>
 <iframe id='hex_1_preview'>
 </iframe>
 </div>
@@ -133,8 +137,7 @@ function drawGrid(gridArray) {
             let previewFrame = document.getElementById('hex_1_preview');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
             let canvas;
-            console.log(preview);
-            console.log(preview.getElementById('hex_1_canvas'))
+
             if (preview.getElementById('hex_1_canvas')) {
                 canvas = preview.getElementById('hex_1_canvas');
             }

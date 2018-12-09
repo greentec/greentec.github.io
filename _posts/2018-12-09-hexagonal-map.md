@@ -535,7 +535,7 @@ function drawGrid(gridArray) {
                 p = document.createElement('p');
                 p.style.position = 'absolute';
                 p.style.left = '0px';
-                p.style.top = '20px';
+                p.style.top = '15px';
                 p.id = 'segregationP';
                 preview.body.appendChild(p);
             }
@@ -545,3 +545,6 @@ function drawGrid(gridArray) {
         setTimeout(updatePreview, 300);
     })();
 </script>
+
+&nbsp;
+1 Step Segregation 버튼을 계속 누르면 만족도가 100% 에 수렴하게 됩니다. 같은 색끼리 합쳐보면 Dice wars 에서 볼 수 있었던 영역과 비슷한 모습이 됩니다. 

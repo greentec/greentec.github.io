@@ -158,7 +158,7 @@ function drawGrid(gridArray) {
 &nbsp;
 1행의 initGrid(5) 에서 5는 hexGrid 의 반지름을 나타내는 크기 단위입니다. 즉 중심(0,0,0) 에서 가장 멀리 떨어진 hexCell 까지의 거리가 됩니다. 5를 다른 숫자로 바꿔보면, hexGrid 가 변하는 것을 확인할 수 있습니다.
 
-
+&nbsp;
 ## 지역 만들기
 
 dice wars 의 맵으로 돌아가보면 하나의 맵은 여러 개의 지역으로 나눠져 있는 것을 확인할 수 있습니다. 그리고 이 지역은 각각 여러 개의 hexCell 로 구성되어 있습니다. 그렇다면 각 hexCell 을 중복되지 않게 들고 있는 배열 또는 object가 필요할 것 같습니다. 여기서는 object 를 써보겠습니다.

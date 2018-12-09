@@ -321,6 +321,15 @@ let raceCount = 5;
 let hexGrid, hexDict;
 [hexGrid, hexDict] = initGrid(5);
 drawGrid(hexGrid);
+initHandler();
+
+function initEventListener() {
+    let previewFrame = document.getElementById('hex_4_preview');
+    let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+    let button = preview.getElementById('segregationButton');
+    button.addEventListener('click', doSegregation);
+    // button.setAttribute('onClick', 'javascript: doSegregation();');
+}
 
 function doSegregation() {
     let neighborCount;
@@ -495,8 +504,8 @@ function drawGrid(gridArray) {
 
                 button = document.createElement('button');
                 button.style.position = 'absolute';
-                // button.addEventListener('click', doSegregation);
-                button.setAttribute('onClick', 'javascript: doSegregation();');
+                button.style.top = '0px';
+                button.id = 'segregationButton';
                 button.innerHTML = '1 Step Segregation';
                 preview.body.appendChild(button);
             }

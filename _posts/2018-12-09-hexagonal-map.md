@@ -1,5 +1,5 @@
 ---
-title: (공사중) 육각형으로 구성된 맵 만들기 (dice wars)
+title: 육각형으로 구성된 맵 만들기 (dice wars)
 tags:
 - procedural
 - algorithm
@@ -317,7 +317,7 @@ function drawGrid(gridArray) {
 <textarea id='hex_4' style='display:none;'>
 let happyNeighborCount = [0, 1, 1, 2, 2, 2, 3];
 let neighbors = [[+1, -1, 0], [0, -1, +1], [-1, 0, +1], [-1, +1, 0], [0, +1, -1], [+1, 0, -1]];
-let raceCount = 8;
+let raceCount = 10;
 let hexGrid, hexDict;
 [hexGrid, hexDict] = initGrid(8);
 drawGrid(hexGrid);
@@ -547,4 +547,12 @@ function drawGrid(gridArray) {
 </script>
 
 &nbsp;
-1 Step Segregation 버튼을 계속 누르면 만족도가 100% 에 수렴하게 됩니다. 같은 색끼리 합쳐보면 Dice wars 에서 볼 수 있었던 영역과 비슷한 모습이 됩니다. 
+1 Step Segregation 버튼을 계속 누르면 만족도가 100% 에 수렴하게 됩니다. 같은 색끼리 합쳐보면 Dice wars 에서 볼 수 있었던 영역과 비슷한 모습이 됩니다.
+
+![](<../images/hexagonal_map_1.png>)
+
+이렇게 Dice wars 의 맵을 Schelling Segregation Model 을 사용해서 반복적인 방법으로 만들 수 있습니다. 그런데 Dice wars 의 제작자는 다른 방법을 사용한 것 같습니다. 관심이 있으신 분들은 [공개되어 있는 소스](<https://www.gamedesign.jp/games/dicewars/game.js>)의 `make_map()` 함수 부분을 참고하시면 되겠습니다.
+
+이제 두번째 글인데 마크다운으로 글을 쓰는 게 꽤 힘든 일인 것 같습니다. 더군다나  egloos 에서는 할 수 없었던 interactive 요소가 있는 글을 시도했더니 하루가 훌쩍 갔습니다. 그래도 보람찬 일인 것 같습니다. 이쪽을 구현하는 부분에 대해서도 어느 정도 정리가 된다면 블로그에 올릴 수 있도록 하겠습니다. 자료가 없어서 찾는 데 너무 오래 걸렸거든요. 그럼 긴 글을 읽어주셔서 감사합니다.
+
+&nbsp;

@@ -35,7 +35,7 @@ Amit Patel 은 육각형 그리드에 대해서 많은 자료 조사를 한 후�
 > 함수와 메서드의 이름은 보통 그들이 하는 것을 설명하는 동사(skulk(), creep(), sneak(), doSomethingWonderful() 기타 등등)로 시작한다. 그리고 첫 글자는 소문자이다. 반면, 생성자의 이름은 보통 생성할 객체가 무엇인지를 설명하는 명사이고 대문자로 시작한다. (Ninja(), Samurai(), Ronin(), KungFuPanda() 기타 등등)  - 「자바스트립트 닌자 비급」, 68p.
 
 <div>
-<textarea id='hex_0' style='display:none;'>
+<textarea id='hex_0' height='10' style='display:none;'>
 function HexCell(x, y, z) {
     this._x = x;
     this._y = y;
@@ -46,11 +46,13 @@ function HexCell(x, y, z) {
 let hexCell = new HexCell(1, 2, 3);</textarea>
 </div>
 <script>
-    let myCodeMirror = CodeMirror.fromTextArea(document.getElementById('hex_0'), {
-        mode: 'javascript',
-        lineNumbers: true,
-        theme: 'monokai'
-    });
+    (function() {
+        let myCodeMirror = CodeMirror.fromTextArea(document.getElementById('hex_0'), {
+            mode: 'javascript',
+            lineNumbers: true,
+            theme: 'monokai'
+        });
+    })();
 </script>
 
 이렇게 HexCell 을 정의한 뒤에 HexCell 로 구성되는 HexGrid 를 만들 수 있습니다.

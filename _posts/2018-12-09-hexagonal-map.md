@@ -31,12 +31,18 @@ Amit Patel 은 육각형 그리드에 대해서 많은 자료 조사를 한 후�
 
 저는 Cube 좌표계를 주로 사용합니다. Cube 좌표계는 x, y, z 의 3개 축으로 2차원 평면의 육각형 그리드를 나타내는 표현 방법입니다. 이 좌표계에서는 회전 변환, 벡터 연산이 쉽고 원점(0, 0, 0)을 중심으로 한 대칭성도 쉽게 얻을 수 있기 때문에 여러 가지로 편리한 점이 많습니다.
 
+아래 코드는 육각형을 javascript 의 function 을 이용해서 클래스처럼 만든 것입니다. [jQuery](<https://jquery.com/>) 를 만든 존 레식이 쓴 [자바스크립트 닌자 비급](<https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=38913750>)에서는 다음과 같이 함수와 생성자를 분리하고 있습니다.
+> 함수와 메서드의 이름은 보통 그들이 하는 것을 설명하는 동사(skulk(), creep(), sneak(), doSomethingWonderful() 기타 등등)로 시작한다. 그리고 첫 글자는 소문자이다. 반면, 생성자의 이름은 보통 생성할 객체가 무엇인지를 설명하는 명사이고 대문자로 시작한다. (Ninja(), Samurai(), Ronin(), KungFuPanda() 기타 등등)  - <자바스트립트 닌자 비급>, 68p.
+
 <textarea id='hex_0' style='display:none;'>
 function HexCell(x, y, z) {
     this._x = x;
     this._y = y;
     this._z = z;
 }
+
+// x=1, y=2, z=3 좌표를 가지는 HexCell 을 생성합니다.
+let hexCell = new HexCell(1, 2, 3);
 </textarea>
 <script>
     let myCodeMirror = CodeMirror.fromTextArea(document.getElementById('hex_0'), {
@@ -45,7 +51,3 @@ function HexCell(x, y, z) {
         theme: 'monokai'
     });
 </script>
-
-
-
-물론 별도의 클래스로 육각형 그리드를 구현해야 합니다.

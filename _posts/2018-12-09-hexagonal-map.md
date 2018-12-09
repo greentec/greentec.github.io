@@ -54,7 +54,7 @@ let hexCell = new HexCell(1, 2, 3);</textarea>
         });
     })();
 </script>
-
+&nbsp;
 이렇게 HexCell 을 정의한 뒤에 HexCell 로 구성되는 HexGrid 를 만들 수 있습니다.
 
 <div>
@@ -85,7 +85,7 @@ function initGrid() {
 }
 
 function drawGrid(gridArray) {
-    let edgeLength = 15;
+    let edgeLength = 13;
     let edgeW = edgeLength * 3 / 2;
     let edgeH = edgeLength * Math.sqrt(3) / 2;
 
@@ -96,8 +96,8 @@ function drawGrid(gridArray) {
     let ctx = canvas.getContext('2d');
     let x, y, z;
     let posX, posY;
-    let centerX = 150;
-    let centerY = 150;
+    let centerX = canvas.width / 2;
+    let centerY = canvas.height / 2;
 
     for (let i = 0; i < gridArray.length; i++) {
         [x, y, z] = [gridArray[i]._x, gridArray[i]._y, gridArray[i]._z];

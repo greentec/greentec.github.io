@@ -89,7 +89,7 @@ function drawGrid(gridArray) {
     let edgeW = edgeLength * 3 / 2;
     let edgeH = edgeLength * Math.sqrt(3) / 2;
 
-    let previewFrame = document.getElementById('preview');
+    let previewFrame = document.getElementById('hex_1_preview');
     let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
     let canvas = preview.getElementById('hex_1_canvas');
     canvas.width = canvas.width;

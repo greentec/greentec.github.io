@@ -161,4 +161,33 @@ function drawGrid(gridArray) {
 &nbsp;
 ## 지역 만들기
 
-dice wars 의 맵으로 돌아가보면 하나의 맵은 여러 개의 지역으로 나눠져 있는 것을 확인할 수 있습니다. 그리고 이 지역은 각각 여러 개의 hexCell 로 구성되어 있습니다. 그렇다면 각 hexCell 을 중복되지 않게 들고 있는 배열 또는 object가 필요할 것 같습니다. 여기서는 object 를 써보겠습니다.
+Dice wars 의 맵으로 돌아가보면 하나의 맵은 여러 개의 지역으로 나눠져 있는 것을 확인할 수 있습니다. 그리고 이 지역은 각각 여러 개의 hexCell 로 구성되어 있습니다. 그렇다면 각 hexCell 을 중복되지 않게 들고 있는 배열 또는 object가 필요할 것 같습니다. 여기서는 object 를 써보겠습니다.
+
+그런데 이런 지역을 어떻게 구성해야 할까요? 간단한 procedural 한 방법을 생각해 보면, 모든 hexCell 에 0~N-1 까지의 ID 를 랜덤하게 부여한 뒤에, Schelling Segregation Model 같은 기법을 사용해서 인접하는 곳에 같은 셀들이 모이도록 하는 작업을 할 수 있을 것 같습니다.
+
+Thomas Schelling 은 노벨경제학상을 수상한 미국의 경제학자로, 게임이론을 통해서 주거지의 분리(Segregation) 현상이 어떻게 생기는지에 대한 이론을 정립했습니다. 이 이론은 간단하게 말하면 서로 다른 인종이 인접해서 살고 있다고 했을 때, 소수인 인종이 비슷한 인종을 찾아서 이주하는 현상을 수학적 모델로 정리한 것입니다. 이것을 Schelling Segregation Model 이라고 합니다.
+
+참고할 만한 링크로는 [이곳](<http://nifty.stanford.edu/2014/mccown-schelling-model-segregation/>)과, [제가 예전에 만든 프로그램](<https://greentec.github.io/playground/html/Segregation.html>)을 보셔도 되겠습니다. 다만 제 프로그램은 예전에 만들어서 Flash 버전인 점은 아쉬운 부분입니다.
+
+위의 두 개 링크에서는 사각 그리드 위에서의 segregation 모델을 다루고 있습니다. 육각 그리드 위에서도 가능할 것입니다. 먼저 HexCell 에서 _race 를 추가해줍니다.
+
+<div>
+<textarea id='hex_2' height='10' style='display:none;'>
+function HexCell(x, y, z, race) {
+    this._x = x;
+    this._y = y;
+    this._z = z;
+    this._race = race;
+}</textarea>
+</div>
+<script>
+    (function() {
+        let editor = CodeMirror.fromTextArea(document.getElementById('hex_2'), {
+            mode: 'javascript',
+            lineNumbers: true,
+            theme: 'monokai'
+        });
+    })();
+</script>
+&nbsp;
+이 다음에는 실제로 race 에 따라 각 hexCell 의 색상이 달라지도록 합니다.

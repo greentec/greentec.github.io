@@ -57,6 +57,8 @@ let hexCell = new HexCell(1, 2, 3);</textarea>
 
 <div>
 <textarea id='hex_1' style='display:none;'>
+
+
 function HexCell(x, y, z) {
     this._x = x;
     this._y = y;

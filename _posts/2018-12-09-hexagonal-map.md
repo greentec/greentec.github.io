@@ -252,7 +252,7 @@ function drawGrid(gridArray) {
             ctx.fillStyle = 'lightgray';
         }
         else {
-            ctx.fillStyle = `hsl(${Math.floor((gridArray[i]._race - 1) / raceCount * 360)}, 100%, 50%)`;
+            ctx.fillStyle = `hsl(${Math.floor((gridArray[i]._race - 1) / raceCount * 320)}, 100%, 50%)`;
         }
         ctx.moveTo(posX + Math.cos(0) * edgeLength,
                    posY + Math.sin(0) * edgeLength);

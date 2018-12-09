@@ -53,7 +53,7 @@ let hexCell = new HexCell(1, 2, 3);</textarea>
     });
 </script>
 
-이렇게 HexCell 을 정의한 뒤에 HexCell 로 구성되는 HexGrid 를 만들 수 있습니다. 
+이렇게 HexCell 을 정의한 뒤에 HexCell 로 구성되는 HexGrid 를 만들 수 있습니다.
 
 <div>
 <textarea id='hex_1' style='display:none;'>
@@ -69,7 +69,7 @@ let hexCell = new HexCell(1, 2, 3);</textarea>
 </iframe>
 </div>
 <script>
-    let myCodeMirror = CodeMirror.fromTextArea(document.getElementById('hex_0'), {
+    let myCodeMirror = CodeMirror.fromTextArea(document.getElementById('hex_1'), {
         mode: 'javascript',
         lineNumbers: true,
         lineWrapping: true,

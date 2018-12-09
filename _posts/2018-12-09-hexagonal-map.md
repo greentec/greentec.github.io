@@ -317,7 +317,7 @@ function drawGrid(gridArray) {
 <textarea id='hex_4' style='display:none;'>
 let happyNeighborCount = [0, 1, 1, 2, 2, 2, 3];
 let neighbors = [[+1, -1, 0], [0, -1, +1], [-1, 0, +1], [-1, +1, 0], [0, +1, -1], [+1, 0, -1]];
-let raceCount = 5;
+let raceCount = 8;
 let hexGrid, hexDict;
 [hexGrid, hexDict] = initGrid(8);
 drawGrid(hexGrid);
@@ -367,11 +367,15 @@ function doSegregation() {
 
             cellString = [dx, dy, dz].join('#');
             if (hexDict.hasOwnProperty(cellString)) {
-                neighborCell = hexDict[cellString];
-                neighborCount += 1;
+                neighborCell = hexGrid[hexDict[cellString]];
 
-                if (neighborCell._race === hexCell._race) {
-                    sameNeighborCount += 1;
+                // do not count empty cell
+                if (neighborCell._race !== 0) {
+                    neighborCount += 1;
+
+                    if (neighborCell._race === hexCell._race) {
+                        sameNeighborCount += 1;
+                    }
                 }
             }
         }
@@ -448,7 +452,7 @@ function initGrid(mapSize) {
 }
 
 function drawGrid(gridArray) {
-    let edgeLength = 10;
+    let edgeLength = 9;
     let edgeW = edgeLength * 3 / 2;
     let edgeH = edgeLength * Math.sqrt(3) / 2;
 

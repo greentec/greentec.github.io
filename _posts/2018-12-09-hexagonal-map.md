@@ -59,14 +59,17 @@ let hexCell = new HexCell(1, 2, 3);</textarea>
 
 <div>
 <textarea id='hex_1' style='display:none;'>
+let hexGrid = initGrid(5);
+drawGrid(hexGrid);
+
 function HexCell(x, y, z) {
     this._x = x;
     this._y = y;
     this._z = z;
 }
 
-function initGrid() {
-    let mapSize = 5;
+function initGrid(mapSize) {
+    mapSize = Math.max(1, mapSize);
     let gridArray = [];
     let cnt = 0;
 
@@ -113,9 +116,6 @@ function drawGrid(gridArray) {
         ctx.stroke();
     }
 }
-
-let hexGrid = initGrid();
-drawGrid(hexGrid);
 </textarea>
 <iframe id='hex_1_preview'>
 </iframe>
@@ -155,5 +155,5 @@ drawGrid(hexGrid);
     })();
 </script>
 
-
 &nbsp;
+1행의 initGrid(5) 에서 5는 hexGrid 의 반지름을 나타내는 크기 단위입니다. 즉 중심(0,0,0) 에서 가장 멀리 떨어진 hexCell 까지의 거리가 됩니다. 5를 다른 숫자로 바꿔보면, hexGrid 가 변하는 것을 확인할 수 있습니다.

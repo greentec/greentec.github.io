@@ -165,7 +165,7 @@ void main() {
 
 0.0~1.0 이 익숙하지 않으신가요? 위에서 color 에도 같은 범위 의 값을 썼습니다. 그럼 여기서 이 값을 그대로 color 에 넣어보면 어떻게 될까요?
 
-<textarea id='shader_text_0' width='400' height='400' style='display:none;'>
+<textarea id='shader_text_1' width='400' height='400' style='display:none;'>
 uniform vec2 resolution;
 uniform float time;
 void main() {
@@ -276,7 +276,7 @@ void main() {
     })();
 </script>
 
-[^2]: 프로그램의 여러 곳에서 반복적으로 재사용되는 코드입니다.
+[^2]: 프로그램의 여러 곳에서 반복적으로 재사용되는 코드입니다. ([상용구 코드](<https://ko.wikipedia.org/wiki/%EC%83%81%EC%9A%A9%EA%B5%AC_%EC%BD%94%EB%93%9C>))
 
 
 &nbsp;

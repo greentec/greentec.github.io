@@ -163,6 +163,119 @@ void main() {
 
 그럼 `uv`는 어떤 값이 될까요? 스크린이 가질 수 있는 최대값으로 각 좌표를 나누기 때문에, `uv` 의 xy 는 각각 0.0~1.0 사이의 값이 됩니다. 이 코드는 Shadertoy 에서 가장 많이 쓰이는 boilerplate code[^2] 중 하나입니다.
 
+0.0~1.0 이 익숙하지 않으신가요? 위에서 color 에도 같은 범위 의 값을 썼습니다. 그럼 여기서 이 값을 그대로 color 에 넣어보면 어떻게 될까요?
+
+<textarea id='shader_text_0' width='400' height='400' style='display:none;'>
+uniform vec2 resolution;
+uniform float time;
+void main() {
+    vec2 uv = gl_FragCoord / resoultion;
+    gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
+}</textarea>
+<iframe id='shader_preview_0'>
+</iframe>
+<script type="x-shader/x-fragment" id="shader_frag_0">
+    uniform vec2 resolution;
+    uniform float time;
+    void main() {
+        vec2 uv = gl_FragCoord / resoultion;
+        gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
+    }
+</script>
+<script>
+    (function() {
+        let delay;
+        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_0'), {
+            mode: 'javascript',
+            lineNumbers: true,
+            lineWrapping: true,
+            theme: 'monokai'
+        });
+        let stats;
+        let camera, scene, renderer;
+        let material, mesh;
+        let uniforms;
+        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
+        init();
+        animate();
+
+        function init() {
+            camera = new THREE.Camera();
+            camera.position.z = 1;
+            scene = new THREE.Scene();
+            var geometry = new THREE.PlaneBufferGeometry(2, 2);
+            uniforms = {
+                time: {
+                    type: "f",
+                    value: 1.0
+                },
+                resolution: {
+                    type: "v2",
+                    value: new THREE.Vector2()
+                }
+            };
+            material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: VERTEX,
+                fragmentShader: document.getElementById('shader_frag_0').textContent
+            });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            let previewFrame = document.getElementById('shader_preview_0');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            preview.body.style.margin = 0;
+            preview.body.appendChild(renderer.domElement);
+            stats = new Stats();
+            preview.body.appendChild(stats.dom);
+            onWindowResize();
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize(event) {
+            let previewFrame = document.getElementById('shader_preview_0');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+
+            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
+            uniforms.resolution.value.x = renderer.domElement.width;
+            uniforms.resolution.value.y = renderer.domElement.height;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            render();
+            stats.update();
+        }
+
+        function render() {
+            uniforms.time.value += 0.05;
+            renderer.render(scene, camera);
+        }
+
+        editor.on("change", function() {
+            clearTimeout(delay);
+            delay = setTimeout(updatePreview, 300);
+        });
+        function updatePreview() {
+            let previewFrame = document.getElementById('shader_preview_0');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            let canvas;
+            let button;
+            let p;
+
+            document.getElementById('shader_text_0').textContent = editor.getValue();
+            material = new THREE.ShaderMaterial({
+                uniforms: material.uniforms,
+                vertexShader: material.vertexShader,
+                fragmentShader: document.getElementById('shader_text_0').textContent
+            });
+            mesh.material = material;
+        }
+        setTimeout(updatePreview, 300);
+    })();
+</script>
+
 [^2]: 프로그램의 여러 곳에서 반복적으로 재사용되는 코드입니다.
 
 

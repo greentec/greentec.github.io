@@ -70,56 +70,57 @@ void main() {
         animate();
 
         function init() {
-          camera = new THREE.Camera();
-          camera.position.z = 1;
-          scene = new THREE.Scene();
-          var geometry = new THREE.PlaneBufferGeometry(2, 2);
-          uniforms = {
-            time: {
-              type: "f",
-              value: 1.0
-            },
-            resolution: {
-              type: "v2",
-              value: new THREE.Vector2()
-            }
-          };
-          material = new THREE.ShaderMaterial({
-            uniforms: uniforms,
-            vertexShader: VERTEX,
-            fragmentShader: document.getElementById('shader_frag_0').textContent
-          });
-          mesh = new THREE.Mesh(geometry, material);
-          scene.add(mesh);
-          renderer = new THREE.WebGLRenderer();
-          renderer.setPixelRatio(window.devicePixelRatio);
-          let previewFrame = document.getElementById('shader_preview_0');
-          let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-          preview.body.appendChild(renderer.domElement);
-          stats = new Stats();
-          preview.body.appendChild(stats.dom);
-          onWindowResize();
-          window.addEventListener('resize', onWindowResize, false);
+            camera = new THREE.Camera();
+            camera.position.z = 1;
+            scene = new THREE.Scene();
+            var geometry = new THREE.PlaneBufferGeometry(2, 2);
+            uniforms = {
+                time: {
+                    type: "f",
+                    value: 1.0
+                },
+                resolution: {
+                    type: "v2",
+                    value: new THREE.Vector2()
+                }
+            };
+            material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: VERTEX,
+                fragmentShader: document.getElementById('shader_frag_0').textContent
+            });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            let previewFrame = document.getElementById('shader_preview_0');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            preview.body.style.margin = 0;
+            preview.body.appendChild(renderer.domElement);
+            stats = new Stats();
+            preview.body.appendChild(stats.dom);
+            onWindowResize();
+            window.addEventListener('resize', onWindowResize, false);
         }
 
         function onWindowResize(event) {
-          let previewFrame = document.getElementById('shader_preview_0');
-          let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            let previewFrame = document.getElementById('shader_preview_0');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
 
-          renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-          uniforms.resolution.value.x = renderer.domElement.width;
-          uniforms.resolution.value.y = renderer.domElement.height;
+            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
+            uniforms.resolution.value.x = renderer.domElement.width;
+            uniforms.resolution.value.y = renderer.domElement.height;
         }
 
         function animate() {
-          requestAnimationFrame(animate);
-          render();
-          stats.update();
+            requestAnimationFrame(animate);
+            render();
+            stats.update();
         }
 
         function render() {
-          uniforms.time.value += 0.05;
-          renderer.render(scene, camera);
+            uniforms.time.value += 0.05;
+            renderer.render(scene, camera);
         }
 
         editor.on("change", function() {
@@ -134,7 +135,6 @@ void main() {
             let p;
 
             document.getElementById('shader_text_0').textContent = editor.getValue();
-            // eval(threejscode);
             material = new THREE.ShaderMaterial({
                 uniforms: material.uniforms,
                 vertexShader: material.vertexShader,

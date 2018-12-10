@@ -36,6 +36,8 @@ uniform vec2 resolution;
 uniform float time;
 void main() {
     gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    // gl_FragColor = vec4(vec3(0.5), 1.0));
+    // gl_FragColor = vec4(1.0);
 }</textarea>
 <iframe id='shader_preview_0'>
 </iframe>
@@ -44,6 +46,8 @@ void main() {
     uniform float time;
     void main() {
         gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        // gl_FragColor = vec4(vec3(0.5), 1.0));
+        // gl_FragColor = vec4(1.0);
     }
 </script>
 <script>
@@ -135,9 +139,16 @@ void main() {
                 fragmentShader: document.getElementById('shader_text_0').textContent
             });
             mesh.material = material;
-            console.log(material, mesh);
         }
         setTimeout(updatePreview, 300);
     })();
-
 </script>
+
+&nbsp;
+위 코드의 Fragment Shader 는 화면 전체를 빨간색으로 그려줍니다. `gl_FragColor` 는 각 픽셀의 Color 를 정의합니다. 0~255 의 `integer` 로 나타내는 RGB 값과는 다르게, Shader 에서는 0.0~1.0 의 `float` 으로 나타냅니다. 여기서는 R, G, B, A 의 순서로 color 를 지정합니다. `vec4` 는 길이가 4인 벡터를 나타냅니다.
+
+6행의 주석을 해제(주석 표시인 // 를 지우면 됩니다)하면 오른쪽 화면의 색이 회색으로 바뀝니다. `vec3` 은 길이가 3인 벡터입니다. 6행은 `vec4(0.5, 0.5, 0.5, 1.0)` 과 같은 값을 가집니다.
+
+7행의 주석을 해제하면 화면이 흰색으로 바뀝니다. R, G, B, A 에 모두 1.0 을 넣었기 때문입니다.
+
+&nbsp;

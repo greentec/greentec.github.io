@@ -23,10 +23,121 @@ threejs: true
 
 이제부터 시작할 일련의 글들은 Shadertoy 에 올라온 Shader 코드 중 난이도가 낮고 구조가 쉬운 코드를 중심으로 interactive 하게 직접 값을 바꾸는 창을 띄워서 분석해보려고 합니다. [육각형으로 구성된 맵 만들기](<https://greentec.github.io/hexagonal-map/>)에서처럼 말입니다. 다만 여기서는 Three.js 를 활용해서 Fragment Shader[^1] 를 작성해보는 것을 주 목적으로 하려고 합니다. Shadertoy 도 Fragment Shader 만 바꾸고 있습니다.
 
-[^1]: Pixel Shader 라고도 합니다. 화면의 각 픽셀이 어떻게 그려질지 결정합니다. 밑에서 다시 다루겠습니다.
+[^1]: Pixel Shader 라고도 합니다. 화면의 각 픽셀이 어떻게 그려질지 결정합니다.
 
 &nbsp;
 
 ## 실전!
 
-지금 바로 코드로 들어가보겠습니다. 
+지금 바로 코드로 들어가보겠습니다. 오늘의 코드는 Shadertoy 에서 New 를 눌러서 처음 코드를 생성할 때 나오는 기본 쉐이더입니다. 처음이니까 쉬운 코드로 하겠습니다.
+
+<textarea id='shader_text_0' width='400' height='400' style='display:none;'>
+uniform vec2 resolution;
+uniform float time;
+void main() {
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}</textarea>
+<iframe id='shader_preview_0'>
+</iframe>
+<script type="x-shader/x-fragment" id="shader_frag_0">
+    uniform vec2 resolution;
+    uniform float time;
+    void main() {
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+</script>
+<script>
+    (function() {
+        let delay;
+        let editor = CodeMirror.fromTextArea(document.getElementById('textarea'), {
+            mode: 'javascript',
+            lineNumbers: true,
+            lineWrapping: true,
+            theme: 'monokai'
+        });
+        let stats;
+        let camera, scene, renderer;
+        let material, mesh;
+        let uniforms;
+        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
+        init();
+        animate();
+
+        function init() {
+          camera = new THREE.Camera();
+          camera.position.z = 1;
+          scene = new THREE.Scene();
+          var geometry = new THREE.PlaneBufferGeometry(2, 2);
+          uniforms = {
+            time: {
+              type: "f",
+              value: 1.0
+            },
+            resolution: {
+              type: "v2",
+              value: new THREE.Vector2()
+            }
+          };
+          material = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: VERTEX,
+            fragmentShader: document.getElementById('shader_frag_0').textContent
+          });
+          mesh = new THREE.Mesh(geometry, material);
+          scene.add(mesh);
+          renderer = new THREE.WebGLRenderer();
+          renderer.setPixelRatio(window.devicePixelRatio);
+          let previewFrame = document.getElementById('shader_preview_0');
+          let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+          preview.body.appendChild(renderer.domElement);
+          stats = new Stats();
+          preview.body.appendChild(stats.dom);
+          onWindowResize();
+          window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize(event) {
+          let previewFrame = document.getElementById('shader_preview_0');
+          let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+
+          renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
+          uniforms.resolution.value.x = renderer.domElement.width;
+          uniforms.resolution.value.y = renderer.domElement.height;
+        }
+
+        function animate() {
+          requestAnimationFrame(animate);
+          render();
+          stats.update();
+        }
+
+        function render() {
+          uniforms.time.value += 0.05;
+          renderer.render(scene, camera);
+        }
+
+        editor.on("change", function() {
+            clearTimeout(delay);
+            delay = setTimeout(updatePreview, 300);
+        });
+        function updatePreview() {
+            let previewFrame = document.getElementById('shader_preview_0');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            let canvas;
+            let button;
+            let p;
+
+            document.getElementById('shader_text_0').textContent = editor.getValue();
+            // eval(threejscode);
+            material = new THREE.ShaderMaterial({
+                uniforms: material.uniforms,
+                vertexShader: material.vertexShader,
+                fragmentShader: document.getElementById('shader_text_0').textContent
+            });
+            mesh.material = material;
+            console.log(material, mesh);
+        }
+        setTimeout(updatePreview, 300);
+    })();
+
+</script>

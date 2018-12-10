@@ -44,4 +44,10 @@
     <script src="{{ site.baseurl }}/public/js/codemirror/mode/javascript.js"></script>
     <script src="{{ site.baseurl }}/public/js/codemirror/addon/selection/mark-selection.js"></script>
   {% endif %}
+
+  {% if page.threejs %}
+    <script src="{{ site.baseurl }}/public/js/threejs/three.min.js"></script>
+    <script src="{{ site.baseurl }}/public/js/threejs/dat.gui.min.js"></script>
+    <script src="{{ site.baseurl }}/public/js/threejs/stats.min.js"></script>
+  {% endif %}
 </head>

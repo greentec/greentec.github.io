@@ -169,7 +169,7 @@ void main() {
 uniform vec2 resolution;
 uniform float time;
 void main() {
-    vec2 uv = gl_FragCoord / resoultion;
+    vec2 uv = gl_FragCoord.xy / resoultion.xy;
     gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
 }</textarea>
 <iframe id='shader_preview_1'>

@@ -33,6 +33,8 @@ threejs: true
 
 지금 바로 코드로 들어가보겠습니다. 오늘의 코드는 Shadertoy 에서 New 를 눌러서 처음 코드를 생성할 때 나오는 기본 쉐이더입니다. 처음이니까 쉬운 코드로 하겠습니다.
 
+그리고 Shadertoy 의 코드를 three.js 에서 그대로 가져올 수는 없어서 약간 변형하면서 가져와야 합니다. 이 부분은 [hackernoon 에 올라온 이 글](<https://hackernoon.com/converting-shaders-from-shadertoy-to-threejs-fe17480ed5c6>)에도 잘 설명되어 있습니다. 여기서는 필요한 부분이 나올 때마다 설명하도록 하겠습니다.
+
 <textarea id='shader_text_0' width='400' height='400' style='display:none;'>
 uniform vec2 resolution;
 uniform float time;
@@ -147,13 +149,21 @@ void main() {
 </script>
 
 &nbsp;
-위 코드의 Fragment Shader 는 화면 전체를 빨간색으로 그려줍니다. `gl_FragColor` 는 각 픽셀의 Color 를 정의합니다. 0~255 의 `integer` 로 나타내는 RGB 값과는 다르게, Shader 에서는 0.0~1.0 의 `float` 으로 나타냅니다. 여기서는 R, G, B, A 의 순서로 color 를 지정합니다. `vec4` 는 길이가 4인 벡터를 나타냅니다.
+위 코드의 Fragment Shader 는 화면 전체를 빨간색으로 그려줍니다. 4행의 `gl_FragColor` 는 각 픽셀의 Color 를 정의합니다. 0~255 의 `integer` 로 나타내는 RGB 값과는 다르게, Shader 에서는 0.0~1.0 의 `float` 으로 나타냅니다. 여기서는 R, G, B, A 의 순서로 color 를 지정합니다. `vec4` 는 길이가 4인 벡터를 나타냅니다.
 
 6행의 주석을 해제(주석 표시인 // 를 지우면 됩니다)하면 오른쪽 화면의 색이 회색으로 바뀝니다. `vec3` 은 길이가 3인 벡터입니다. 6행은 `vec4(0.5, 0.5, 0.5, 1.0)` 과 같은 값을 가집니다.
 
-7행의 주석을 해제하면 화면이 흰색으로 바뀝니다. R, G, B, A 에 모두 1.0 을 넣었기 때문입니다. 그 외에 다른 값으로 바꿔보면서 색이 바뀌는 것을 테스트해볼 수 있습니다.
+7행의 주석을 해제하면 화면이 흰색으로 바뀝니다. R, G, B, A 에 모두 1.0 을 넣었기 때문입니다. 그 외에 다른 값으로 바꿔보면서 화면의 색이 바뀌는 것을 테스트해볼 수 있습니다.
 
-그럼 이제 좀 더 심화된 버전의 코드를 작성해 보겠습니다.
+그럼 이제 좀 더 심화된 버전의 코드를 작성해 보겠습니다. Shadertoy 의 기본 쉐이더 4행에는 다음과 같은 코드가 있습니다.
+
+`vec2 uv = fragCoord/iResolution.xy`;
+
+`fragCoord` 는 픽셀의 실제 좌표를 나타내는 2차원 벡터 값입니다. x 좌표와 y 좌표는 각각 0.5 에서 resolution - 0.5 사이의 값을 가지는데, 여기서 resolution 이란 스크린의 x, y의 크기를 말합니다. Shadertoy 에서는 스크린의 크기를 iResoultion 이라는 값으로 참조할 수 있습니다. `iResolution.xy` 에서 뒤의 `xy` 는 벡터 중 처음의 2개, x 크기와 y 크기만 가져오겠다는 뜻입니다.
+
+그럼 `uv`는 어떤 값이 될까요? 스크린이 가질 수 있는 최대값으로 각 좌표를 나누기 때문에, `uv` 의 xy 는 각각 0.0~1.0 사이의 값이 됩니다. 이 코드는 Shadertoy 에서 가장 많이 쓰이는 boilerplate code[^2] 중 하나입니다.
+
+[^2]: 프로그램의 여러 곳에서 반복적으로 재사용되는 코드입니다.
 
 
 &nbsp;

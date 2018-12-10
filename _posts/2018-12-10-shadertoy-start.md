@@ -161,7 +161,7 @@ void main() {
 
 `fragCoord` 는 픽셀의 실제 좌표를 나타내는 2차원 벡터 값입니다. x 좌표와 y 좌표는 각각 0.5 에서 resolution - 0.5 사이의 값을 가지는데, 여기서 resolution 이란 스크린의 x, y의 크기를 말합니다. Shadertoy 에서는 스크린의 크기를 iResoultion 이라는 값으로 참조할 수 있습니다. `iResolution.xy` 에서 뒤의 `xy` 는 벡터 중 처음의 2개, x 크기와 y 크기만 가져오겠다는 뜻입니다.
 
-그럼 `uv`는 어떤 값이 될까요? 스크린이 가질 수 있는 최대값으로 각 좌표를 나누기 때문에, `uv` 의 xy 는 각각 0.0~1.0 사이의 값이 됩니다. 이 코드는 Shadertoy 에서 가장 많이 쓰이는 boilerplate code[^2] 중 하나입니다.
+그럼 `uv`는 어떤 값이 될까요? 스크린이 가질 수 있는 최대값으로 각 좌표를 나누기 때문에, `uv` 의 xy 는 각각 0.0~1.0 사이의 값이 됩니다. 이렇게 계산하면 스크린의 크기가 변해도 픽셀의 값은 일정하게 유지됩니다. 이 코드는 Shadertoy 에서 가장 많이 쓰이는 boilerplate code[^2] 중 하나입니다.
 
 0.0~1.0 이 익숙하지 않으신가요? 위에서 color 에도 같은 범위 의 값을 썼습니다. 그럼 여기서 이 값을 그대로 color 에 넣어보면 어떻게 될까요?
 
@@ -171,6 +171,8 @@ uniform float time;
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
     gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
+    // gl_FragColor = vec4(1.0, vec2(uv), 1.0);
+    // gl_FragColor = vec4(uv.x, 0.0, uv.y, 1.0);
 }</textarea>
 <iframe id='shader_preview_1'>
 </iframe>
@@ -180,6 +182,8 @@ void main() {
     void main() {
         vec2 uv = gl_FragCoord.xy / resolution.xy;
         gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
+        // gl_FragColor = vec4(1.0, vec2(uv), 1.0);
+        // gl_FragColor = vec4(uv.x, 0.0, uv.y, 1.0);
     }
 </script>
 <script>
@@ -275,6 +279,10 @@ void main() {
         setTimeout(updatePreview, 300);
     })();
 </script>
+
+화면의 왼쪽 아래는 `x=0.0, y=0.0` 이기 때문에 검정색이고, 오른쪽 위는 `x=1.0, y=1.0` 이기 때문에 노란색이 된 것을 확인할 수 있습니다. 이렇게 단 두 줄의 Fragment Shader 코드로 color gradient 를 만들 수 있습니다. 이 외에도 6, 7 행의 주석을 해제하고 값을 바꿔가며 자유롭게 실험해볼 수 있습니다.
+
+
 
 [^2]: 프로그램의 여러 곳에서 반복적으로 재사용되는 코드입니다. ([상용구 코드](<https://ko.wikipedia.org/wiki/%EC%83%81%EC%9A%A9%EA%B5%AC_%EC%BD%94%EB%93%9C>))
 

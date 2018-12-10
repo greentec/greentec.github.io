@@ -33,7 +33,7 @@ threejs: true
 
 지금 바로 코드로 들어가보겠습니다. 오늘의 코드는 Shadertoy 에서 New 를 눌러서 처음 코드를 생성할 때 나오는 기본 쉐이더입니다. 처음이니까 쉬운 코드로 하겠습니다.
 
-그리고 Shadertoy 의 코드를 three.js 에서 그대로 가져올 수는 없어서 약간 변형하면서 가져와야 합니다. 이 부분은 [hackernoon 에 올라온 이 글](<https://hackernoon.com/converting-shaders-from-shadertoy-to-threejs-fe17480ed5c6>)에도 잘 설명되어 있습니다. 여기서는 필요한 부분이 나올 때마다 설명하도록 하겠습니다.
+그리고 Shadertoy 의 코드를 three.js 에서 그대로 가져올 수는 없어서 약간 변형하면서 가져와야 합니다. 이 부분은 [hackernoon 에 올라온 이 글](<https://hackernoon.com/converting-shaders-from-shadertoy-to-threejs-fe17480ed5c6>)에도 잘 설명되어 있습니다. 여기서는 `fragColor` 를 `gl_FragColor` 로, `fragCoord` 를 `gl_FragCoord` 로, `iResoultion` 을 `resolution` 으로, `iTime` 을 `time` 으로 썼습니다. 
 
 <textarea id='shader_text_0' width='400' height='400' style='display:none;'>
 uniform vec2 resolution;
@@ -163,6 +163,8 @@ void main() {
 
 그럼 `uv`는 어떤 값이 될까요? 스크린이 가질 수 있는 최대값으로 각 좌표를 나누기 때문에, `uv` 의 xy 는 각각 0.0~1.0 사이의 값이 됩니다. 이렇게 계산하면 스크린의 크기가 변해도 픽셀의 값은 일정하게 유지됩니다. 이 코드는 Shadertoy 에서 가장 많이 쓰이는 boilerplate code[^2] 중 하나입니다.
 
+[^2]: 프로그램의 여러 곳에서 반복적으로 재사용되는 코드입니다. ([상용구 코드](<https://ko.wikipedia.org/wiki/%EC%83%81%EC%9A%A9%EA%B5%AC_%EC%BD%94%EB%93%9C>))
+
 0.0~1.0 이 익숙하지 않으신가요? 위에서 color 에도 같은 범위 의 값을 썼습니다. 그럼 여기서 이 값을 그대로 color 에 넣어보면 어떻게 될까요?
 
 <textarea id='shader_text_1' width='400' height='400' style='display:none;'>
@@ -280,6 +282,7 @@ void main() {
     })();
 </script>
 
+&nbsp;
 화면의 왼쪽 아래는 `x=0.0, y=0.0` 이기 때문에 검정색이고, 오른쪽 위는 `x=1.0, y=1.0` 이기 때문에 노란색이 된 것을 확인할 수 있습니다. 이렇게 단 두 줄의 Fragment Shader 코드로 color gradient 를 만들 수 있습니다. 이 외에도 6, 7 행의 주석을 해제하고 값을 바꿔가며 자유롭게 실험해볼 수 있습니다.
 
 그리고 마지막으로 Shadertoy 에서 기본 쉐이더를 켜놓고 조금 있으면 시간에 따라 값이 변하는 것을 확인할 수 있습니다. 이것은 시간 변수를 Fragment Shader 에서 사용해서 픽셀의 색을 변화시키는 데에 사용하기 때문입니다.
@@ -408,8 +411,9 @@ void main() {
     })();
 </script>
 
+&nbsp;
+Shadertoy 의 기본 쉐이더와 같은 형태로 색이 변하는 것을 확인할 수 있습니다. 색이 변하는 속도를 느리게 또는 빠르게 하고 싶다면 `time` 에 0.5 나 2 등의 상수를 곱해주면 됩니다. `cos` 바깥쪽의 숫자의 크기를 조절해볼 수도 있습니다. 이외에도 여러 가지 변화를 쉐이더 코드에 주면서 변화를 확인해볼 수 있습니다.
 
-[^2]: 프로그램의 여러 곳에서 반복적으로 재사용되는 코드입니다. ([상용구 코드](<https://ko.wikipedia.org/wiki/%EC%83%81%EC%9A%A9%EA%B5%AC_%EC%BD%94%EB%93%9C>))
-
+오늘은 Shadertoy 의 기본 쉐이더를 분석해보았습니다. 다음에는 이것보다는 조금 더 발전했지만 그렇게 어렵지는 않은 쉐이더를 들고 찾아오겠습니다. 너무 어려우면 제가 해석을 못해서 그렇습니다. 긴 글 읽어주셔서 감사합니다.
 
 &nbsp;

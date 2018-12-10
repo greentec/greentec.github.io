@@ -1,5 +1,5 @@
 ---
-title: (공사중) Shadertoy 기본 쉐이더 분석
+title: Shadertoy 기본 쉐이더 분석
 date: 2018-12-10
 tags:
 - shader
@@ -33,7 +33,7 @@ threejs: true
 
 지금 바로 코드로 들어가보겠습니다. 오늘의 코드는 Shadertoy 에서 New 를 눌러서 처음 코드를 생성할 때 나오는 기본 쉐이더입니다. 처음이니까 쉬운 코드로 하겠습니다.
 
-그리고 Shadertoy 의 코드를 three.js 에서 그대로 가져올 수는 없어서 약간 변형하면서 가져와야 합니다. 이 부분은 [hackernoon 에 올라온 이 글](<https://hackernoon.com/converting-shaders-from-shadertoy-to-threejs-fe17480ed5c6>)에도 잘 설명되어 있습니다. 여기서는 `fragColor` 를 `gl_FragColor` 로, `fragCoord` 를 `gl_FragCoord` 로, `iResoultion` 을 `resolution` 으로, `iTime` 을 `time` 으로 썼습니다. 
+그리고 Shadertoy 의 코드를 three.js 에서 그대로 가져올 수는 없어서 약간 변형하면서 가져와야 합니다. 이 부분은 [hackernoon 에 올라온 이 글](<https://hackernoon.com/converting-shaders-from-shadertoy-to-threejs-fe17480ed5c6>)에도 잘 설명되어 있습니다. 여기서는 `fragColor` 를 `gl_FragColor` 로, `fragCoord` 를 `gl_FragCoord` 로, `iResoultion` 을 `resolution` 으로, `iTime` 을 `time` 으로 썼습니다.
 
 <textarea id='shader_text_0' width='400' height='400' style='display:none;'>
 uniform vec2 resolution;

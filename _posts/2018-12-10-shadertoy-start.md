@@ -49,7 +49,7 @@ void main() {
 <script>
     (function() {
         let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('textarea'), {
+        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_0'), {
             mode: 'javascript',
             lineNumbers: true,
             lineWrapping: true,

@@ -172,9 +172,9 @@ void main() {
     vec2 uv = gl_FragCoord / resoultion;
     gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
 }</textarea>
-<iframe id='shader_preview_0'>
+<iframe id='shader_preview_1'>
 </iframe>
-<script type="x-shader/x-fragment" id="shader_frag_0">
+<script type="x-shader/x-fragment" id="shader_frag_1">
     uniform vec2 resolution;
     uniform float time;
     void main() {
@@ -185,7 +185,7 @@ void main() {
 <script>
     (function() {
         let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_0'), {
+        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_1'), {
             mode: 'javascript',
             lineNumbers: true,
             lineWrapping: true,
@@ -217,13 +217,13 @@ void main() {
             material = new THREE.ShaderMaterial({
                 uniforms: uniforms,
                 vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_0').textContent
+                fragmentShader: document.getElementById('shader_frag_1').textContent
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
             renderer = new THREE.WebGLRenderer();
             renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_0');
+            let previewFrame = document.getElementById('shader_preview_1');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
             preview.body.style.margin = 0;
             preview.body.appendChild(renderer.domElement);
@@ -234,7 +234,7 @@ void main() {
         }
 
         function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_0');
+            let previewFrame = document.getElementById('shader_preview_1');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
 
             renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
@@ -258,17 +258,17 @@ void main() {
             delay = setTimeout(updatePreview, 300);
         });
         function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_0');
+            let previewFrame = document.getElementById('shader_preview_1');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
             let canvas;
             let button;
             let p;
 
-            document.getElementById('shader_text_0').textContent = editor.getValue();
+            document.getElementById('shader_text_1').textContent = editor.getValue();
             material = new THREE.ShaderMaterial({
                 uniforms: material.uniforms,
                 vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_0').textContent
+                fragmentShader: document.getElementById('shader_text_1').textContent
             });
             mesh.material = material;
         }

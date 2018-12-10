@@ -35,11 +35,13 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script>
 
-  <!-- codemirror -->
-  <link rel="stylesheet" href="{{ site.baseurl }}/public/css/codemirror/codemirror.css">
-  <link rel="stylesheet" href="{{ site.baseurl }}/public/css/codemirror/monokai.css">
-  <link rel="stylesheet" href="{{ site.baseurl }}/public/css/codemirror/preview.css">
-  <script src="{{ site.baseurl }}/public/js/codemirror/codemirror.js"></script>
-  <script src="{{ site.baseurl }}/public/js/codemirror/mode/javascript.js"></script>
-  <script src="{{ site.baseurl }}/public/js/codemirror/addon/selection/mark-selection.js"></script>
+  {% if page.interactive %}
+    <!-- codemirror -->
+    <link rel="stylesheet" href="{{ site.baseurl }}/public/css/codemirror/codemirror.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/public/css/codemirror/monokai.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/public/css/codemirror/preview.css">
+    <script src="{{ site.baseurl }}/public/js/codemirror/codemirror.js"></script>
+    <script src="{{ site.baseurl }}/public/js/codemirror/mode/javascript.js"></script>
+    <script src="{{ site.baseurl }}/public/js/codemirror/addon/selection/mark-selection.js"></script>
+  {% endif %}
 </head>

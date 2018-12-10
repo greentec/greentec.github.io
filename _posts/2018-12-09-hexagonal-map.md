@@ -5,6 +5,7 @@ tags:
 - procedural
 - algorithm
 - hexagonal
+interactive: true
 ---
 
 ![](<../images/hexagonal_map_intro.png>)

@@ -31,7 +31,7 @@ Amit Patel 은 육각형 그리드에 대해서 많은 자료 조사를 한 후�
 저는 Cube 좌표계를 주로 사용합니다. Cube 좌표계는 x, y, z 의 3개 축으로 2차원 평면의 육각형 그리드를 나타내는 표현 방법입니다. 이 좌표계에서는 회전 변환, 벡터 연산이 쉽고 원점(0, 0, 0)을 중심으로 한 대칭성도 쉽게 얻을 수 있기 때문에 여러 가지로 편리한 점이 많습니다.
 
 아래 코드는 육각형을 javascript 의 function 을 이용해서 클래스처럼 만든 것입니다. [jQuery](<https://jquery.com/>) 를 만든 존 레식이 쓴 [자바스크립트 닌자 비급](<https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=38913750>)에서는 다음과 같이 함수와 생성자를 분리하고 있습니다.
-> 함수와 메서드의 이름은 보통 그들이 하는 것을 설명하는 동사(skulk(), creep(), sneak(), doSomethingWonderful() 기타 등등)로 시작한다. 그리고 첫 글자는 소문자이다. 반면, 생성자의 이름은 보통 생성할 객체가 무엇인지를 설명하는 명사이고 대문자로 시작한다. (Ninja(), Samurai(), Ronin(), KungFuPanda() 기타 등등)  - 「자바스트립트 닌자 비급」, 68p.
+> 함수와 메서드의 이름은 보통 그들이 하는 것을 설명하는 **동사**(skulk(), creep(), sneak(), doSomethingWonderful() 기타 등등)로 시작한다. 그리고 첫 글자는 **소문자**이다. 반면, 생성자의 이름은 보통 생성할 객체가 무엇인지를 설명하는 **명사**이고 **대문자**로 시작한다. (Ninja(), Samurai(), Ronin(), KungFuPanda() 기타 등등)  - 「자바스트립트 닌자 비급」, 68p.
 
 <div>
 <textarea id='hex_0' height='10' style='display:none;'>
@@ -157,20 +157,20 @@ function drawGrid(gridArray) {
 </script>
 
 &nbsp;
-1행의 initGrid(5) 에서 5는 hexGrid 의 반지름을 나타내는 크기 단위입니다. 즉 중심(0,0,0) 에서 가장 멀리 떨어진 hexCell 까지의 거리가 됩니다. 5를 다른 숫자로 바꿔보면, hexGrid 가 변하는 것을 확인할 수 있습니다.
+1행의 initGrid(5) 에서 5는 HexGrid 의 반지름을 나타내는 크기 단위입니다. 즉 중심(0,0,0) 에서 가장 멀리 떨어진 HexCell 까지의 거리가 됩니다. 5를 다른 숫자로 바꿔보면, HexGrid 가 변하는 것을 확인할 수 있습니다.
 
 &nbsp;
 ## 지역 만들기
 
-Dice wars 의 맵으로 돌아가보면 하나의 맵은 여러 개의 지역으로 나눠져 있는 것을 확인할 수 있습니다. 그리고 이 지역은 각각 여러 개의 hexCell 로 구성되어 있습니다. 그렇다면 각 hexCell 을 중복되지 않게 들고 있는 배열 또는 object가 필요할 것 같습니다. 여기서는 object 를 써보겠습니다.
+Dice wars 의 맵으로 돌아가보면 하나의 맵은 여러 개의 지역으로 나눠져 있는 것을 확인할 수 있습니다. 그리고 이 지역은 각각 여러 개의 HexCell 로 구성되어 있습니다. 그렇다면 각 HexCell 을 중복되지 않게 들고 있는 배열 또는 object가 필요할 것 같습니다. 여기서는 object 를 써보겠습니다.
 
-그런데 이런 지역을 어떻게 구성해야 할까요? 간단한 procedural 한 방법을 생각해 보면, 모든 hexCell 에 0~N-1 까지의 ID 를 랜덤하게 부여한 뒤에, Schelling Segregation Model 같은 기법을 사용해서 인접하는 곳에 같은 셀들이 모이도록 하는 작업을 할 수 있을 것 같습니다.
+그런데 이런 지역을 어떻게 구성해야 할까요? 간단한 procedural 한 방법을 생각해 보면, 모든 HexCell 에 0~N-1 까지의 ID 를 랜덤하게 부여한 뒤에, Schelling Segregation Model 같은 기법을 사용해서 인접하는 곳에 같은 셀들이 모이도록 하는 작업을 할 수 있을 것 같습니다.
 
 Thomas Schelling 은 노벨경제학상을 수상한 미국의 경제학자로, 게임이론을 통해서 주거지의 분리(Segregation) 현상이 어떻게 생기는지에 대한 이론을 정립했습니다. 이 이론은 간단하게 말하면 서로 다른 인종이 인접해서 살고 있다고 했을 때, 소수인 인종이 비슷한 인종을 찾아서 이주하는 현상을 수학적 모델로 정리한 것입니다. 이것을 Schelling Segregation Model 이라고 합니다.
 
 참고할 만한 링크로는 [이곳](<http://nifty.stanford.edu/2014/mccown-schelling-model-segregation/>)과, [제가 예전에 만든 프로그램](<https://greentec.github.io/playground/html/Segregation.html>)을 보셔도 되겠습니다. 다만 제 프로그램은 예전에 만들어서 Flash 버전인 점은 아쉬운 부분입니다.
 
-위의 두 개 링크에서는 사각 그리드 위에서의 segregation 모델을 다루고 있습니다. 육각 그리드 위에서도 가능할 것입니다. 먼저 HexCell 에서 _race 를 추가해줍니다.
+위의 두 개 링크에서는 사각 그리드 위에서의 segregation 모델을 다루고 있습니다. 육각 그리드 위에서도 가능할 것입니다. 먼저 HexCell 에서 race 를 추가해줍니다.
 
 <div>
 <textarea id='hex_2' height='10' style='display:none;'>
@@ -193,7 +193,7 @@ function HexCell(x, y, z, race) {
     })();
 </script>
 &nbsp;
-이 다음에는 실제로 race 에 따라 각 hexCell 의 색상이 달라지도록 합니다.
+이 다음에는 실제로 race 에 따라 각 HexCell 의 색상이 달라지도록 합니다.
 
 <div>
 <textarea id='hex_3' style='display:none;'>
@@ -554,6 +554,6 @@ function drawGrid(gridArray) {
 
 이렇게 Dice wars 의 맵을 Schelling Segregation Model 을 사용해서 반복적인 방법으로 만들 수 있습니다. 그런데 Dice wars 의 제작자는 다른 방법을 사용한 것 같습니다. 관심이 있으신 분들은 [공개되어 있는 소스](<https://www.gamedesign.jp/games/dicewars/game.js>)의 `make_map()` 함수 부분을 참고하시면 되겠습니다.
 
-이제 두번째 글인데 마크다운으로 글을 쓰는 게 꽤 힘든 일인 것 같습니다. 더군다나  egloos 에서는 할 수 없었던 interactive 요소가 있는 글을 시도했더니 하루가 훌쩍 갔습니다. 그래도 보람찬 일인 것 같습니다. 이쪽을 구현하는 부분에 대해서도 어느 정도 정리가 된다면 블로그에 올릴 수 있도록 하겠습니다. 자료가 없어서 찾는 데 너무 오래 걸렸거든요. 그럼 긴 글을 읽어주셔서 감사합니다.
+이제 두번째 글인데 마크다운으로 글을 쓰는 게 꽤 힘든 일인 것 같습니다. 더군다나 egloos 에서는 할 수 없었던 interactive 요소가 있는 글을 시도했더니 하루가 훌쩍 갔습니다. 그래도 보람찬 일인 것 같습니다. jekyll 블로그에서 interactive code 를 구현하는 부분에 대해서도 어느 정도 정리가 된다면 블로그에 올릴 수 있도록 하겠습니다. 자료가 많지 않아서 구현하는 데에 너무 오래 걸렸거든요. 그럼 긴 글을 읽어주셔서 감사합니다.
 
 &nbsp;

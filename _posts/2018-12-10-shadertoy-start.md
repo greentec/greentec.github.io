@@ -282,6 +282,131 @@ void main() {
 
 화면의 왼쪽 아래는 `x=0.0, y=0.0` 이기 때문에 검정색이고, 오른쪽 위는 `x=1.0, y=1.0` 이기 때문에 노란색이 된 것을 확인할 수 있습니다. 이렇게 단 두 줄의 Fragment Shader 코드로 color gradient 를 만들 수 있습니다. 이 외에도 6, 7 행의 주석을 해제하고 값을 바꿔가며 자유롭게 실험해볼 수 있습니다.
 
+그리고 마지막으로 Shadertoy 에서 기본 쉐이더를 켜놓고 조금 있으면 시간에 따라 값이 변하는 것을 확인할 수 있습니다. 이것은 시간 변수를 Fragment Shader 에서 사용해서 픽셀의 색을 변화시키는 데에 사용하기 때문입니다.
+
+`vec3 col = 0.5 + 0.5*cos(iTime+uv.xyx+vec3(0,2,4));`
+
+이 부분을 간단히 분석해보자면, 처음의 0.5 는 화면의 전반적인 색이 너무 어두워지지 않도록 기본적으로 더해주는 값이라고 할 수 있습니다. 그 다음의 0.5 에 곱해지는 `cos` 는 삼각함수의 cos 값입니다. cos 값은 -1 에서 1 사이의 값을 가지기 때문에, 0.5 를 곱하면 -0.5 에서 0.5, 거기에 0.5 를 더하면 0.0 에서 1.0 사이의 값이 될 것이라고 짐작할 수 있습니다.
+
+`iTime` 은 시간값입니다. 시간값은 당연히 점점 증가하기 때문에 `cos` 에 주어지는 `iTime` 값은 `cos` 값을 서서히 변하게 할 것입니다. `uv.xyx` 는 uv 의 x, y, x 를 사용해서 길이가 3인 벡터를 만든 것입니다. 여기에 각 값이 동일하게 변하지 않도록 하기 위해서 offset 으로 x,y,z 에 각각 `vec3(0,2,4)` 를 더해줍니다. 즉 col 은 서로 연관관계를 가지면서 부드럽게 변하는 0.0~1.0 사이의 `float` 값 3개가 될 것이라고 결론을 내릴 수 있습니다.
+
+![](<../images/shadertoy_start_2.png>)
+<small>[그래프 drawing 사이트](<https://www.desmos.com/>)</small>
+
+그럼 코드로 확인해보겠습니다.
+
+<textarea id='shader_text_2' width='400' height='400' style='display:none;'>
+uniform vec2 resolution;
+uniform float time;
+void main() {
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    vec3 col = 0.5 + 0.5*cos(time+uv.xyx+vec3(0,2,4));
+    gl_FragColor = vec4(vec3(col), 1.0);
+}</textarea>
+<iframe id='shader_preview_2'>
+</iframe>
+<script type="x-shader/x-fragment" id="shader_frag_2">
+    uniform vec2 resolution;
+    uniform float time;
+    void main() {
+        vec2 uv = gl_FragCoord.xy / resolution.xy;
+        vec3 col = 0.5 + 0.5*cos(time+uv.xyx+vec3(0,2,4));
+        gl_FragColor = vec4(vec3(col), 1.0);
+    }
+</script>
+<script>
+    (function() {
+        let delay;
+        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_2'), {
+            mode: 'javascript',
+            lineNumbers: true,
+            lineWrapping: true,
+            theme: 'monokai'
+        });
+        let stats;
+        let camera, scene, renderer;
+        let material, mesh;
+        let uniforms;
+        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
+        init();
+        animate();
+
+        function init() {
+            camera = new THREE.Camera();
+            camera.position.z = 1;
+            scene = new THREE.Scene();
+            var geometry = new THREE.PlaneBufferGeometry(2, 2);
+            uniforms = {
+                time: {
+                    type: "f",
+                    value: 1.0
+                },
+                resolution: {
+                    type: "v2",
+                    value: new THREE.Vector2()
+                }
+            };
+            material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: VERTEX,
+                fragmentShader: document.getElementById('shader_frag_2').textContent
+            });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            let previewFrame = document.getElementById('shader_preview_2');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            preview.body.style.margin = 0;
+            preview.body.appendChild(renderer.domElement);
+            stats = new Stats();
+            preview.body.appendChild(stats.dom);
+            onWindowResize();
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize(event) {
+            let previewFrame = document.getElementById('shader_preview_2');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+
+            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
+            uniforms.resolution.value.x = renderer.domElement.width;
+            uniforms.resolution.value.y = renderer.domElement.height;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            render();
+            stats.update();
+        }
+
+        function render() {
+            uniforms.time.value += 0.05;
+            renderer.render(scene, camera);
+        }
+
+        editor.on("change", function() {
+            clearTimeout(delay);
+            delay = setTimeout(updatePreview, 300);
+        });
+        function updatePreview() {
+            let previewFrame = document.getElementById('shader_preview_2');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            let canvas;
+            let button;
+            let p;
+
+            document.getElementById('shader_text_2').textContent = editor.getValue();
+            material = new THREE.ShaderMaterial({
+                uniforms: material.uniforms,
+                vertexShader: material.vertexShader,
+                fragmentShader: document.getElementById('shader_text_2').textContent
+            });
+            mesh.material = material;
+        }
+        setTimeout(updatePreview, 300);
+    })();
+</script>
 
 
 [^2]: 프로그램의 여러 곳에서 반복적으로 재사용되는 코드입니다. ([상용구 코드](<https://ko.wikipedia.org/wiki/%EC%83%81%EC%9A%A9%EA%B5%AC_%EC%BD%94%EB%93%9C>))

@@ -50,7 +50,8 @@ let hexCell = new HexCell(1, 2, 3);</textarea>
         let editor = CodeMirror.fromTextArea(document.getElementById('hex_0'), {
             mode: 'javascript',
             lineNumbers: true,
-            theme: 'monokai'
+            theme: 'monokai',
+            readOnly: true
         });
     })();
 </script>

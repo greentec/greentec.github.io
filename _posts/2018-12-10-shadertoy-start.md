@@ -158,7 +158,7 @@ void main() {
 
 그럼 이제 좀 더 심화된 버전의 코드를 작성해 보겠습니다. Shadertoy 의 기본 쉐이더 4행에는 다음과 같은 코드가 있습니다.
 
-`vec2 uv = fragCoord/iResolution.xy`;
+`vec2 uv = fragCoord/iResolution.xy;`
 
 `fragCoord` 는 픽셀의 실제 좌표를 나타내는 2차원 벡터 값입니다. x 좌표와 y 좌표는 각각 0.5 에서 resolution - 0.5 사이의 값을 가지는데, 여기서 resolution 이란 스크린의 x, y의 크기를 말합니다. Shadertoy 에서는 스크린의 크기를 iResoultion 이라는 값으로 참조할 수 있습니다. `iResolution.xy` 에서 뒤의 `xy` 는 벡터 중 처음의 2개, x 크기와 y 크기만 가져오겠다는 뜻입니다.
 

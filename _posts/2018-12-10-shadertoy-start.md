@@ -4,6 +4,7 @@ date: 2018-12-10
 tags:
 - shader
 - shadertoy
+- threejs
 interactive: true
 threejs: true
 ---

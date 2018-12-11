@@ -122,7 +122,7 @@ void main() {
         }
 
         function render() {
-            uniforms.time.value += 0.05;
+            uniforms.time.value += 0.02;
             renderer.render(scene, camera);
         }
 
@@ -256,7 +256,7 @@ void main() {
         }
 
         function render() {
-            uniforms.time.value += 0.05;
+            uniforms.time.value += 0.02;
             renderer.render(scene, camera);
         }
 
@@ -385,7 +385,7 @@ void main() {
         }
 
         function render() {
-            uniforms.time.value += 0.05;
+            uniforms.time.value += 0.02;
             renderer.render(scene, camera);
         }
 

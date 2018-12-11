@@ -59,7 +59,7 @@ void main() {
     (function() {
         let delay;
         let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_0'), {
-            mode: 'javascript',
+            mode: 'x-shader/x-fragment',
             lineNumbers: true,
             lineWrapping: true,
             theme: 'monokai'
@@ -193,7 +193,7 @@ void main() {
     (function() {
         let delay;
         let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_1'), {
-            mode: 'javascript',
+            mode: 'x-shader/x-fragment',
             lineNumbers: true,
             lineWrapping: true,
             theme: 'monokai'
@@ -322,7 +322,7 @@ void main() {
     (function() {
         let delay;
         let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_2'), {
-            mode: 'javascript',
+            mode: 'x-shader/x-fragment',
             lineNumbers: true,
             lineWrapping: true,
             theme: 'monokai'

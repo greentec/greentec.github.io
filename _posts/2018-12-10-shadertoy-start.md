@@ -7,6 +7,7 @@ tags:
 - threejs
 interactive: true
 threejs: true
+shader: true
 ---
 
 ![](<../images/shadertoy_start_0.jpg>)

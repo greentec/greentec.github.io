@@ -163,23 +163,33 @@ shader 의 컬러 값은 0.0~1.0 만 유효한 값으로 인정하고, 나머지
 <textarea id='shader_text_1' width='400' height='400' style='display:none;'>
 uniform vec2 resolution;
 uniform float time;
+
+float circle(vec2 uv, vec2 pos) {
+    return 0.05/distance(uv, pos);
+}
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
     uv -= .5;
     // uv.x *= resolution.x / resolution.y;
-    gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
+    float c = circle(uv, vec2(0.,0.));
+    gl_FragColor = vec4(c, 0, 0, 1.0);
 }</textarea>
 <iframe id='shader_preview_1'>
 </iframe>
 <script type="x-shader/x-fragment" id="shader_frag_1">
-    uniform vec2 resolution;
-    uniform float time;
-    void main() {
-        vec2 uv = gl_FragCoord.xy / resolution.xy;
-        uv -= .5;
-        // uv.x *= resolution.x / resolution.y;
-        gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
-    }
+uniform vec2 resolution;
+uniform float time;
+
+float circle(vec2 uv, vec2 pos) {
+    return 0.05/distance(uv, pos);
+}
+void main() {
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    uv -= .5;
+    // uv.x *= resolution.x / resolution.y;
+    float c = circle(uv, vec2(0.,0.));
+    gl_FragColor = vec4(c, 0, 0, 1.0);
+}
 </script>
 <script>
     (function() {
@@ -276,4 +286,13 @@ void main() {
 </script>
 
 &nbsp;
-역시 6행의 주석을 해제하며 차이를 직접 확인해보시기 바랍니다. 
+일단 `circle` 함수가 추가되었는데 이 부분은 바로 뒤에 설명드리도록 하겠습니다. 먼저 10행의 주석을 해제하며 차이를 직접 확인해보시기 바랍니다. 원의 너비가 달라지는 것이 느껴지시나요?
+
+`uv.x *= resolution.x / resolution.y;` 를 뜯어보면 이 식은 `uv.x` 에 (screen 의 x 크기 / screen 의 y 크기)를 곱해줍니다. 보통 모니터는 가로가 세로보다 넓은 스크린이 많기 때문에, 가로/세로를 같은 비율로 표현한다면 원래 예제의 원처럼 찌그러진 상태로 표현될 것입니다. 이 식은 그에 대해 비율을 정규화시켜서 가로/세로 비율이 1:1 로 보이도록 하는 효과를 갖습니다.
+
+![](<../images/shadertoy_start_4.png>)
+
+그럼 이제 circle 함수에 대한 이야기를 할 때가 온 것 같습니다.
+
+&nbsp;
+## Circle 함수

@@ -310,7 +310,7 @@ uniform vec2 resolution;
 uniform float time;
 
 float circle(vec2 uv) {
-    // return step(0.1, distance(uv, vec2(0.,0.)));
+    // return step(0.2, distance(uv, vec2(0.,0.)));
     return distance(uv, vec2(0.,0.));
 }
 void main() {
@@ -327,7 +327,7 @@ uniform vec2 resolution;
 uniform float time;
 
 float circle(vec2 uv) {
-    // return step(0.1, distance(uv, vec2(0.,0.)));
+    // return step(0.2, distance(uv, vec2(0.,0.)));
     return distance(uv, vec2(0.,0.));
 }
 void main() {
@@ -437,7 +437,7 @@ void main() {
 
 스크린의 중심이 `(0., 0.)` 이기 때문에 이 점과 모든 점의 거리를 구하면 자연스럽게 원의 영역이 만들어집니다. 원의 정의는 _한 점에서 거리가 같은 모든 점의 집합_이기 때문입니다.
 
-여기서는 거리 정보를 `gl_FragColor` 의 R 채널에 넣었습니다. 그 결과 거리가 멀어질수록 빨간색이 진해집니다. 원의 영역을 뚜렷하게 구분하고 싶으면 `step` function 을 사용합니다. 이 함수는 두번째 인수가 첫번째 인수보다 작으면 `0.0` 을, 그렇지 않으면 `1.0` 을 반환합니다. The book of shaders 의 [`step`](<https://thebookofshaders.com/glossary/?search=step>) 페이지에서는 첫번째 인수를 edge 라고 명명하고 있습니다. `step` 함수를 쓴 결과를 알아보기 위해 5행의 주석을 해제합니다. 경계선이 뚜렷한 원이 생긴 것을 보실 수 있습니다. `0.1` 보다 작은 값은 모두 `0.0` 이 되고, 그렇지 않으면 모두 `1.0` 이 되기 때문입니다.
+여기서는 거리 정보를 `gl_FragColor` 의 R 채널에 넣었습니다. 그 결과 거리가 멀어질수록 빨간색이 진해집니다. 원의 영역을 뚜렷하게 구분하고 싶으면 `step` function 을 사용합니다. 이 함수는 두번째 인수가 첫번째 인수보다 작으면 `0.0` 을, 그렇지 않으면 `1.0` 을 반환합니다. The book of shaders 의 [`step`](<https://thebookofshaders.com/glossary/?search=step>) 페이지에서는 첫번째 인수를 edge 라고 명명하고 있습니다. `step` 함수를 쓴 결과를 알아보기 위해 5행의 주석을 해제합니다. 경계선이 뚜렷한 원이 생긴 것을 보실 수 있습니다. `0.2` 보다 작은 값은 모두 `0.0` 이 되고, 그렇지 않으면 모두 `1.0` 이 되기 때문입니다.
 
 눈치채신 분도 있겠지만 `vec(0., 0.)`은 원의 중심 역할을 합니다. 즉 이 값을 바꾸면 원의 중심이 바뀌어서 평행이동을 시킬 수 있습니다. 이것을 따로 `pos` 라는 인수로 빼서 사용한 것이 이 글의 두번째 예제에 나왔던 `circle` 함수입니다.
 
@@ -448,3 +448,20 @@ $$
 $$
 
 이 식에 `pos` 인수를 결합하면 두번째 예제에서 보셨던 `circle` 함수가 됩니다. 이 식의 분자에 해당하는 부분은 원의 반지름의 제곱입니다. 두번째 예제에서는 `0.05` 를 사용했습니다.
+
+<div>
+<textarea id='shader_text_3' height='10' style='display:none;'>
+float circle(vec2 uv, vec2 pos) {
+    return 0.05/distance(uv, pos);
+}</textarea>
+</div>
+<script>
+    (function() {
+        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_3'), {
+            mode: 'x-shader/x-fragment',
+            lineNumbers: true,
+            theme: 'monokai',
+            readOnly: true
+        });
+    })();
+</script>

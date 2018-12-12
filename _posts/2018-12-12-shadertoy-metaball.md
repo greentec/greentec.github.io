@@ -319,6 +319,7 @@ void main() {
     uv.x *= resolution.x / resolution.y;
     float c = circle(uv);
     gl_FragColor = vec4(c, 0, 0, 1.0);
+    // gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
 }</textarea>
 <iframe id='shader_preview_2'>
 </iframe>
@@ -336,6 +337,7 @@ void main() {
     uv.x *= resolution.x / resolution.y;
     float c = circle(uv);
     gl_FragColor = vec4(c, 0, 0, 1.0);
+    // gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
 }
 </script>
 <script>
@@ -449,6 +451,8 @@ $$
 
 이 식에 `pos` 인수를 결합하면 두번째 예제에서 보셨던 `circle` 함수가 됩니다. 이 식의 분자에 해당하는 부분은 원의 반지름의 제곱입니다. 두번째 예제에서는 `0.05` 를 사용했습니다.
 
+위의 예제에서 14행의 주석을 해제하면 G 채널에도 값이 들어가서, 원래 shadertoy code 인 [Metaballs - kinda yellow](<https://www.shadertoy.com/view/4dVfWK>)와 같은 색조합을 볼 수 있습니다.
+
 <div>
 <textarea id='shader_text_3' height='10' style='display:none;'>
 float circle(vec2 uv, vec2 pos) {
@@ -465,3 +469,13 @@ float circle(vec2 uv, vec2 pos) {
         });
     })();
 </script>
+
+&nbsp;
+## 여러 개의 도형 더하기
+
+한 개의 원을 그렸는데, 2개 이상의 원은 어떻게 표현해야 할까요? shader 에서는 엄청나게 쉽습니다. 바로 색깔을 **더해주면** 됩니다.
+
+
+
+&nbsp;
+## 메타볼

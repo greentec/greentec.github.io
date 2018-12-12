@@ -597,12 +597,162 @@ void main() {
     })();
 </script>
 
+단순히 step 함수로 영역을 표시해주는 것보다 미적으로 더 괜찮아 보입니다. 색깔 지정을 바꿔가며 테스트해보시면 더 멋진 결과를 찾으실 수도 있을 것 같습니다.
+
+그럼 이제 다음 부분으로 넘어가도록 하겠습니다. 절반 정도 왔네요.
 
 &nbsp;
 ## 여러 개의 도형 더하기
 
 한 개의 원을 그렸는데, 2개 이상의 원은 어떻게 표현해야 할까요? shader 에서는 엄청나게 쉽습니다. 바로 색깔을 **더해주면** 됩니다.
 
+원래 코드에서는 먼저 `circle` 함수로 `c` 라는 `float` 변수에 원을 하나 정의한 다음, 다른 `circle` 을 `c` 에 더해줬습니다.
+
+`float c = circle(uv, vec2(sin(time * 2.) * .4,  cos(time * .4) * .4), r);
+c += circle(uv, vec2(sin(time * .5) * .4, cos(time * .7) * .4), r);
+c += circle(uv, vec2(sin(time * .7) * .4, cos(time * .8) * .4), r);
+...`
+
+결과는 우리가 확인할 수 있는 것처럼 여러 개의 원이 더해진 결과였습니다. 실제로 그렇게 되는지 한번 해보겠습니다.
+
+<textarea id='shader_text_5' width='400' height='400' style='display:none;'>
+uniform vec2 resolution;
+uniform float time;
+
+float circle(vec2 uv, vec2 pos) {
+    return 0.05/distance(uv, pos);
+}
+void main() {
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    uv -= .5;
+    uv.x *= resolution.x / resolution.y;
+    // 원을 세 개 그립니다.
+    float c = circle(uv, vec2(0., 0.));
+    c += circle(uv, vec2(-0.4, 0.));
+    c += circle(uv, vec2(0.4, 0.));
+    gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
+}</textarea>
+<iframe id='shader_preview_5'>
+</iframe>
+<script type="x-shader/x-fragment" id="shader_frag_5">
+uniform vec2 resolution;
+uniform float time;
+
+float circle(vec2 uv, vec2 pos) {
+    return 0.05/distance(uv, pos);
+}
+void main() {
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    uv -= .5;
+    uv.x *= resolution.x / resolution.y;
+    // 원을 세 개 그립니다.
+    float c = circle(uv, vec2(0., 0.));
+    c += circle(uv, vec2(-0.4, 0.));
+    c += circle(uv, vec2(0.4, 0.));
+    gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
+}
+</script>
+<script>
+    (function() {
+        let delay;
+        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_5'), {
+            mode: 'x-shader/x-fragment',
+            lineNumbers: true,
+            lineWrapping: true,
+            theme: 'monokai'
+        });
+        let stats;
+        let camera, scene, renderer;
+        let material, mesh;
+        let uniforms;
+        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
+        init();
+        animate();
+
+        function init() {
+            camera = new THREE.Camera();
+            camera.position.z = 1;
+            scene = new THREE.Scene();
+            var geometry = new THREE.PlaneBufferGeometry(2, 2);
+            uniforms = {
+                time: {
+                    type: "f",
+                    value: 1.0
+                },
+                resolution: {
+                    type: "v2",
+                    value: new THREE.Vector2()
+                }
+            };
+            material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: VERTEX,
+                fragmentShader: document.getElementById('shader_frag_5').textContent
+            });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            let previewFrame = document.getElementById('shader_preview_5');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            preview.body.style.margin = 0;
+            preview.body.appendChild(renderer.domElement);
+            stats = new Stats();
+            preview.body.appendChild(stats.dom);
+            onWindowResize();
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize(event) {
+            let previewFrame = document.getElementById('shader_preview_5');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+
+            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
+            uniforms.resolution.value.x = renderer.domElement.width;
+            uniforms.resolution.value.y = renderer.domElement.height;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            render();
+            stats.update();
+        }
+
+        function render() {
+            uniforms.time.value += 0.02;
+            renderer.render(scene, camera);
+        }
+
+        editor.on("change", function() {
+            clearTimeout(delay);
+            delay = setTimeout(updatePreview, 300);
+        });
+        function updatePreview() {
+            let previewFrame = document.getElementById('shader_preview_5');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            let canvas;
+            let button;
+            let p;
+
+            document.getElementById('shader_text_5').textContent = editor.getValue();
+            material = new THREE.ShaderMaterial({
+                uniforms: material.uniforms,
+                vertexShader: material.vertexShader,
+                fragmentShader: document.getElementById('shader_text_5').textContent
+            });
+            mesh.material = material;
+        }
+        setTimeout(updatePreview, 300);
+    })();
+</script>
+
+결과는 잘 나옵니다. 그런데 잠깐만요. 가운데 원이 조금 커보이지 않습니까? 착시일까요? 결과를 확인하기 위해서, 각 원의 좌표를 좀 더 가깝게 해보면 어떨까요? 결과는 아래와 같습니다.
+
+![](<../images/shadertoy_start_5.png>)
+
+위쪽 원은 아래쪽보다 거리를 좀 더 가깝게 배치한 것입니다. 확실히 가깝게 붙을수록 원이 점점 커집니다.
+
+이것은 이 코드의 `circle`, 나아가서는 메타볼 공식이 단순한 원이 아니라 주변에 대한 영향력(influence)을 나타내고 있기 때문입니다.  
 
 
 &nbsp;

@@ -486,7 +486,7 @@ void main() {
     uv -= .5;
     uv.x *= resolution.x / resolution.y;
     float c = circle(uv, vec2(0., 0.));
-    // gl_FragColor = vec4(c, 0, 0, 1.0);
+    // float c = circle(uv, vec2(sin(time * .4) * .4, cos(time * .4) * .4));
     gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
 }</textarea>
 <iframe id='shader_preview_4'>
@@ -503,7 +503,7 @@ void main() {
     uv -= .5;
     uv.x *= resolution.x / resolution.y;
     float c = circle(uv, vec2(0., 0.));
-    // gl_FragColor = vec4(c, 0, 0, 1.0);
+    // float c = circle(uv, vec2(sin(time * .4) * .4, cos(time * .4) * .4));
     gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
 }
 </script>

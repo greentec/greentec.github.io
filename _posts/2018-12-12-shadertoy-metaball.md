@@ -23,8 +23,10 @@ shader: true
 
 ![](<../images/shadertoy_metaball_1.png>)
 
-
+&nbsp;
 ## 좌표 관련 기본 코드
+
+본격적인 내용에 앞서서 여기에도 좌표 관련 기본 코드가 추가로 나오고 있어서 짚고 넘어가도록 하겠습니다.
 
 지난 글에서 `vec2 uv = fragCoord/iResolution.xy;` 가 스크린의 크기 변화에 관계없이 각 픽셀에 대응하는 `uv.x`, `uv.y` 값을 각각 `0.0~1.0` 사이의 값으로 제한해주는 것이라고 정리했습니다. 이 코드는 shadertoy 에서 가장 많이 쓰이는 boilerplate code 라는 설명도 같이 했습니다. 그런데 shadertoy 코드의 11행과 15행에도 기본 좌표를 변경하는 코드가 있습니다.
 
@@ -148,3 +150,130 @@ void main() {
 </script>
 
 &nbsp;
+5행의 주석에 `uv -= .5;` 가 추가되어 있습니다. 주석을 해제하면 화면이 전반적으로 어두워지는 것을 확인할 수 있습니다. 화면 전반적으로 `0.0~1.0` 범위에 있던 uv.x, uv.y 값에서 0.5 를 뺐기 때문에, 그 범위는 `-0.5~0.5` 가 된다는 것을 짐작할 수 있습니다.
+
+![](<../images/shadertoy_start_3.png>)
+
+shader 의 컬러 값은 0.0~1.0 만 유효한 값으로 인정하고, 나머지는 clip 됩니다. 즉 음수는 0.0 으로, 1.0 을 초과하는 양수는 1.0 으로 계산됩니다. 따라서 음수가 많아졌기 때문에 화면에 검은색의 비율이 높아지고 전반적으로 어두워진 것입니다.
+
+화면 중앙의 좌표가 `(0.5, 0.5)` 에서 **`(0, 0)`** 이 된 것을 주목해주십시오. 이렇게 되면 화면 중앙을 중심으로 원 등의 도형을 그리기가 수월해집니다. 중학교 1학년 때부터 배우는 좌표평면을 생각하시면 이해가 쉬울 것 같습니다.
+
+그럼 15행의 `uv.x *= iResolution.x / iResolution.y;`은 무엇일까요?
+
+<textarea id='shader_text_1' width='400' height='400' style='display:none;'>
+uniform vec2 resolution;
+uniform float time;
+void main() {
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    uv -= .5;
+    // uv.x *= resolution.x / resolution.y;
+    gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
+}</textarea>
+<iframe id='shader_preview_1'>
+</iframe>
+<script type="x-shader/x-fragment" id="shader_frag_1">
+    uniform vec2 resolution;
+    uniform float time;
+    void main() {
+        vec2 uv = gl_FragCoord.xy / resolution.xy;
+        uv -= .5;
+        // uv.x *= resolution.x / resolution.y;
+        gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
+    }
+</script>
+<script>
+    (function() {
+        let delay;
+        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_1'), {
+            mode: 'x-shader/x-fragment',
+            lineNumbers: true,
+            lineWrapping: true,
+            theme: 'monokai'
+        });
+        let stats;
+        let camera, scene, renderer;
+        let material, mesh;
+        let uniforms;
+        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
+        init();
+        animate();
+
+        function init() {
+            camera = new THREE.Camera();
+            camera.position.z = 1;
+            scene = new THREE.Scene();
+            var geometry = new THREE.PlaneBufferGeometry(2, 2);
+            uniforms = {
+                time: {
+                    type: "f",
+                    value: 1.0
+                },
+                resolution: {
+                    type: "v2",
+                    value: new THREE.Vector2()
+                }
+            };
+            material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: VERTEX,
+                fragmentShader: document.getElementById('shader_frag_1').textContent
+            });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            let previewFrame = document.getElementById('shader_preview_1');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            preview.body.style.margin = 0;
+            preview.body.appendChild(renderer.domElement);
+            stats = new Stats();
+            preview.body.appendChild(stats.dom);
+            onWindowResize();
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize(event) {
+            let previewFrame = document.getElementById('shader_preview_1');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+
+            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
+            uniforms.resolution.value.x = renderer.domElement.width;
+            uniforms.resolution.value.y = renderer.domElement.height;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            render();
+            stats.update();
+        }
+
+        function render() {
+            uniforms.time.value += 0.02;
+            renderer.render(scene, camera);
+        }
+
+        editor.on("change", function() {
+            clearTimeout(delay);
+            delay = setTimeout(updatePreview, 300);
+        });
+        function updatePreview() {
+            let previewFrame = document.getElementById('shader_preview_1');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            let canvas;
+            let button;
+            let p;
+
+            document.getElementById('shader_text_1').textContent = editor.getValue();
+            material = new THREE.ShaderMaterial({
+                uniforms: material.uniforms,
+                vertexShader: material.vertexShader,
+                fragmentShader: document.getElementById('shader_text_1').textContent
+            });
+            mesh.material = material;
+        }
+        setTimeout(updatePreview, 300);
+    })();
+</script>
+
+&nbsp;
+역시 6행의 주석을 해제하며 차이를 직접 확인해보시기 바랍니다. 

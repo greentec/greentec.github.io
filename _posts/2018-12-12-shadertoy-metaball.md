@@ -1,5 +1,5 @@
 ---
-title: (공사중) Shadertoy 메타볼 분석
+title: Shadertoy 메타볼 분석
 date: 2018-12-12
 tags:
 - shader
@@ -435,11 +435,11 @@ void main() {
 </script>
 
 &nbsp;
-`circle` 함수를 먼저 뜯어보면, `circle` 함수의 인수는 `uv` 하나입니다. 그리고 `distance` 는 shader 에서 쓰는 inline function 입니다. 이름 그대로 벡터와 벡터 사이의 거리를 구할 수 있습니다. 자세한 내용은 The book of shaders 의 [`distance`](<https://thebookofshaders.com/glossary/?search=distance>)에 예제와 함께 설명이 되어 있습니다.
+`circle` 함수를 먼저 뜯어보면, `circle` 함수의 인수는 `uv` 하나입니다. 그리고 `distance` 는 shader 에서 쓰는 inline function 입니다. 이름 그대로 벡터와 벡터 사이의 거리를 구할 수 있습니다. 자세한 내용은 The book of shaders 의 [distance](<https://thebookofshaders.com/glossary/?search=distance>)에 예제와 함께 설명이 되어 있습니다.
 
 스크린의 중심이 `(0., 0.)` 이기 때문에 이 점과 모든 점의 거리를 구하면 자연스럽게 원의 영역이 만들어집니다. 원의 정의는 _한 점에서 거리가 같은 모든 점의 집합_이기 때문입니다.
 
-여기서는 거리 정보를 `gl_FragColor` 의 R 채널에 넣었습니다. 그 결과 거리가 멀어질수록 빨간색이 진해집니다. 원의 영역을 뚜렷하게 구분하고 싶으면 `step` function 을 사용합니다. 이 함수는 두번째 인수가 첫번째 인수보다 작으면 `0.0` 을, 그렇지 않으면 `1.0` 을 반환합니다. The book of shaders 의 [`step`](<https://thebookofshaders.com/glossary/?search=step>) 페이지에서는 첫번째 인수를 edge 라고 명명하고 있습니다. `step` 함수를 쓴 결과를 알아보기 위해 5행의 주석을 해제합니다. 경계선이 뚜렷한 원이 생긴 것을 보실 수 있습니다. `0.2` 보다 작은 값은 모두 `0.0` 이 되고, 그렇지 않으면 모두 `1.0` 이 되기 때문입니다.
+여기서는 거리 정보를 `gl_FragColor` 의 R 채널에 넣었습니다. 그 결과 거리가 멀어질수록 빨간색이 진해집니다. 원의 영역을 뚜렷하게 구분하고 싶으면 `step` function 을 사용합니다. 이 함수는 두번째 인수가 첫번째 인수보다 작으면 `0.0` 을, 그렇지 않으면 `1.0` 을 반환합니다. The book of shaders 의 [step](<https://thebookofshaders.com/glossary/?search=step>) 페이지에서는 첫번째 인수를 edge 라고 명명하고 있습니다. `step` 함수를 쓴 결과를 알아보기 위해 5행의 주석을 해제합니다. 경계선이 뚜렷한 원이 생긴 것을 보실 수 있습니다. `0.2` 보다 작은 값은 모두 `0.0` 이 되고, 그렇지 않으면 모두 `1.0` 이 되기 때문입니다.
 
 눈치채신 분도 있겠지만 `vec(0., 0.)`은 원의 중심 역할을 합니다. 즉 이 값을 바꾸면 원의 중심이 바뀌어서 평행이동을 시킬 수 있습니다. 이것을 따로 `pos` 라는 인수로 빼서 사용한 것이 이 글의 두번째 예제에 나왔던 `circle` 함수입니다.
 
@@ -608,10 +608,12 @@ void main() {
 
 원래 코드에서는 먼저 `circle` 함수로 `c` 라는 `float` 변수에 원을 하나 정의한 다음, 다른 `circle` 을 `c` 에 더해줬습니다.
 
-`float c = circle(uv, vec2(sin(time * 2.) * .4,  cos(time * .4) * .4), r);
+~~~~~
+float c = circle(uv, vec2(sin(time * 2.) * .4,  cos(time * .4) * .4), r);
 c += circle(uv, vec2(sin(time * .5) * .4, cos(time * .7) * .4), r);
 c += circle(uv, vec2(sin(time * .7) * .4, cos(time * .8) * .4), r);
-...`
+...
+~~~~~
 
 결과는 우리가 확인할 수 있는 것처럼 여러 개의 원이 더해진 결과였습니다. 실제로 그렇게 되는지 한번 해보겠습니다.
 
@@ -757,3 +759,169 @@ void main() {
 
 &nbsp;
 ## 메타볼
+
+포스팅 첫부분에서 언급했던 Ryan Geiss 는 메타볼에 대해서 이렇게 쓰고 있습니다.
+
+> The function [f(x,y,z) = 1.0 / (x^2 + y^2 + z^2)] might look familiar to people who've studied physics.  This is the equation for the strength of the electric field due to a point charge at the origin.
+... The electric field is infinity at exactly the point where the charge lies, and drops off quickly as you go away from the charge. **But no matter how far away you are from that point, it still has some contribution.**
+
+볼드체로 강조한 부분과 주변을 번역해보자면, 메타볼 공식은 한 점 주변의 전기장의 힘과 같다고 볼 수 있고, 메타볼(원)과 가까운 부분은 당연히 그 힘의 영향력이 아주 강하겠지만 중심에서 멀리 떨어진 점도 일정 부분의 영향력을 가진다는 말입니다.
+
+영향력이 합쳐진다는 것을 Ryan Geiss 의 글에서는 band 를 나눠서 알아보기 쉽게 표현하고 있습니다. 우리도 해볼 수 있습니다.
+
+<textarea id='shader_text_6' width='400' height='400' style='display:none;'>
+uniform vec2 resolution;
+uniform float time;
+
+float circle(vec2 uv, vec2 pos, float r){
+    return floor(r/distance(uv, pos) * 5.) / 5.;
+}
+
+void main() {
+    vec2 uv = gl_FragCoord.xy/resolution.xy;
+    uv -= .5;
+    float r = .05;
+
+    uv.x *= resolution.x / resolution.y;
+
+    float c = circle(uv, vec2(sin(time * 2.) * .4,  cos(time * .4) * .4), r);
+    c += circle(uv, vec2(sin(time * .5) * .4, cos(time * .7) * .4), r);
+    c += circle(uv, vec2(sin(time * .7) * .4, cos(time * .8) * .4), r);
+    c += circle(uv, vec2(sin(time * .2) * .4, cos(time * .3) * .4), r);
+    c += circle(uv, vec2(sin(time * .3) * .4, cos(time * .4) * .4), r);
+    c += circle(uv, vec2(sin(time * .6) * .4, cos(time) * .4), r);
+    c += circle(uv, vec2(sin(time * .5) * .4, cos(time * .2) * .4), r);
+    c += circle(uv, vec2(sin(time * .3) * .4, cos(time) * .7), r);
+
+    gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
+}</textarea>
+<iframe id='shader_preview_6'>
+</iframe>
+<script type="x-shader/x-fragment" id="shader_frag_6">
+uniform vec2 resolution;
+uniform float time;
+
+float circle(vec2 uv, vec2 pos, float r){
+    return floor(r/distance(uv, pos) * 5.) / 5.;
+}
+
+void main() {
+    vec2 uv = gl_FragCoord.xy/resolution.xy;
+    uv -= .5;
+    float r = .05;
+
+    uv.x *= resolution.x / resolution.y;
+
+    float c = circle(uv, vec2(sin(time * 2.) * .4,  cos(time * .4) * .4), r);
+    c += circle(uv, vec2(sin(time * .5) * .4, cos(time * .7) * .4), r);
+    c += circle(uv, vec2(sin(time * .7) * .4, cos(time * .8) * .4), r);
+    c += circle(uv, vec2(sin(time * .2) * .4, cos(time * .3) * .4), r);
+    c += circle(uv, vec2(sin(time * .3) * .4, cos(time * .4) * .4), r);
+    c += circle(uv, vec2(sin(time * .6) * .4, cos(time) * .4), r);
+    c += circle(uv, vec2(sin(time * .5) * .4, cos(time * .2) * .4), r);
+    c += circle(uv, vec2(sin(time * .3) * .4, cos(time) * .7), r);
+
+    gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
+}
+</script>
+<script>
+    (function() {
+        let delay;
+        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_6'), {
+            mode: 'x-shader/x-fragment',
+            lineNumbers: true,
+            lineWrapping: true,
+            theme: 'monokai'
+        });
+        let stats;
+        let camera, scene, renderer;
+        let material, mesh;
+        let uniforms;
+        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
+        init();
+        animate();
+
+        function init() {
+            camera = new THREE.Camera();
+            camera.position.z = 1;
+            scene = new THREE.Scene();
+            var geometry = new THREE.PlaneBufferGeometry(2, 2);
+            uniforms = {
+                time: {
+                    type: "f",
+                    value: 1.0
+                },
+                resolution: {
+                    type: "v2",
+                    value: new THREE.Vector2()
+                }
+            };
+            material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: VERTEX,
+                fragmentShader: document.getElementById('shader_frag_6').textContent
+            });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            let previewFrame = document.getElementById('shader_preview_6');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            preview.body.style.margin = 0;
+            preview.body.appendChild(renderer.domElement);
+            stats = new Stats();
+            preview.body.appendChild(stats.dom);
+            onWindowResize();
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize(event) {
+            let previewFrame = document.getElementById('shader_preview_6');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+
+            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
+            uniforms.resolution.value.x = renderer.domElement.width;
+            uniforms.resolution.value.y = renderer.domElement.height;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            render();
+            stats.update();
+        }
+
+        function render() {
+            uniforms.time.value += 0.02;
+            renderer.render(scene, camera);
+        }
+
+        editor.on("change", function() {
+            clearTimeout(delay);
+            delay = setTimeout(updatePreview, 300);
+        });
+        function updatePreview() {
+            let previewFrame = document.getElementById('shader_preview_6');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            let canvas;
+            let button;
+            let p;
+
+            document.getElementById('shader_text_6').textContent = editor.getValue();
+            material = new THREE.ShaderMaterial({
+                uniforms: material.uniforms,
+                vertexShader: material.vertexShader,
+                fragmentShader: document.getElementById('shader_text_6').textContent
+            });
+            mesh.material = material;
+        }
+        setTimeout(updatePreview, 300);
+    })();
+</script>
+
+5행의 `return floor(r/distance(uv, pos) * 5.) / 5.;` 에서는 `floor` 함수를 썼습니다. [floor](<https://thebookofshaders.com/glossary/?search=floor>) 는 계단 함수로, 정수에서 소수점을 날리는 역할을 합니다. python 의 `int()`, javascript 의 `Math.floor()` 와 같은 역할입니다.
+
+이 함수를 거치면 메타볼이 1차적으로 만드는 모든 값은 `0, 0.2, 0.4, 0.6, 0.8, 1.0` 중 하나가 됩니다. 메타볼들이 겹칠 때는 이 값들이 서로 합쳐지면서 바뀌는 것을 확인할 수 있습니다.
+
+나머지 부분도 기존 코드에서 옮겨야 할 부분들을 모두 옮겼습니다. [원본](<https://www.shadertoy.com/view/4dVfWK>)과 비교하면서 `three.js` 에서는 어떤 부분이 달라지는지 알아보는 것도 재미있을 것 같습니다.
+
+이것으로 두번째 shadertoy 코드 분석글을 마칩니다. 다음 시간에는 조금 더 발전된 코드와 함께 돌아오겠습니다. 긴 글 읽어주셔서 감사합니다.

@@ -28,7 +28,9 @@ shader: true
 
 본격적인 내용에 앞서서 여기에도 좌표 관련 기본 코드가 추가로 나오고 있어서 짚고 넘어가도록 하겠습니다.
 
-지난 글에서 `vec2 uv = fragCoord/iResolution.xy;` 가 스크린의 크기 변화에 관계없이 각 픽셀에 대응하는 `uv.x`, `uv.y` 값을 각각 `0.0~1.0` 사이의 값으로 제한해주는 것이라고 정리했습니다. 이 코드는 shadertoy 에서 가장 많이 쓰이는 boilerplate code 라는 설명도 같이 했습니다. 그런데 shadertoy 코드의 11행과 15행에도 기본 좌표를 변경하는 코드가 있습니다.
+지난 글에서 `vec2 uv = fragCoord/iResolution.xy;` 가 스크린의 크기 변화에 관계없이 각 픽셀에 대응하는 `uv.x`, `uv.y` 값을 각각 `0.0~1.0` 사이의 값으로 제한해주는 것이라고 정리했습니다. 이 코드는 shadertoy 에서 가장 많이 쓰이는 boilerplate code 라는 설명도 같이 했습니다.
+
+그런데 shadertoy 코드의 11행과 15행에도 기본 좌표를 변경하는 코드가 있습니다.
 
 11행 : `uv -= .5;`
 
@@ -437,7 +439,7 @@ void main() {
 &nbsp;
 `circle` 함수를 먼저 뜯어보면, `circle` 함수의 인수는 `uv` 하나입니다. 그리고 `distance` 는 shader 에서 쓰는 inline function 입니다. 이름 그대로 벡터와 벡터 사이의 거리를 구할 수 있습니다. 자세한 내용은 The book of shaders 의 [distance](<https://thebookofshaders.com/glossary/?search=distance>)에 예제와 함께 설명이 되어 있습니다.
 
-스크린의 중심이 `(0., 0.)` 이기 때문에 이 점과 모든 점의 거리를 구하면 자연스럽게 원의 영역이 만들어집니다. 원의 정의는 _한 점에서 거리가 같은 모든 점의 집합_이기 때문입니다.
+스크린의 중심이 `(0., 0.)` 이기 때문에 이 점과 모든 점의 거리를 구하면 자연스럽게 원의 영역이 만들어집니다. 원의 정의는 *한 점에서 거리가 같은 모든 점의 집합*이기 때문입니다.
 
 여기서는 거리 정보를 `gl_FragColor` 의 R 채널에 넣었습니다. 그 결과 거리가 멀어질수록 빨간색이 진해집니다. 원의 영역을 뚜렷하게 구분하고 싶으면 `step` function 을 사용합니다. 이 함수는 두번째 인수가 첫번째 인수보다 작으면 `0.0` 을, 그렇지 않으면 `1.0` 을 반환합니다. The book of shaders 의 [step](<https://thebookofshaders.com/glossary/?search=step>) 페이지에서는 첫번째 인수를 edge 라고 명명하고 있습니다. `step` 함수를 쓴 결과를 알아보기 위해 5행의 주석을 해제합니다. 경계선이 뚜렷한 원이 생긴 것을 보실 수 있습니다. `0.2` 보다 작은 값은 모두 `0.0` 이 되고, 그렇지 않으면 모두 `1.0` 이 되기 때문입니다.
 
@@ -774,6 +776,7 @@ uniform vec2 resolution;
 uniform float time;
 
 float circle(vec2 uv, vec2 pos, float r){
+    // return r/distance(uv, pos);
     return floor(r/distance(uv, pos) * 5.) / 5.;
 }
 
@@ -802,6 +805,7 @@ uniform vec2 resolution;
 uniform float time;
 
 float circle(vec2 uv, vec2 pos, float r){
+    // return r/distance(uv, pos);
     return floor(r/distance(uv, pos) * 5.) / 5.;
 }
 
@@ -918,10 +922,10 @@ void main() {
     })();
 </script>
 
-5행의 `return floor(r/distance(uv, pos) * 5.) / 5.;` 에서는 `floor` 함수를 썼습니다. [floor](<https://thebookofshaders.com/glossary/?search=floor>) 는 계단 함수로, 정수에서 소수점을 날리는 역할을 합니다. python 의 `int()`, javascript 의 `Math.floor()` 와 같은 역할입니다.
+6행의 `return floor(r/distance(uv, pos) * 5.) / 5.;` 에서는 `floor` 함수를 썼습니다. [floor](<https://thebookofshaders.com/glossary/?search=floor>) 는 계단 함수로, 정수에서 소수점을 날리는 역할을 합니다. python 의 `int()`, javascript 의 `Math.floor()` 와 같은 역할입니다.
 
 이 함수를 거치면 메타볼이 1차적으로 만드는 모든 값은 `0, 0.2, 0.4, 0.6, 0.8, 1.0` 중 하나가 됩니다. 메타볼들이 겹칠 때는 이 값들이 서로 합쳐지면서 바뀌는 것을 확인할 수 있습니다.
 
-나머지 부분도 기존 코드에서 옮겨야 할 부분들을 모두 옮겼습니다. [원본](<https://www.shadertoy.com/view/4dVfWK>)과 비교하면서 `three.js` 에서는 어떤 부분이 달라지는지 알아보는 것도 재미있을 것 같습니다.
+나머지 부분도 기존 코드에서 옮겨야 할 부분들을 모두 옮겼습니다. 5행의 주석을 해제하면 [원본](<https://www.shadertoy.com/view/4dVfWK>)과 같은 모습이 됩니다. 원본과 비교하면서 `three.js` 에서는 어떤 부분이 달라지는지 알아보는 것도 재미있을 것 같습니다.
 
 이것으로 두번째 shadertoy 코드 분석글을 마칩니다. 다음 시간에는 조금 더 발전된 코드와 함께 돌아오겠습니다. 긴 글 읽어주셔서 감사합니다.

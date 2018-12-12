@@ -451,8 +451,6 @@ $$
 
 이 식에 `pos` 인수를 결합하면 두번째 예제에서 보셨던 `circle` 함수가 됩니다. 이 식의 분자에 해당하는 부분은 원의 반지름의 제곱입니다. 두번째 예제에서는 `0.05` 를 사용했습니다.
 
-위의 예제에서 14행의 주석을 해제하면 G 채널에도 값이 들어가서, 원래 shadertoy code 인 [Metaballs - kinda yellow](<https://www.shadertoy.com/view/4dVfWK>)와 같은 색조합을 볼 수 있습니다.
-
 <div>
 <textarea id='shader_text_3' height='10' style='display:none;'>
 float circle(vec2 uv, vec2 pos) {
@@ -469,6 +467,136 @@ float circle(vec2 uv, vec2 pos) {
         });
     })();
 </script>
+
+아래 코드에서는 G 채널에도 값이 들어가서, 원래 shadertoy code 인 [Metaballs - kinda yellow](<https://www.shadertoy.com/view/4dVfWK>)와 같은 색조합을 볼 수 있습니다.
+
+<textarea id='shader_text_4' width='400' height='400' style='display:none;'>
+uniform vec2 resolution;
+uniform float time;
+
+float circle(vec2 uv, vec2 pos) {
+    return 0.05/distance(uv, pos);
+}
+void main() {
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    uv -= .5;
+    uv.x *= resolution.x / resolution.y;
+    float c = circle(uv, vec2(0., 0.));
+    // gl_FragColor = vec4(c, 0, 0, 1.0);
+    gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
+}</textarea>
+<iframe id='shader_preview_4'>
+</iframe>
+<script type="x-shader/x-fragment" id="shader_frag_4">
+uniform vec2 resolution;
+uniform float time;
+
+float circle(vec2 uv, vec2 pos) {
+    return 0.05/distance(uv, pos);
+}
+void main() {
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    uv -= .5;
+    uv.x *= resolution.x / resolution.y;
+    float c = circle(uv, vec2(0., 0.));
+    // gl_FragColor = vec4(c, 0, 0, 1.0);
+    gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
+}
+</script>
+<script>
+    (function() {
+        let delay;
+        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_4'), {
+            mode: 'x-shader/x-fragment',
+            lineNumbers: true,
+            lineWrapping: true,
+            theme: 'monokai'
+        });
+        let stats;
+        let camera, scene, renderer;
+        let material, mesh;
+        let uniforms;
+        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
+        init();
+        animate();
+
+        function init() {
+            camera = new THREE.Camera();
+            camera.position.z = 1;
+            scene = new THREE.Scene();
+            var geometry = new THREE.PlaneBufferGeometry(2, 2);
+            uniforms = {
+                time: {
+                    type: "f",
+                    value: 1.0
+                },
+                resolution: {
+                    type: "v2",
+                    value: new THREE.Vector2()
+                }
+            };
+            material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: VERTEX,
+                fragmentShader: document.getElementById('shader_frag_4').textContent
+            });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            let previewFrame = document.getElementById('shader_preview_4');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            preview.body.style.margin = 0;
+            preview.body.appendChild(renderer.domElement);
+            stats = new Stats();
+            preview.body.appendChild(stats.dom);
+            onWindowResize();
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize(event) {
+            let previewFrame = document.getElementById('shader_preview_4');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+
+            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
+            uniforms.resolution.value.x = renderer.domElement.width;
+            uniforms.resolution.value.y = renderer.domElement.height;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            render();
+            stats.update();
+        }
+
+        function render() {
+            uniforms.time.value += 0.02;
+            renderer.render(scene, camera);
+        }
+
+        editor.on("change", function() {
+            clearTimeout(delay);
+            delay = setTimeout(updatePreview, 300);
+        });
+        function updatePreview() {
+            let previewFrame = document.getElementById('shader_preview_4');
+            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+            let canvas;
+            let button;
+            let p;
+
+            document.getElementById('shader_text_4').textContent = editor.getValue();
+            material = new THREE.ShaderMaterial({
+                uniforms: material.uniforms,
+                vertexShader: material.vertexShader,
+                fragmentShader: document.getElementById('shader_text_4').textContent
+            });
+            mesh.material = material;
+        }
+        setTimeout(updatePreview, 300);
+    })();
+</script>
+
 
 &nbsp;
 ## 여러 개의 도형 더하기

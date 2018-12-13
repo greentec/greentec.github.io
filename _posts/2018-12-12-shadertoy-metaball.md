@@ -787,7 +787,7 @@ float circle(vec2 uv, vec2 pos, float r){
 void main() {
     vec2 uv = gl_FragCoord.xy/resolution.xy;
     uv -= .5;
-    float r = .05;
+    float r = .035;
 
     uv.x *= resolution.x / resolution.y;
 
@@ -816,7 +816,7 @@ float circle(vec2 uv, vec2 pos, float r){
 void main() {
     vec2 uv = gl_FragCoord.xy/resolution.xy;
     uv -= .5;
-    float r = .05;
+    float r = .035;
 
     uv.x *= resolution.x / resolution.y;
 

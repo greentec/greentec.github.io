@@ -437,7 +437,7 @@ void main() {
 </script>
 
 &nbsp;
-`circle` 함수를 먼저 뜯어보면, `circle` 함수의 인수는 `uv` 하나입니다. 그리고 `distance` 는 shader 에서 쓰는 inline function 입니다. 이름 그대로 벡터와 벡터 사이의 거리를 구할 수 있습니다. 자세한 내용은 The book of shaders 의 [distance](<https://thebookofshaders.com/glossary/?search=distance>)에 예제와 함께 설명이 되어 있습니다.
+`circle` 함수를 먼저 뜯어보면, `circle` 함수의 인수는 `uv` 하나입니다. 그리고 `distance` 는 shader 에서 쓰는 내장 함수 입니다. 이름 그대로 벡터와 벡터 사이의 거리를 구할 수 있습니다. 자세한 내용은 The book of shaders 의 [distance](<https://thebookofshaders.com/glossary/?search=distance>)에 예제와 함께 설명이 되어 있습니다.
 
 스크린의 중심이 `(0., 0.)` 이기 때문에 이 점과 모든 점의 거리를 구하면 자연스럽게 원의 영역이 만들어집니다. 원의 정의는 *한 점에서 거리가 같은 모든 점의 집합*이기 때문입니다.
 
@@ -453,7 +453,7 @@ $$
 1 = \frac{r^2}{x^2+y^2}
 $$
 
-이 등식의 양변에 루트를 취하면 오른쪽 항의 분모는 $$\sqrt{x^2+y^2}$$ 가 됩니다. 이 식은 원점 `(0,0)` 에서 `(x,y)` 까지의 거리를 나타내는 값이 됩니다. shader 에서는 inline function 인 `distance` 로 축약해서 쓸 수 있습니다. 그리고 원점 `(0,0)` 의 자리에 `pos` 인수를 넣으면 두번째 예제에서 보셨던 `circle` 함수가 됩니다. 오른쪽 항의 분자에 해당하는 부분은 루트를 취했기 때문에 $$r^2$$ 에서 $$r$$, 즉 원의 반지름이 됩니다. 두번째 예제에서는 `0.05` 를 사용했습니다.
+이 등식의 양변에 루트를 취하면 오른쪽 항의 분모는 $$\sqrt{x^2+y^2}$$ 가 됩니다. 이 식은 원점 `(0,0)` 에서 `(x,y)` 까지의 거리를 나타내는 값이 됩니다. shader 에서는 내장 함수인 `distance` 로 축약해서 쓸 수 있습니다. 그리고 원점 `(0,0)` 의 자리에 `pos` 인수를 넣으면 두번째 예제에서 보셨던 `circle` 함수가 됩니다. 오른쪽 항의 분자에 해당하는 부분은 루트를 취했기 때문에 $$r^2$$ 에서 $$r$$, 즉 원의 반지름이 됩니다. 두번째 예제에서는 `0.05` 를 사용했습니다.
 
 <div>
 <textarea id='shader_text_3' height='10' style='display:none;'>

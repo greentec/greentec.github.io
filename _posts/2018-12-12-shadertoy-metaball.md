@@ -936,7 +936,7 @@ void main() {
     })();
 </script>
 
-6행의 `return floor(r/distance(uv, pos) * 5.) / 5.;` 에서는 `floor` 함수를 썼습니다. [floor](<https://thebookofshaders.com/glossary/?search=floor>) 는 계단 함수로, 정수에서 소수점을 날리는 역할을 합니다. python 의 `int()`, javascript 의 `Math.floor()` 와 같은 역할입니다.
+6행의 `return floor(r/distance(uv, pos) * 5.) / 5.;` 에서는 `floor` 함수를 썼습니다. [floor](<https://thebookofshaders.com/glossary/?search=floor>) 는 계단 함수로, 실수에서 소수점을 날리는 역할을 합니다. python 의 `int()`, javascript 의 `Math.floor()` 와 같은 역할입니다.
 
 이 함수를 거치면 메타볼이 1차적으로 만드는 모든 값은 `0, 0.2, 0.4, 0.6, 0.8, 1.0` 중 하나가 됩니다. 메타볼들이 겹칠 때는 이 값들이 서로 합쳐지면서 바뀌는 것을 확인할 수 있습니다. 특히 겹쳐질 때 노란색 원의 크기가 커지는 것을 볼 수 있습니다. 이것은 합쳐지는 값이 1.0 이상이 되는 영역이 늘어나기 때문입니다.
 

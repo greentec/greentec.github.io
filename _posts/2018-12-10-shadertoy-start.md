@@ -45,7 +45,7 @@ void main() {
     // gl_FragColor = vec4(vec3(0.5), 1.0);
     // gl_FragColor = vec4(1.0);
 }</textarea>
-<iframe id='shader_preview_0'>
+<iframe id='shader_preview_0' class='previewOutside'>
 </iframe>
 <script type="x-shader/x-fragment" id="shader_frag_0">
     uniform vec2 resolution;
@@ -178,7 +178,7 @@ void main() {
     // gl_FragColor = vec4(1.0, vec2(uv), 1.0);
     // gl_FragColor = vec4(uv.x, 0.0, uv.y, 1.0);
 }</textarea>
-<iframe id='shader_preview_1'>
+<iframe id='shader_preview_1' class='previewOutside'>
 </iframe>
 <script type="x-shader/x-fragment" id="shader_frag_1">
     uniform vec2 resolution;
@@ -308,7 +308,7 @@ void main() {
     vec3 col = 0.5 + 0.5*cos(time+uv.xyx+vec3(0,2,4));
     gl_FragColor = vec4(vec3(col), 1.0);
 }</textarea>
-<iframe id='shader_preview_2'>
+<iframe id='shader_preview_2' class='previewOutside'>
 </iframe>
 <script type="x-shader/x-fragment" id="shader_frag_2">
     uniform vec2 resolution;

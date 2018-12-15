@@ -46,7 +46,7 @@ void main() {
     // uv -= .5;
     gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
 }</textarea>
-<iframe id='shader_preview_0'>
+<iframe id='shader_preview_0' class='previewOutside'>
 </iframe>
 <script type="x-shader/x-fragment" id="shader_frag_0">
     uniform vec2 resolution;
@@ -176,8 +176,10 @@ void main() {
     float c = circle(uv, vec2(0.,0.));
     gl_FragColor = vec4(c, 0, 0, 1.0);
 }</textarea>
-<iframe id='shader_preview_1'>
-</iframe>
+<div class='previewContainer'>
+    <iframe id='shader_preview_1' class='previewInside'>
+    </iframe>
+</div>
 <script type="x-shader/x-fragment" id="shader_frag_1">
 uniform vec2 resolution;
 uniform float time;
@@ -323,8 +325,10 @@ void main() {
     gl_FragColor = vec4(c, 0, 0, 1.0);
     // gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
 }</textarea>
-<iframe id='shader_preview_2'>
-</iframe>
+<div class='previewContainer'>
+    <iframe id='shader_preview_2' class='previewInside'>
+    </iframe>
+</div>
 <script type="x-shader/x-fragment" id="shader_frag_2">
 uniform vec2 resolution;
 uniform float time;
@@ -489,8 +493,10 @@ void main() {
     // float c = circle(uv, vec2(sin(time * .4) * .4, cos(time * .4) * .4));
     gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
 }</textarea>
-<iframe id='shader_preview_4'>
-</iframe>
+<div class='previewContainer'>
+    <iframe id='shader_preview_4' class='previewInside'>
+    </iframe>
+</div>
 <script type="x-shader/x-fragment" id="shader_frag_4">
 uniform vec2 resolution;
 uniform float time;
@@ -640,8 +646,10 @@ void main() {
     c += circle(uv, vec2(0.4, 0.));
     gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
 }</textarea>
-<iframe id='shader_preview_5'>
-</iframe>
+<div class='previewContainer'>
+    <iframe id='shader_preview_5' class='previewInside'>
+    </iframe>
+</div>
 <script type="x-shader/x-fragment" id="shader_frag_5">
 uniform vec2 resolution;
 uniform float time;
@@ -802,8 +810,10 @@ void main() {
 
     gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
 }</textarea>
-<iframe id='shader_preview_6'>
-</iframe>
+<div class='previewContainer'>
+    <iframe id='shader_preview_6' class='previewInside'>
+    </iframe>
+</div>
 <script type="x-shader/x-fragment" id="shader_frag_6">
 uniform vec2 resolution;
 uniform float time;

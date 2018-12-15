@@ -38,11 +38,19 @@
   {% if page.interactive %}
     <!-- codemirror -->
     <link rel="stylesheet" href="{{ site.baseurl }}/public/css/codemirror/codemirror.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/public/css/codemirror/addon/foldgutter.css">
     <link rel="stylesheet" href="{{ site.baseurl }}/public/css/codemirror/monokai.css">
     <link rel="stylesheet" href="{{ site.baseurl }}/public/css/codemirror/preview.css">
     <script src="{{ site.baseurl }}/public/js/codemirror/codemirror.js"></script>
     <script src="{{ site.baseurl }}/public/js/codemirror/mode/javascript.js"></script>
     <script src="{{ site.baseurl }}/public/js/codemirror/addon/selection/mark-selection.js"></script>
+    <script src="{{ site.baseurl }}/public/js/codemirror/addon/fold/brace-fold.js"></script>
+    <script src="{{ site.baseurl }}/public/js/codemirror/addon/fold/comment-fold.js"></script>
+    <script src="{{ site.baseurl }}/public/js/codemirror/addon/fold/foldcode.js"></script>
+    <script src="{{ site.baseurl }}/public/js/codemirror/addon/fold/foldgutter.js"></script>
+    <script src="{{ site.baseurl }}/public/js/codemirror/addon/fold/indent-fold.js"></script>
+    <script src="{{ site.baseurl }}/public/js/codemirror/addon/fold/markdown-fold.js"></script>
+    <script src="{{ site.baseurl }}/public/js/codemirror/addon/fold/xml-fold.js"></script>
   {% endif %}
 
   {% if page.threejs %}

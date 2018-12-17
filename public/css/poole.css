@@ -93,6 +93,7 @@ h1 {
 h2 {
   margin-top: 1rem;
   font-size: 1.5rem;
+  border-bottom: 1px solid #e8e8e8;
 }
 h3 {
   margin-top: 1.5rem;

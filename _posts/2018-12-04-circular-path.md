@@ -36,7 +36,7 @@ tags:
 위의 gif 파일을 보시면 알 수 있듯이 경로는 전체적으로 원형이지만 완벽한 원은 아닙니다. 약간 deform 된 원을 어떻게 표현할까 고민하다가 아주 옛날(10년 전쯤?)에 봤던 flash 파일이 하나 떠올랐습니다. 원주율($$\pi$$) 값을 알아내기 위해서 몬테카를로 방식을 이용해서 사분원에 점을 찍어보는 것입니다. 이 때 원의 반지름을 r 이라고 할 때, 아래와 같은 식으로 $$\pi$$ 값을 구할 수 있습니다.
 
 $$
-\frac{사분원\phantom{0}안에\phantom{0}들어간\phantom{0}점의\phantom{0}개수}{전체\phantom{0}점의\phantom{0}개수} \fallingdotseq \frac{\frac{\pi r^2}{4}}{r^2} = \frac{\pi}{4}
+\frac{사분원\phantom{0}안에\phantom{0}들어간\phantom{0}점의\phantom{0}개수}{전체\phantom{0}점의\phantom{0}개수} \simeq \frac{\frac{\pi r^2}{4}}{r^2} = \frac{\pi}{4}
 $$
 
 원본은 찾을 수가 없어서 [비슷한 방법으로 원의 영역을 구해보는 youtube 영상의 링크](<https://www.youtube.com/watch?v=yF2V4sNYLCM>)를 추가해놓습니다.

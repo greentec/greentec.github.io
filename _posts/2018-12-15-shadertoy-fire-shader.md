@@ -81,16 +81,9 @@ void main() {
 <iframe id='shader_preview_0' class='previewOutside'>
 </iframe>
 <script type="x-shader/x-fragment" id="shader_frag_0">
-uniform float a;
-uniform float b;
-uniform float c;
-float rand(vec2 co) {
-  return fract(sin(dot(co.xy, vec2(a, b))) * c);
-}
-void main() {
-    float x = rand(gl_FragCoord.xy);
-    gl_FragColor = vec4(x, x, x, 1.0);
-}
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
 </script>
 <script>
     (function() {
@@ -487,20 +480,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_3">
-uniform vec2 resolution;
-uniform float time;
-vec2 hash( vec2 p ) {
-	p = vec2( dot(p,vec2(127.1,311.7)),
-			  dot(p,vec2(269.5,183.3)) );
-
-	// return -1.0 + 2.0*fract(sin(p) * 43758.5453123);
-	return fract(sin(p) * 43758.5453123);
-}
-void main() {
-    float x = hash(gl_FragCoord.xy).x;
-    // x = hash(gl_FragCoord.xy).y;
-    gl_FragColor = vec4(x, x, x, 1.0);
-}
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
 </script>
 <script>
     (function() {
@@ -681,60 +663,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_4">
-uniform vec2 resolution;
-uniform float time;
-// from https://www.shadertoy.com/view/XdXGW8
-vec2 hash_p( vec2 x ) {
-    const vec2 k = vec2( 0.3183099, 0.3678794 );
-    x = x*k + k.yx;
-    return -1.0 + 2.0*fract( 16.0 * k*fract( x.x*x.y*(x.x+x.y)) );
-}
-float noise_p( in vec2 p ) {
-    vec2 i = floor( p );
-    vec2 f = fract( p );
-
-	vec2 u = f*f*(3.0-2.0*f);
-
-    return mix( mix( dot( hash_p( i + vec2(0.0,0.0) ), f - vec2(0.0,0.0) ),
-                     dot( hash_p( i + vec2(1.0,0.0) ), f - vec2(1.0,0.0) ), u.x),
-                mix( dot( hash_p( i + vec2(0.0,1.0) ), f - vec2(0.0,1.0) ),
-                     dot( hash_p( i + vec2(1.0,1.0) ), f - vec2(1.0,1.0) ), u.x), u.y);
-}
-vec2 hash( vec2 p ) {
-	p = vec2( dot(p,vec2(127.1,311.7)),
-			  dot(p,vec2(269.5,183.3)) );
-
-	return -1.0 + 2.0*fract(sin(p) * 43758.5453123);
-}
-float noise( in vec2 p ) {
-    const float K1 = 0.366025404; // (sqrt(3)-1)/2;
-    const float K2 = 0.211324865; // (3-sqrt(3))/6;
-
-	vec2 i = floor( p + (p.x+p.y) * K1 );
-
-    vec2 a = p - i + (i.x+i.y) * K2;
-    vec2 o = step(a.yx,a.xy);
-    vec2 b = a - o + K2;
-	vec2 c = a - 1.0 + 2.0*K2;
-
-    vec3 h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );
-
-	vec3 n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));
-
-    return dot( n, vec3(70.0) );
-}
-void main() {
-    float x = 0.;
-    vec2 uv = gl_FragCoord.xy/resolution.xy;
-    if (uv.x < 0.5) {
-      x = noise(uv * 10.);
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     }
-    else {
-      x = noise_p(uv * 16.);
-    }
-    x = x * 0.5 + 0.5;
-    gl_FragColor = vec4(x, x, x, 1.0);
-}
 </script>
 <script>
     (function() {
@@ -910,53 +841,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_5">
-uniform vec2 resolution;
-uniform float time;
-vec2 hash( vec2 p ) {
-	p = vec2( dot(p,vec2(127.1,311.7)),
-			  dot(p,vec2(269.5,183.3)) );
-
-	return -1.0 + 2.0*fract(sin(p) * 43758.5453123);
-}
-float noise( in vec2 p ) {
-    const float K1 = 0.366025404; // (sqrt(3)-1)/2;
-    const float K2 = 0.211324865; // (3-sqrt(3))/6;
-
-	vec2 i = floor( p + (p.x+p.y) * K1 );
-
-    vec2 a = p - i + (i.x+i.y) * K2;
-    vec2 o = step(a.yx,a.xy);
-    vec2 b = a - o + K2;
-	vec2 c = a - 1.0 + 2.0*K2;
-
-    vec3 h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );
-
-	vec3 n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));
-
-    return dot( n, vec3(70.0) );
-}
-float fbm ( in vec2 p ) {
-    float f = 0.0;
-    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );
-    f  = 0.5000*noise(p); p = m*p;
-    f += 0.2500*noise(p); p = m*p;
-    f += 0.1250*noise(p); p = m*p;
-    f += 0.0625*noise(p); p = m*p;
-    f = 0.5 + 0.5 * f;
-    return f;
-}
-void main() {
-    vec2 uv = gl_FragCoord.xy/resolution.xy;
-    float x;
-    if (uv.x < 0.5) {
-        x = noise(uv * 10.);
-        x = x * 0.5 + 0.5;
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     }
-    else {
-        x = fbm(uv * 10.);
-    }
-    gl_FragColor = vec4(x, x, x, 1.0);
-}
 </script>
 <script>
     (function() {
@@ -1147,62 +1034,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_6">
-#define normalStrength		40.0
-uniform vec2 resolution;
-uniform float time;
-vec2 hash( vec2 p ) {
-	p = vec2( dot(p,vec2(127.1,311.7)),
-			  dot(p,vec2(269.5,183.3)) );
-
-	return -1.0 + 2.0*fract(sin(p) * 43758.5453123);
-}
-float noise( in vec2 p ) {
-    const float K1 = 0.366025404; // (sqrt(3)-1)/2;
-    const float K2 = 0.211324865; // (3-sqrt(3))/6;
-
-	vec2 i = floor( p + (p.x+p.y) * K1 );
-
-    vec2 a = p - i + (i.x+i.y) * K2;
-    vec2 o = step(a.yx,a.xy);
-    vec2 b = a - o + K2;
-	vec2 c = a - 1.0 + 2.0*K2;
-
-    vec3 h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );
-
-	vec3 n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));
-
-    return dot( n, vec3(70.0) );
-}
-float fbm ( in vec2 p ) {
-    float f = 0.0;
-    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );
-    f  = 0.5000*noise(p); p = m*p;
-    f += 0.2500*noise(p); p = m*p;
-    f += 0.1250*noise(p); p = m*p;
-    f += 0.0625*noise(p); p = m*p;
-    f = 0.5 + 0.5 * f;
-    return f;
-}
-vec3 bumpMap(vec2 uv) {
-    vec2 s = 1. / resolution.xy;
-    float p =  fbm(uv);
-    float h1 = fbm(uv + s * vec2(1., 0));
-    float v1 = fbm(uv + s * vec2(0, 1.));
-
-   	vec2 xy = (p - vec2(h1, v1)) * normalStrength;
-    return vec3(xy + .5, 1.);
-}
-void main() {
-    vec2 uv = gl_FragCoord.xy/resolution.xy;
-    if (uv.x < 0.5) {
-        float x = fbm(uv * 10.);
-        gl_FragColor = vec4(x, x, x, 1.0);
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     }
-    else {
-        vec3 normal = bumpMap((uv.xy - vec2(0.5, 0.)) * 10.);
-        gl_FragColor = vec4(normal, 1.0);
-    }
-}
 </script>
 <script>
     (function() {
@@ -1378,60 +1212,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_7">
-uniform vec2 resolution;
-uniform float time;
-#define timeScale 			time * 1.0
-#define fireMovement 		vec2(-0.01, -0.5)
-#define distortionMovement	vec2(-0.01, -0.3)
-#define normalStrength		40.0
-#define distortionStrength	0.1
-vec2 hash( vec2 p ) {
-	p = vec2( dot(p,vec2(127.1,311.7)),
-			  dot(p,vec2(269.5,183.3)) );
-
-	return -1.0 + 2.0*fract(sin(p) * 43758.5453123);
-}
-float noise( in vec2 p ) {
-    const float K1 = 0.366025404; // (sqrt(3)-1)/2;
-    const float K2 = 0.211324865; // (3-sqrt(3))/6;
-
-	vec2 i = floor( p + (p.x+p.y) * K1 );
-
-    vec2 a = p - i + (i.x+i.y) * K2;
-    vec2 o = step(a.yx,a.xy);
-    vec2 b = a - o + K2;
-	vec2 c = a - 1.0 + 2.0*K2;
-
-    vec3 h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );
-
-	vec3 n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));
-
-    return dot( n, vec3(70.0) );
-}
-float fbm ( in vec2 p ) {
-    float f = 0.0;
-    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );
-    f  = 0.5000*noise(p); p = m*p;
-    f += 0.2500*noise(p); p = m*p;
-    f += 0.1250*noise(p); p = m*p;
-    f += 0.0625*noise(p); p = m*p;
-    f = 0.5 + 0.5 * f;
-    return f;
-}
-vec3 bumpMap(vec2 uv) {
-    vec2 s = 1. / resolution.xy;
-    float p =  fbm(uv);
-    float h1 = fbm(uv + s * vec2(1., 0));
-    float v1 = fbm(uv + s * vec2(0, 1.));
-
-   	vec2 xy = (p - vec2(h1, v1)) * normalStrength;
-    return vec3(xy + .5, 1.);
-}
-void main() {
-    vec2 uv = gl_FragCoord.xy/resolution.xy;
-    vec3 normal = bumpMap(uv * vec2(1.0, 0.3) + distortionMovement * timeScale);
-    gl_FragColor = vec4(normal, 1.0);
-}
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
 </script>
 <script>
     (function() {
@@ -1611,66 +1394,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_8">
-uniform vec2 resolution;
-uniform float time;
-#define timeScale 			time * 1.0
-#define fireMovement 		vec2(-0.01, -0.5)
-#define distortionMovement	vec2(-0.01, -0.3)
-#define normalStrength		40.0
-#define distortionStrength	0.1
-vec2 hash( vec2 p ) {
-	p = vec2( dot(p,vec2(127.1,311.7)),
-			  dot(p,vec2(269.5,183.3)) );
-
-	return -1.0 + 2.0*fract(sin(p) * 43758.5453123);
-}
-float noise( in vec2 p ) {
-    const float K1 = 0.366025404; // (sqrt(3)-1)/2;
-    const float K2 = 0.211324865; // (3-sqrt(3))/6;
-
-	vec2 i = floor( p + (p.x+p.y) * K1 );
-
-    vec2 a = p - i + (i.x+i.y) * K2;
-    vec2 o = step(a.yx,a.xy);
-    vec2 b = a - o + K2;
-	vec2 c = a - 1.0 + 2.0*K2;
-
-    vec3 h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );
-
-	vec3 n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));
-
-    return dot( n, vec3(70.0) );
-}
-float fbm ( in vec2 p ) {
-    float f = 0.0;
-    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );
-    f  = 0.5000*noise(p); p = m*p;
-    f += 0.2500*noise(p); p = m*p;
-    f += 0.1250*noise(p); p = m*p;
-    f += 0.0625*noise(p); p = m*p;
-    f = 0.5 + 0.5 * f;
-    return f;
-}
-vec3 bumpMap(vec2 uv) {
-    vec2 s = 1. / resolution.xy;
-    float p =  fbm(uv);
-    float h1 = fbm(uv + s * vec2(1., 0));
-    float v1 = fbm(uv + s * vec2(0, 1.));
-
-   	vec2 xy = (p - vec2(h1, v1)) * normalStrength;
-    return vec3(xy + .5, 1.);
-}
-void main() {
-    vec2 uv = gl_FragCoord.xy/resolution.xy;
-    vec3 normal = bumpMap(uv * vec2(1.0, 0.3) + distortionMovement * timeScale);
-    if (uv.x < 0.5) {
-        gl_FragColor = vec4(normal, 1.0);
-        return;
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     }
-    vec2 displacement = clamp((normal.xy - .5) * distortionStrength, -1., 1.);
-    displacement = displacement * 0.5 + 0.5;
-    gl_FragColor = vec4(displacement, 0.0, 1.0);
-}
 </script>
 <script>
     (function() {
@@ -1846,66 +1572,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_9">
-uniform vec2 resolution;
-uniform float time;
-#define timeScale 			time * 1.0
-#define fireMovement 		vec2(-0.01, -0.5)
-#define distortionMovement	vec2(-0.01, -0.3)
-#define normalStrength		40.0
-#define distortionStrength	0.1
-vec2 hash( vec2 p ) {
-	p = vec2( dot(p,vec2(127.1,311.7)),
-			  dot(p,vec2(269.5,183.3)) );
-
-	return -1.0 + 2.0*fract(sin(p) * 43758.5453123);
-}
-float noise( in vec2 p ) {
-    const float K1 = 0.366025404; // (sqrt(3)-1)/2;
-    const float K2 = 0.211324865; // (3-sqrt(3))/6;
-
-	vec2 i = floor( p + (p.x+p.y) * K1 );
-
-    vec2 a = p - i + (i.x+i.y) * K2;
-    vec2 o = step(a.yx,a.xy);
-    vec2 b = a - o + K2;
-	vec2 c = a - 1.0 + 2.0*K2;
-
-    vec3 h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );
-
-	vec3 n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));
-
-    return dot( n, vec3(70.0) );
-}
-float fbm ( in vec2 p ) {
-    float f = 0.0;
-    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );
-    f  = 0.5000*noise(p); p = m*p;
-    f += 0.2500*noise(p); p = m*p;
-    f += 0.1250*noise(p); p = m*p;
-    f += 0.0625*noise(p); p = m*p;
-    f = 0.5 + 0.5 * f;
-    return f;
-}
-vec3 bumpMap(vec2 uv) {
-    vec2 s = 1. / resolution.xy;
-    float p =  fbm(uv);
-    float h1 = fbm(uv + s * vec2(1., 0));
-    float v1 = fbm(uv + s * vec2(0, 1.));
-
-   	vec2 xy = (p - vec2(h1, v1)) * normalStrength;
-    return vec3(xy + .5, 1.);
-}
-void main() {
-    vec2 uv = gl_FragCoord.xy/resolution.xy;
-    vec3 normal = bumpMap(uv * vec2(1.0, 0.3) + distortionMovement * timeScale);
-    vec2 displacement = clamp((normal.xy - .5) * distortionStrength, -1., 1.);
-    uv += displacement;
-
-    vec2 uvT = (uv * vec2(1.0, 0.5)) + fireMovement * timeScale;
-    float n = pow(fbm(8.0 * uvT), 1.0);
-
-    gl_FragColor = vec4(n, n, n, 1.0);
-}
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
 </script>
 <script>
     (function() {
@@ -2086,71 +1755,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_10">
-uniform vec2 resolution;
-uniform float time;
-#define timeScale 			time * 1.0
-#define fireMovement 		vec2(-0.01, -0.5)
-#define distortionMovement	vec2(-0.01, -0.3)
-#define normalStrength		40.0
-#define distortionStrength	0.1
-vec2 hash( vec2 p ) {
-	p = vec2( dot(p,vec2(127.1,311.7)),
-			  dot(p,vec2(269.5,183.3)) );
-
-	return -1.0 + 2.0*fract(sin(p) * 43758.5453123);
-}
-float noise( in vec2 p ) {
-    const float K1 = 0.366025404; // (sqrt(3)-1)/2;
-    const float K2 = 0.211324865; // (3-sqrt(3))/6;
-
-	vec2 i = floor( p + (p.x+p.y) * K1 );
-
-    vec2 a = p - i + (i.x+i.y) * K2;
-    vec2 o = step(a.yx,a.xy);
-    vec2 b = a - o + K2;
-	vec2 c = a - 1.0 + 2.0*K2;
-
-    vec3 h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );
-
-	vec3 n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));
-
-    return dot( n, vec3(70.0) );
-}
-float fbm ( in vec2 p ) {
-    float f = 0.0;
-    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );
-    f  = 0.5000*noise(p); p = m*p;
-    f += 0.2500*noise(p); p = m*p;
-    f += 0.1250*noise(p); p = m*p;
-    f += 0.0625*noise(p); p = m*p;
-    f = 0.5 + 0.5 * f;
-    return f;
-}
-vec3 bumpMap(vec2 uv) {
-    vec2 s = 1. / resolution.xy;
-    float p =  fbm(uv);
-    float h1 = fbm(uv + s * vec2(1., 0));
-    float v1 = fbm(uv + s * vec2(0, 1.));
-
-   	vec2 xy = (p - vec2(h1, v1)) * normalStrength;
-    return vec3(xy + .5, 1.);
-}
-void main() {
-    vec2 uv = gl_FragCoord.xy/resolution.xy;
-    vec3 normal = bumpMap(uv * vec2(1.0, 0.3) + distortionMovement * timeScale);
-    vec2 displacement = clamp((normal.xy - .5) * distortionStrength, -1., 1.);
-    uv += displacement;
-
-    vec2 uvT = (uv * vec2(1.0, 0.5)) + fireMovement * timeScale;
-    float n = pow(fbm(8.0 * uvT), 1.0);
-
-    float gradient = pow(1.0 - uv.y, 2.0) * 5.;
-    float finalNoise = n * gradient;
-
-    vec3 color = finalNoise * vec3(2.*n, 2.*n*n*n, n*n*n*n);
-    // gl_FragColor = vec4(color, 1.0);
-    gl_FragColor = vec4(vec3(finalNoise), 1.);
-}
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
 </script>
 <script>
     (function() {

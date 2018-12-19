@@ -49,12 +49,8 @@ void main() {
 <iframe id='shader_preview_0' class='previewOutside'>
 </iframe>
 <script type="x-shader/x-fragment" id="shader_frag_0">
-    uniform vec2 resolution;
-    uniform float time;
     void main() {
-        vec2 uv = gl_FragCoord.xy / resolution.xy;
-        // uv -= .5;
-        gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     }
 </script>
 <script>
@@ -181,19 +177,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_1">
-uniform vec2 resolution;
-uniform float time;
-
-float circle(vec2 uv, vec2 pos) {
-    return 0.05/distance(uv, pos);
-}
-void main() {
-    vec2 uv = gl_FragCoord.xy / resolution.xy;
-    uv -= .5;
-    // uv.x *= resolution.x / resolution.y;
-    float c = circle(uv, vec2(0.,0.));
-    gl_FragColor = vec4(c, 0, 0, 1.0);
-}
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
 </script>
 <script>
     (function() {
@@ -330,21 +316,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_2">
-uniform vec2 resolution;
-uniform float time;
-
-float circle(vec2 uv) {
-    // return step(0.2, distance(uv, vec2(0.,0.)));
-    return distance(uv, vec2(0.,0.));
-}
-void main() {
-    vec2 uv = gl_FragCoord.xy / resolution.xy;
-    uv -= .5;
-    uv.x *= resolution.x / resolution.y;
-    float c = circle(uv);
-    gl_FragColor = vec4(c, 0, 0, 1.0);
-    // gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
-}
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
 </script>
 <script>
     (function() {
@@ -498,20 +472,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_4">
-uniform vec2 resolution;
-uniform float time;
-
-float circle(vec2 uv, vec2 pos) {
-    return 0.05/distance(uv, pos);
-}
-void main() {
-    vec2 uv = gl_FragCoord.xy / resolution.xy;
-    uv -= .5;
-    uv.x *= resolution.x / resolution.y;
-    float c = circle(uv, vec2(0., 0.));
-    // float c = circle(uv, vec2(sin(time * .4) * .4, cos(time * .4) * .4));
-    gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
-}
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
 </script>
 <script>
     (function() {
@@ -651,22 +614,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_5">
-uniform vec2 resolution;
-uniform float time;
-
-float circle(vec2 uv, vec2 pos) {
-    return 0.05/distance(uv, pos);
-}
-void main() {
-    vec2 uv = gl_FragCoord.xy / resolution.xy;
-    uv -= .5;
-    uv.x *= resolution.x / resolution.y;
-    // 원을 세 개 그립니다.
-    float c = circle(uv, vec2(0., 0.));
-    c += circle(uv, vec2(-0.4, 0.));
-    c += circle(uv, vec2(0.4, 0.));
-    gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
-}
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
 </script>
 <script>
     (function() {
@@ -815,32 +765,9 @@ void main() {
     </iframe>
 </div>
 <script type="x-shader/x-fragment" id="shader_frag_6">
-uniform vec2 resolution;
-uniform float time;
-
-float circle(vec2 uv, vec2 pos, float r){
-    // return r/distance(uv, pos);
-    return floor(r/distance(uv, pos) * 5.) / 5.;
-}
-
-void main() {
-    vec2 uv = gl_FragCoord.xy/resolution.xy;
-    uv -= .5;
-    float r = .035;
-
-    uv.x *= resolution.x / resolution.y;
-
-    float c = circle(uv, vec2(sin(time * 2.) * .4,  cos(time * .4) * .4), r);
-    c += circle(uv, vec2(sin(time * .5) * .4, cos(time * .7) * .4), r);
-    c += circle(uv, vec2(sin(time * .7) * .4, cos(time * .8) * .4), r);
-    c += circle(uv, vec2(sin(time * .2) * .4, cos(time * .3) * .4), r);
-    c += circle(uv, vec2(sin(time * .3) * .4, cos(time * .4) * .4), r);
-    c += circle(uv, vec2(sin(time * .6) * .4, cos(time) * .4), r);
-    c += circle(uv, vec2(sin(time * .5) * .4, cos(time * .2) * .4), r);
-    c += circle(uv, vec2(sin(time * .3) * .4, cos(time) * .7), r);
-
-    gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
-}
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
 </script>
 <script>
     (function() {

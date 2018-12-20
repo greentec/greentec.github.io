@@ -583,12 +583,12 @@ void main() {
 
 원래 코드에서는 먼저 `circle` 함수로 `c` 라는 `float` 변수에 원을 하나 정의한 다음, 다른 `circle` 을 `c` 에 더해줬습니다.
 
-~~~~~
+```glsl
 float c = circle(uv, vec2(sin(time * 2.) * .4,  cos(time * .4) * .4), r);
 c += circle(uv, vec2(sin(time * .5) * .4, cos(time * .7) * .4), r);
 c += circle(uv, vec2(sin(time * .7) * .4, cos(time * .8) * .4), r);
 ...
-~~~~~
+```
 
 결과는 우리가 확인할 수 있는 것처럼 여러 개의 원이 더해진 결과였습니다. 실제로 그렇게 되는지 한번 해보겠습니다.
 

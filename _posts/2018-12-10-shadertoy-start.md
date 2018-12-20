@@ -155,7 +155,9 @@ void main() {
 
 그럼 이제 좀 더 심화된 버전의 코드를 작성해 보겠습니다. Shadertoy 의 기본 쉐이더 4행에는 다음과 같은 코드가 있습니다.
 
-`vec2 uv = fragCoord/iResolution.xy;`
+```glsl
+vec2 uv = fragCoord/iResolution.xy;
+```
 
 `fragCoord` 는 픽셀의 실제 좌표를 나타내는 2차원 벡터 값입니다. x 좌표와 y 좌표는 각각 0.5 에서 resolution - 0.5 사이의 값을 가지는데, 여기서 resolution 이란 스크린의 x, y의 크기를 말합니다. Shadertoy 에서는 스크린의 크기를 iResoultion 이라는 값으로 참조할 수 있습니다. `iResolution.xy` 에서 뒤의 `xy` 는 벡터 중 처음의 2개, x 크기와 y 크기만 가져오겠다는 뜻입니다.
 
@@ -280,7 +282,9 @@ void main() {
 
 그리고 마지막으로 Shadertoy 에서 기본 쉐이더를 켜놓고 조금 있으면 시간에 따라 값이 변하는 것을 확인할 수 있습니다. 이것은 시간 변수를 Fragment Shader 에서 사용해서 픽셀의 색을 변화시키는 데에 사용하기 때문입니다.
 
-`vec3 col = 0.5 + 0.5*cos(iTime+uv.xyx+vec3(0,2,4));`
+```glsl
+vec3 col = 0.5 + 0.5*cos(iTime+uv.xyx+vec3(0,2,4));
+```
 
 이 부분을 간단히 분석해보자면, 처음의 0.5 는 화면의 전반적인 색이 너무 어두워지지 않도록 기본적으로 더해주는 값이라고 할 수 있습니다. 그 다음의 0.5 에 곱해지는 `cos` 는 삼각함수의 cos 값입니다. cos 값은 -1 에서 1 사이의 값을 가지기 때문에, 0.5 를 곱하면 -0.5 에서 0.5, 거기에 0.5 를 더하면 0.0 에서 1.0 사이의 값이 될 것이라고 짐작할 수 있습니다.
 

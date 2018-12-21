@@ -431,7 +431,7 @@ a.pagination-item:hover {
 }
 
 svg.sns {
-    width: 3.33em;
-    height: 3.33em;
-    fill: #a3a3a3;
+    width: 3.33em !important;
+    height: 3.33em !important;
+    fill: #a3a3a3 !important;
 }

@@ -429,3 +429,9 @@ a.pagination-item:hover {
     border-bottom-right-radius: 4px;
   }
 }
+
+.svg-icon > svg {
+    width: 3.33em;
+    height: 3.33em;
+    fill: #a3a3a3;
+}

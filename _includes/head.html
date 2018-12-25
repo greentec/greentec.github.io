@@ -51,6 +51,7 @@
     <script src="{{ site.baseurl }}/public/js/codemirror/addon/fold/indent-fold.js"></script>
     <script src="{{ site.baseurl }}/public/js/codemirror/addon/fold/markdown-fold.js"></script>
     <script src="{{ site.baseurl }}/public/js/codemirror/addon/fold/xml-fold.js"></script>
+    <script src="{{ site.baseurl }}/public/js/interactive/codeeditor.js"></script>
   {% endif %}
 
   {% if page.threejs %}
@@ -61,5 +62,10 @@
 
   {% if page.shader %}
     <script src="{{ site.baseurl }}/public/js/codemirror/clike.js"></script>
+  {% endif %}
+
+  {% if page.chartjs %}
+    <script src="{{ site.baseurl }}/public/js/chartjs/Chart.bundle.min.js"></script>
+    <script src="{{ site.baseurl }}/public/js/chartjs/utils.js"></script>
   {% endif %}
 </head>

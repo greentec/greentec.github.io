@@ -22,16 +22,19 @@
     /* z-index: 777; */
 }
 .previewInside {
-    width: 100%;
+    position: absolute;
+    width: 360px;
+    min-width: 360px;
     height: 280px;
     min-height: 280px;
     border: 1px solid gray;
     overflow: hidden;
-    margin-left: 125%;
+    left: 50%;
 }
 .previewOutside {
     width: 49%;
     heigth: 280px;
+    min-width: 350px;
     min-height: 280px;
     border: 1px solid gray;
     overflow: hidden;
@@ -55,4 +58,20 @@ canvas {
 }
 small {
     color: #772277;
+}
+.codeeditor {
+    display: none;
+    height: 10px;
+}
+.consoleoutput {
+    width: 100%;
+    height: auto;
+    min-height: 16px;
+    max-height: 230px;
+    border: solid 1px #282828;
+    padding: 4px 16px;
+    background-color: #969696;
+}
+.chart {
+    width: 100% !important;
 }

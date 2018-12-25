@@ -127,7 +127,7 @@ void main() {
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
-            renderer = new THREE.WebGLRenderer();
+            renderer = new THREE.WebGLRenderer({alpha: true});
             renderer.setPixelRatio(window.devicePixelRatio);
             let previewFrame = document.getElementById('shader_preview_0');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
@@ -365,7 +365,7 @@ void main(){
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
-            renderer = new THREE.WebGLRenderer();
+            renderer = new THREE.WebGLRenderer({alpha: true});
             renderer.setPixelRatio(window.devicePixelRatio);
             let previewFrame = document.getElementById('shader_preview_1');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
@@ -522,7 +522,7 @@ void main() {
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
-            renderer = new THREE.WebGLRenderer();
+            renderer = new THREE.WebGLRenderer({alpha: true});
             renderer.setPixelRatio(window.devicePixelRatio);
             let previewFrame = document.getElementById('shader_preview_3');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
@@ -713,7 +713,7 @@ void main() {
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
-            renderer = new THREE.WebGLRenderer();
+            renderer = new THREE.WebGLRenderer({alpha: true});
             renderer.setPixelRatio(window.devicePixelRatio);
             let previewFrame = document.getElementById('shader_preview_4');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
@@ -887,7 +887,7 @@ void main() {
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
-            renderer = new THREE.WebGLRenderer();
+            renderer = new THREE.WebGLRenderer({alpha: true});
             renderer.setPixelRatio(window.devicePixelRatio);
             let previewFrame = document.getElementById('shader_preview_5');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
@@ -1081,7 +1081,7 @@ void main() {
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
-            renderer = new THREE.WebGLRenderer();
+            renderer = new THREE.WebGLRenderer({alpha: true});
             renderer.setPixelRatio(window.devicePixelRatio);
             let previewFrame = document.getElementById('shader_preview_6');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
@@ -1260,7 +1260,7 @@ void main() {
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
-            renderer = new THREE.WebGLRenderer();
+            renderer = new THREE.WebGLRenderer({alpha: true});
             renderer.setPixelRatio(window.devicePixelRatio);
             let previewFrame = document.getElementById('shader_preview_7');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
@@ -1442,7 +1442,7 @@ void main() {
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
-            renderer = new THREE.WebGLRenderer();
+            renderer = new THREE.WebGLRenderer({alpha: true});
             renderer.setPixelRatio(window.devicePixelRatio);
             let previewFrame = document.getElementById('shader_preview_8');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
@@ -1620,7 +1620,7 @@ void main() {
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
-            renderer = new THREE.WebGLRenderer();
+            renderer = new THREE.WebGLRenderer({alpha: true});
             renderer.setPixelRatio(window.devicePixelRatio);
             let previewFrame = document.getElementById('shader_preview_9');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
@@ -1803,7 +1803,7 @@ void main() {
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
-            renderer = new THREE.WebGLRenderer();
+            renderer = new THREE.WebGLRenderer({alpha: true});
             renderer.setPixelRatio(window.devicePixelRatio);
             let previewFrame = document.getElementById('shader_preview_10');
             let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;

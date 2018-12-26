@@ -36,114 +36,23 @@ shader: true
 
 그리고 Shadertoy 의 코드를 three.js 에서 그대로 가져올 수는 없어서 약간 변형하면서 가져와야 합니다. 이 부분은 [hackernoon 에 올라온 이 글](<https://hackernoon.com/converting-shaders-from-shadertoy-to-threejs-fe17480ed5c6>)에도 잘 설명되어 있습니다. 여기서는 ```fragColor``` 를 ```gl_FragColor``` 로, ```fragCoord``` 를 ```gl_FragCoord``` 로, ```iResoultion``` 을 ```resolution``` 으로, ```iTime``` 을 ```time``` 으로 썼습니다.
 
-<textarea id='shader_text_0' width='400' height='400' style='display:none;'>
+
+<div>
+<textarea class='codeeditor fragment'>
 uniform vec2 resolution;
 uniform float time;
 void main() {
     gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
     // gl_FragColor = vec4(vec3(0.5), 1.0);
     // gl_FragColor = vec4(1.0);
-}</textarea>
-<iframe id='shader_preview_0' class='previewOutside'>
-</iframe>
-<script type="x-shader/x-fragment" id="shader_frag_0">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_0'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai'
-        });
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
+}
 
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_0').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_0');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
 
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_0');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
 
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
 
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_0');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_0').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_0').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
+</textarea>
+</div>
 
 &nbsp;
 위 코드의 Fragment Shader 는 화면 전체를 빨간색으로 그려줍니다. 4행의 ```gl_FragColor``` 는 각 픽셀의 Color 를 정의합니다. 0~255 의 ```integer``` 로 나타내는 RGB 값과는 다르게, Shader 에서는 0.0~1.0 의 ```float``` 으로 나타냅니다. 여기서는 R, G, B, A 의 순서로 color 를 지정합니다. ```vec4``` 는 길이가 4인 벡터를 나타냅니다.
@@ -166,7 +75,8 @@ vec2 uv = fragCoord/iResolution.xy;
 
 0.0~1.0 이 익숙하지 않으신가요? 위에서 color 에도 같은 범위 의 값을 썼습니다. 그럼 여기서 이 값을 그대로 color 에 넣어보면 어떻게 될까요?
 
-<textarea id='shader_text_1' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment'>
 uniform vec2 resolution;
 uniform float time;
 void main() {
@@ -174,107 +84,13 @@ void main() {
     gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
     // gl_FragColor = vec4(1.0, vec2(uv), 1.0);
     // gl_FragColor = vec4(uv.x, 0.0, uv.y, 1.0);
-}</textarea>
-<iframe id='shader_preview_1' class='previewOutside'>
-</iframe>
-<script type="x-shader/x-fragment" id="shader_frag_1">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_1'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai'
-        });
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
+}
 
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_1').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_1');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
 
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_1');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
 
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_1');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_1').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_1').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
+</textarea>
+</div>
 
 &nbsp;
 화면의 왼쪽 아래는 ```x=0.0, y=0.0``` 이기 때문에 검정색이고, 오른쪽 위는 ```x=1.0, y=1.0``` 이기 때문에 노란색이 된 것을 확인할 수 있습니다. 이렇게 단 두 줄의 Fragment Shader 코드로 color gradient 를 만들 수 있습니다. 이 외에도 6, 7 행의 주석을 해제하고 값을 바꿔가며 자유롭게 실험해볼 수 있습니다.
@@ -294,114 +110,22 @@ vec3 col = 0.5 + 0.5*cos(iTime+uv.xyx+vec3(0,2,4));
 
 그럼 코드로 확인해보겠습니다.
 
-<textarea id='shader_text_2' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment'>
 uniform vec2 resolution;
 uniform float time;
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
     vec3 col = 0.5 + 0.5*cos(time+uv.xyx+vec3(0,2,4));
     gl_FragColor = vec4(vec3(col), 1.0);
-}</textarea>
-<iframe id='shader_preview_2' class='previewOutside'>
-</iframe>
-<script type="x-shader/x-fragment" id="shader_frag_2">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_2'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai'
-        });
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
+}
 
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_2').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_2');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
 
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_2');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
 
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
 
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_2');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_2').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_2').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
+</textarea>
+</div>
 
 &nbsp;
 Shadertoy 의 기본 쉐이더와 같은 형태로 색이 변하는 것을 확인할 수 있습니다. 색이 변하는 속도를 느리게 또는 빠르게 하고 싶다면 ```time``` 에 0.5 나 2 등의 상수를 곱해주면 됩니다. ```cos``` 바깥쪽의 숫자의 크기를 조절해볼 수도 있습니다. 이외에도 여러 가지 변화를 쉐이더 코드에 주면서 변화를 확인해볼 수 있습니다.

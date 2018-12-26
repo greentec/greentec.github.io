@@ -33,6 +33,10 @@
                     initial_option['gutters'] = ["CodeMirror-linenumbers", "CodeMirror-foldgutter"];
                 }
 
+                if (hasClass(text_area, 'mark')) {
+                    initial_option['styleSelectedText'] = true;
+                }
+
                 // @TODO: add option variation
                 let editor = CodeMirror.fromTextArea(text_area, initial_option);
 
@@ -398,6 +402,17 @@ void main(){
                     let lines = text_area.dataset.foldlines.split('#');
                     for (let j = 0; j < lines.length; j++) {
                         editor.foldCode(CodeMirror.Pos(parseInt(lines[j]), 0));
+                    }
+                }
+
+                // mark
+                if (hasClass(text_area, 'mark')) {
+                    let lines = text_area.dataset.marklines.split('#');
+                    for (let j = 0; j < lines.length; j++) {
+                        let arr = lines[j].split('_');
+                        editor.markText({line:parseInt(arr[0]), ch:parseInt(arr[1])},
+                                        {line:parseInt(arr[2]), ch:parseInt(arr[3])},
+                                        {className: "styled-background"});
                     }
                 }
             }

@@ -218,207 +218,23 @@ void main() {
 
 [The book of shaders 의 random 페이지](<https://thebookofshaders.com/10/>)에서 이쪽에 관련된 설명을 아주 깔끔하게 하고 있습니다. 저도 이쪽을 많이 참고하여 나름대로 재현해 보았습니다.
 
-<textarea id='shader_text_1' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment-graph inside'>
 y = sin(x);
 // y = sin(x) * 5.0;
 // y = fract(sin(x));
 // y = fract(sin(x) * 5.0);
 // y = fract(sin(x) * 100.0);
-// y = fract(sin(x) * 100000.0);</textarea>
-<iframe id='shader_preview_1' class='previewOutside'>
-</iframe>
-<script type="x-shader/x-fragment" id="shader_frag_1">
-    y = sin(x);
-    // y = sin(x) * 5.0;
-    // y = fract(sin(x));
-    // y = fract(sin(x) * 5.0);
-    // y = fract(sin(x) * 100.0);
-    // y = fract(sin(x) * 100000.0);
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_1'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai'
-        });
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        let PRE_GRAPH_FRAGMENT = `uniform vec2 resolution;
-uniform float time;
+// y = fract(sin(x) * 100000.0);
 
-float lineJitter = 0.5;
-float lineWidth = 7.0;
-float gridWidth = 1.7;
-float scale = 0.0013;
-float zoom = 4.;
-vec2 offset = vec2(0.5);
 
-float function(in float x) {
-  float y = 0.0;`;
-        let POST_GRAPH_FRAGMENT = `\n  return y;
-}
 
-float rand (in float _x) {
-    return fract(sin(_x)*1e4);
-}
 
-float rand (in vec2 co) {
-    return fract(sin(dot(co.xy,vec2(12.9898,78.233)))*43758.5453);
-}
 
-float noise (in float _x) {
-    float i = floor(_x);
-    float f = fract(_x);
-    float u = f * f * (3.0 - 2.0 * f);
-    return mix(rand(i), rand(i + 1.0), u);
-}
 
-float noise (in vec2 _st) {
-    vec2 i = floor(_st);
-    vec2 f = fract(_st);
-    // Four corners in 2D of a tile
-    float a = rand(i);
-    float b = rand(i + vec2(1.0, 0.0));
-    float c = rand(i + vec2(0.0, 1.0));
-    float d = rand(i + vec2(1.0, 1.0));
-    vec2 u = f * f * (3.0 - 2.0 * f);
-    return mix(a, b, u.x) +
-            (c - a)* u.y * (1.0 - u.x) +
-            (d - b) * u.x * u.y;
-}
+</textarea>
+</div>
 
-vec3 plot2D(in vec2 _st, in float _width ) {
-    const float samples = 3.0;
-
-    vec2 steping = _width*vec2(scale)/samples;
-
-    float count = 0.0;
-    float mySamples = 0.0;
-    for (float i = 0.0; i < samples; i++) {
-        for (float j = 0.0;j < samples; j++) {
-            if (i*i+j*j>samples*samples)
-                continue;
-            mySamples++;
-            float ii = i + lineJitter*rand(vec2(_st.x+ i*steping.x,_st.y+ j*steping.y));
-            float jj = j + lineJitter*rand(vec2(_st.y + i*steping.x,_st.x+ j*steping.y));
-            float f = function(_st.x+ ii*steping.x)-(_st.y+ jj*steping.y);
-            count += (f>0.) ? 1.0 : -1.0;
-        }
-    }
-    vec3 color = vec3(1.0);
-    if (abs(count)!=mySamples)
-        color = vec3(abs(float(count))/float(mySamples));
-    return color;
-}
-
-vec3 grid2D( in vec2 _st, in float _width ) {
-    float axisDetail = _width*scale;
-    if (abs(_st.x)<axisDetail || abs(_st.y)<axisDetail)
-        return 1.0-vec3(0.65,0.65,1.0);
-    if (abs(mod(_st.x,1.0))<axisDetail || abs(mod(_st.y,1.0))<axisDetail)
-        return 1.0-vec3(0.80,0.80,1.0);
-    if (abs(mod(_st.x,0.25))<axisDetail || abs(mod(_st.y,0.25))<axisDetail)
-        return 1.0-vec3(0.95,0.95,1.0);
-    return vec3(0.0);
-}
-
-void main(){
-    vec2 st = (gl_FragCoord.xy/resolution.xy)-offset;
-    st.x *= resolution.x/resolution.y;
-
-    scale *= zoom;
-    st *= zoom;
-
-    vec3 color = plot2D(st,lineWidth);
-    color -= grid2D(st,gridWidth);
-
-    gl_FragColor = vec4(color,1.0);
-}`;
-        init();
-        animate();
-
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: PRE_GRAPH_FRAGMENT + document.getElementById('shader_frag_1').textContent + POST_GRAPH_FRAGMENT
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_1');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_1');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_1');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_1').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: PRE_GRAPH_FRAGMENT + document.getElementById('shader_text_1').textContent + POST_GRAPH_FRAGMENT
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 처음에는 평범한 `y = sin(x);` 의 그래프를 보실 수 있습니다. 2행의 주석을 해제하면 `y = sin(x) * 5.0;` 이 됩니다. 함수의 기울기가 커지면서 변화폭이 커지는 것을 알 수 있습니다. 이 말은 아주 약간만 x 값이 변해도 y 값이 변하는 양이 커진다는 것입니다.
 
@@ -458,8 +274,8 @@ vec2 hash( vec2 p ) {
 
 그런데 사실 여기서 분석 중인 [fire shader](<https://www.shadertoy.com/view/MdKfDh>) 에서는 `rand` 함수는 정의만 해놓고 사용하지 않았습니다. 대신 사용한 것이 바로 4행에 나오는 `hash` 함수입니다. `rand` 함수는 1개의 output 을 내기 때문에 반환형이 `float` 이지만, `hash` 함수는 비슷한 구조에서 2개의 output 을 내기 때문에 반환형이 `vec2` 인 것을 눈여겨 봐주시기 바랍니다. 그리고 `0.0~1.0` 사이의 output 이 나오는 `rand` 에 비해 `hash` 는 `-1.0~1.0` 사이의 output 을 냅니다. 그 이유는 hash 의 결과를 바로 `gl_FragColor` 에 쓰려는 것이 아니고, 다른 함수인 noise 에서 불러와서 쓰려고 하기 때문입니다.
 
-
-<textarea id='shader_text_3' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment'>
 uniform vec2 resolution;
 uniform float time;
 vec2 hash( vec2 p ) {
@@ -474,108 +290,8 @@ void main() {
     // x = hash(gl_FragCoord.xy).y;
     gl_FragColor = vec4(x, x, x, 1.0);
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_3' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_3">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_3'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai'
-        });
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
 
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_3').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_3');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_3');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_3');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_3').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_3').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 `hash` 함수의 output 을 `0.0~1.0` 으로 바꿔서 그 중 첫번째인 `x` 값만 color 로 쓰면 rand 와 동일합니다. 12행의 주석을 해제해서 랜덤 값을 `y` 로 바꿔보면 이미지에 패턴이 조금 보이는데, `y` 를 계산하는 데 쓰인 숫자들이 썩 좋은 숫자가 아닌 것을 알 수 있습니다. 하지만 나중에 계산할 fire shader 의 결과에 큰 영향은 미치지 않습니다.
 
@@ -601,8 +317,8 @@ void main() {
 
 사실 두 noise 의 결과물은 눈으로 보기에는 큰 차이를 보이지 않습니다. 아래 코드에서 왼쪽이 Simplex noise(`noise`), 오른쪽이 Perlin noise(`noise_p`) 입니다. Perlin noise 가 구름 같은 모양이 아니네? 라고 생각하시는 분도 계실텐데요, 여기에 같은 noise 를 frequency 를 바꿔가면서 여러 개 더하면 포토샵에서 쉽게 만들 수 있는 구름 이미지 같은 Fractal noise 가 됩니다. 아래에서 설명드릴 `fbm` 이 바로 Fractal Brownian Motion 의 약자로 이런 Fractal noise 를 생성하는 함수입니다.
 
-
-<textarea id='shader_text_4' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment fold mark' data-foldlines='3#8#19' data-marklines='46_0_46_80#49_0_49_80'>
 uniform vec2 resolution;
 uniform float time;
 // from https://www.shadertoy.com/view/XdXGW8
@@ -657,116 +373,7 @@ void main() {
     x = x * 0.5 + 0.5;
     gl_FragColor = vec4(x, x, x, 1.0);
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_4' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_4">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_4'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai',
-            styleSelectedText: true,
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-        });
-        editor.foldCode(CodeMirror.Pos(3, 0));
-        editor.foldCode(CodeMirror.Pos(8, 0));
-        editor.foldCode(CodeMirror.Pos(19, 0));
-        editor.markText({line:46, ch:0}, {line:46, ch:80}, {className: "styled-background"});
-        editor.markText({line:49, ch:0}, {line:49, ch:80}, {className: "styled-background"});
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
-
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_4').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_4');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            // preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_4');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_4');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_4').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_4').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 47 행과 50 행에서 noise 안의 `uv` 에 각각 `10.`, `16.` 을 곱해주는 것을 보셨나요? 이 숫자를 `1.` 로 바꾸면 어떻게 될까요? 또 `100.` 처럼 큰 숫자로 바꾸면 어떻게 될까요?
 
@@ -787,7 +394,8 @@ noise texture 는 보간된 이미지이기 때문에 기본적으로 흐릿합�
 
 noise 이미지는 흐릿해서 실사용에 무리가 있습니다. 이를 보완하는 것이 Fractal noise 입니다.
 
-<textarea id='shader_text_5' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment fold' data-foldlines='2#8'>
 uniform vec2 resolution;
 uniform float time;
 vec2 hash( vec2 p ) {
@@ -835,112 +443,7 @@ void main() {
     }
     gl_FragColor = vec4(x, x, x, 1.0);
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_5' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_5">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_5'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai',
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-        });
-        editor.foldCode(CodeMirror.Pos(2, 0));
-        editor.foldCode(CodeMirror.Pos(8, 0));
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
-
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_5').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_5');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            // preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_5');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_5');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_5').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_5').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 왼쪽이 `noise`, 오른쪽이 `fbm` 함수의 결과물입니다. fbm 쪽에서 훨씬 디테일한 표현이 되고 있는 것을 알 수 있습니다.
 
@@ -971,7 +474,8 @@ fbm 에 대해서는 fbm 에 다시 fbm 을 씌우는 식으로 더 멋진 결�
 
 `bumpMap` 함수는 표면의 디테일을 `normal` 이라는 형태로 추가해줍니다. [^2] `normal` 이란 물체의 중심에서 바깥쪽으로 향하는 표면의 방향 벡터입니다. 법선벡터라고도 합니다. 사실 지금은 3D 가 아닌 2D 영역만 다루고 있기 때문에 여기서의 표면은 실제로 돌출된 부분은 아닙니다.
 
-<textarea id='shader_text_6' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment fold' data-foldlines='3#9#26'>
 #define normalStrength		40.0
 uniform vec2 resolution;
 uniform float time;
@@ -1028,113 +532,8 @@ void main() {
         gl_FragColor = vec4(normal, 1.0);
     }
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_6' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_6">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_6'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai',
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-        });
-        editor.foldCode(CodeMirror.Pos(3, 0));
-        editor.foldCode(CodeMirror.Pos(9, 0));
-        editor.foldCode(CodeMirror.Pos(26, 0));
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
 
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_6').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_6');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            // preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_6');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_6');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_6').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_6').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 좌측은 `fbm`, 우측은 `bumpMap` 의 계산 결과인 `normal` 입니다. 이미지가 전반적으로 푸르스름한데, `normal` 벡터의 x, y, z 를 각각 R, G, B 채널에 저장하기 때문입니다. x, y 는 각각 `0.0~1.0` 사이의 값을 가지는 반면에, 44행에서 z 에는 `1.` 값을 줬습니다. 따라서 이미지가 파란색으로 보이는 것입니다.
 
@@ -1151,7 +550,8 @@ void main() {
 
 그럼 위에서 계산한 `normal` 이 실제로 어떻게 fire shader 를 만드는 데에 쓰이는지 알아보겠습니다.
 
-<textarea id='shader_text_7' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment fold' data-foldlines='7#13#30#40'>
 uniform vec2 resolution;
 uniform float time;
 #define timeScale 			time * 1.0
@@ -1206,114 +606,7 @@ void main() {
     vec3 normal = bumpMap(uv * vec2(1.0, 0.3) + distortionMovement * timeScale);
     gl_FragColor = vec4(normal, 1.0);
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_7' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_7">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_7'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai',
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-        });
-        editor.foldCode(CodeMirror.Pos(7, 0));
-        editor.foldCode(CodeMirror.Pos(13, 0));
-        editor.foldCode(CodeMirror.Pos(30, 0));
-        editor.foldCode(CodeMirror.Pos(40, 0));
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
-
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_7').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_7');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            // preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_7');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_7');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_7').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_7').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 `bumpMap` 으로 계산된 `normal` 이 `time` 의 영향을 받아서 위쪽으로 이동하고 있습니다. 5 행의 `distortionMovement` 에 y 값이 `-0.3` 으로 들어가 있기 때문에 위쪽으로 이동하는 것입니다. 이 값을 바꿔볼 수 있고, x 값도 바꿔볼 수 있습니다.
 
@@ -1327,7 +620,8 @@ void main() {
 
 여기서 쓰인 displacement 를 `gl_FragColor` 로 뽑아보면 어떤 일이 일어나는지를 명확하게 알 수 있습니다.
 
-<textarea id='shader_text_8' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment fold' data-foldlines='7#13#30#40'>
 uniform vec2 resolution;
 uniform float time;
 #define timeScale 			time * 1.0
@@ -1388,114 +682,8 @@ void main() {
     displacement = displacement * 0.5 + 0.5;
     gl_FragColor = vec4(displacement, 0.0, 1.0);
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_8' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_8">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_8'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai',
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-        });
-        editor.foldCode(CodeMirror.Pos(7, 0));
-        editor.foldCode(CodeMirror.Pos(13, 0));
-        editor.foldCode(CodeMirror.Pos(30, 0));
-        editor.foldCode(CodeMirror.Pos(40, 0));
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
 
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_8').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_8');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            // preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_8');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_8');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_8').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_8').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 왼쪽은 `normal`, 오른쪽은 `displacement` 입니다. color 값 표시를 위해서 `-1.0~1.0` 사이로 제한된 값을 `0.0~1.0` 으로 바꿨습니다. 흐릿하지만 뭔가 움직이고 있는 모습이 보입니다. distortionStrength 를 10.1 같은 큰 값으로 줘보면 확실히 뭔가 변하고 있다는 것을 알 수 있습니다.
 
@@ -1505,7 +693,8 @@ void main() {
 
 `displacement` 가 제대로 작동하는지 확인하기 위해서는 코드를 좀 더 봐야합니다. displacement 는 그 자체로서 의미를 가지기보다는 불 텍스쳐에 영향을 끼치는 역할을 하기 때문입니다.
 
-<textarea id='shader_text_9' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment fold' data-foldlines='7#13#30#40'>
 uniform vec2 resolution;
 uniform float time;
 #define timeScale 			time * 1.0
@@ -1566,114 +755,8 @@ void main() {
 
     gl_FragColor = vec4(n, n, n, 1.0);
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_9' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_9">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_9'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai',
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-        });
-        editor.foldCode(CodeMirror.Pos(7, 0));
-        editor.foldCode(CodeMirror.Pos(13, 0));
-        editor.foldCode(CodeMirror.Pos(30, 0));
-        editor.foldCode(CodeMirror.Pos(40, 0));
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
 
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_9').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_9');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            // preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_9');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_9');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_9').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_9').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 드디어 불 텍스쳐에 가까운 이미지가 모습을 드러냈습니다. 54 행에서는 `displacement` 를 `uv` 에 더해주고, 56 행에서는 `uvT` 를 계산합니다. uv Texture 의 준말인 듯 합니다. 52 행과 구조가 비슷한 점을 주목해주십시오. y 에 곱하는 값이 `0.5` 로 위아래가 길쭉한 이미지를 만들고, `fireMovement` 도 y 의 속도가 `-0.5` 로 위쪽으로 올라가는 모습입니다.
 
@@ -1681,9 +764,10 @@ void main() {
 
 57 행에서는 frequency 에 `8.0` 을 주면서 `fbm` 값을 얻고 있습니다. 이 값을 변화시키면 이미지에 어떤 영향이 있는지는 앞에서 많이 말씀드린 것 같습니다. `pow` 함수는 거듭제곱을 계산하는 내장 함수입니다. 지수가 `1.0` 이기 때문에 계산은 따로 하고 있지 않지만, 숫자를 바꿔보면 이미지가 진해지거나 연해지는 것을 확인할 수 있습니다. 값이 `0.0~1.0` 사이의 수이기 때문에 거듭제곱이 1보다 크면 값은 더 작아지고, 반대이면 값은 더 커집니다.
 
-마지막으로 불의 강하기에 관여하는 gradient 와 색상을 살펴보겠습니다.
+마지막으로 불의 강도에 관여하는 gradient 와 색상을 살펴보겠습니다.
 
-<textarea id='shader_text_10' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment fold' data-foldlines='7#13#30#40'>
 uniform vec2 resolution;
 uniform float time;
 #define timeScale 			time * 1.0
@@ -1749,114 +833,8 @@ void main() {
     // gl_FragColor = vec4(color, 1.0);
     gl_FragColor = vec4(vec3(finalNoise), 1.);
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_10' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_10">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_10'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai',
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-        });
-        editor.foldCode(CodeMirror.Pos(7, 0));
-        editor.foldCode(CodeMirror.Pos(13, 0));
-        editor.foldCode(CodeMirror.Pos(30, 0));
-        editor.foldCode(CodeMirror.Pos(40, 0));
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
 
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_10').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_10');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            // preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_10');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_10');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_10').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_10').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 59 행에 앞에서 나온 `pow` 내장 함수가 다시 나왔습니다. $$5 \times (1 - uv.y)^2$$ 는 `uv.y` 가 `0.0~1.0` 사이일 때 `5.0~0.0` 의 값을 가지게 되고, y 가 작을수록 큰 값을 가진다는 것을 알 수 있습니다. 60 행의 `finalNoise` 는 여기에 `n` 을 곱해서 `n` 은 y 가 작을수록 큰 값을 갖게 됩니다.
 

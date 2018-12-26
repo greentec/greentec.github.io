@@ -437,3 +437,6 @@ svg.sns {
     height: 3.33em !important;
     fill: #a3a3a3 !important;
 }
+.language-nil {
+    border: none;
+}

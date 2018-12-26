@@ -16,6 +16,7 @@
                 let initial_option = {
                     'mode': 'javascript',
                     'lineNumbers': true,
+                    'lineWrapping': true,
                     'theme': 'monokai'
                 };
 

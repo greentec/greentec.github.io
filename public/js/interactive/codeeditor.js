@@ -97,9 +97,9 @@
                         else {
                             canvas = document.createElement('canvas');
                             canvas.id = 'editor_canvas_' + i.toString();
-                            editor.display.wrapper.parentNode.appendChild(canvas);
                             canvas.width = 360;
-                            canvas.height = 300;
+                            canvas.height = 280;
+                            editor.display.wrapper.parentNode.appendChild(canvas);
 
                             if (hasClass(text_area, 'outside')) {
                                 addClass(canvas, 'previewOutside');
@@ -153,7 +153,11 @@
                         });
                         mesh = new THREE.Mesh(geometry, material);
                         scene.add(mesh);
-                        renderer = new THREE.WebGLRenderer({alpha: true});
+                        let canvas = document.createElement('canvas');
+                        canvas.id = 'editor_canvas_' + i.toString();
+                        canvas.width = 360;
+                        canvas.height = 280;
+                        renderer = new THREE.WebGLRenderer({alpha: true, canvas: canvas});
                         renderer.setPixelRatio(window.devicePixelRatio);
                         editor.display.wrapper.parentNode.appendChild(renderer.domElement);
                         uniforms.resolution.value.x = renderer.domElement.width;
@@ -329,7 +333,11 @@ void main(){
                         });
                         mesh = new THREE.Mesh(geometry, material);
                         scene.add(mesh);
-                        renderer = new THREE.WebGLRenderer({alpha: true});
+                        let canvas = document.createElement('canvas');
+                        canvas.id = 'editor_canvas_' + i.toString();
+                        canvas.width = 360;
+                        canvas.height = 280;
+                        renderer = new THREE.WebGLRenderer({alpha: true, canvas: canvas});
                         renderer.setPixelRatio(window.devicePixelRatio);
                         editor.display.wrapper.parentNode.appendChild(renderer.domElement);
                         uniforms.resolution.value.x = renderer.domElement.width;

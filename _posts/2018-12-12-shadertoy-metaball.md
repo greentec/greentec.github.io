@@ -37,114 +37,22 @@ shader: true
 
 먼저 11행에 대해서 알아보기 위해 코드를 넣어보겠습니다.
 
-<textarea id='shader_text_0' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment'>
 uniform vec2 resolution;
 uniform float time;
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
     // uv -= .5;
     gl_FragColor = vec4(vec2(uv), 0.0, 1.0);
-}</textarea>
-<iframe id='shader_preview_0' class='previewOutside'>
-</iframe>
-<script type="x-shader/x-fragment" id="shader_frag_0">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_0'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai'
-        });
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
+}
 
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_0').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_0');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
 
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_0');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
 
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
 
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_0');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_0').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_0').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
+</textarea>
+</div>
 
 &nbsp;
 5행의 주석에 `uv -= .5;` 가 추가되어 있습니다. 주석을 해제하면 화면이 전반적으로 어두워지는 것을 확인할 수 있습니다. 화면 전반적으로 `0.0~1.0` 범위에 있던 uv.x, uv.y 값에서 0.5 를 뺐기 때문에, 그 범위는 `-0.5~0.5` 가 된다는 것을 짐작할 수 있습니다.
@@ -157,7 +65,8 @@ shader 의 컬러 값은 0.0~1.0 만 유효한 값으로 인정하고, 나머지
 
 그럼 15행의 `uv.x *= iResolution.x / iResolution.y;`은 무엇일까요?
 
-<textarea id='shader_text_1' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment'>
 uniform vec2 resolution;
 uniform float time;
 
@@ -171,108 +80,7 @@ void main() {
     float c = circle(uv, vec2(0.,0.));
     gl_FragColor = vec4(c, 0, 0, 1.0);
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_1' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_1">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_1'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai'
-        });
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
-
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_1').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_1');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_1');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_1');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_1').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_1').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 &nbsp;
 일단 `circle` 함수가 추가되었는데 이 부분은 바로 뒤에 설명드리도록 하겠습니다. 먼저 10행의 주석을 해제하며 차이를 직접 확인해보시기 바랍니다. 원의 너비가 달라지는 것이 느껴지시나요?
@@ -294,7 +102,8 @@ $$
 
 이 식을 shader 로 표현하면 이렇게 볼 수 있습니다.
 
-<textarea id='shader_text_2' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment'>
 uniform vec2 resolution;
 uniform float time;
 
@@ -310,108 +119,7 @@ void main() {
     gl_FragColor = vec4(c, 0, 0, 1.0);
     // gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_2' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_2">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_2'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai'
-        });
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
-
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_2').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_2');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_2');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_2');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_2').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_2').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 &nbsp;
 `circle` 함수를 먼저 뜯어보면, `circle` 함수의 인수는 `uv` 하나입니다. 그리고 `distance` 는 shader 에서 쓰는 내장 함수 입니다. 이름 그대로 벡터와 벡터 사이의 거리를 구할 수 있습니다. 자세한 내용은 The book of shaders 의 [distance](<https://thebookofshaders.com/glossary/?search=distance>)에 예제와 함께 설명이 되어 있습니다.
@@ -432,26 +140,17 @@ $$
 
 이 등식의 양변에 루트를 취하면 오른쪽 항의 분모는 $$\sqrt{x^2+y^2}$$ 가 됩니다. 이 식은 원점 `(0,0)` 에서 `(x,y)` 까지의 거리를 나타내는 값이 됩니다. shader 에서는 내장 함수인 `distance` 로 축약해서 쓸 수 있습니다. 그리고 원점 `(0,0)` 의 자리에 `pos` 인수를 넣으면 두번째 예제에서 보셨던 `circle` 함수가 됩니다. 오른쪽 항의 분자에 해당하는 부분은 루트를 취했기 때문에 $$r^2$$ 에서 $$r$$, 즉 원의 반지름이 됩니다. 두번째 예제에서는 `0.05` 를 사용했습니다.
 
-<div>
-<textarea id='shader_text_3' height='10' style='display:none;'>
+
+```glsl
 float circle(vec2 uv, vec2 pos) {
     return 0.05/distance(uv, pos);
-}</textarea>
-</div>
-<script>
-    (function() {
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_3'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            theme: 'monokai',
-            readOnly: true
-        });
-    })();
-</script>
+}
+```
 
 아래 코드에서는 G 채널에도 값이 들어가서, 원래 shadertoy code 인 [Metaballs - kinda yellow](<https://www.shadertoy.com/view/4dVfWK>)와 같은 색조합을 볼 수 있습니다.
 
-<textarea id='shader_text_4' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment'>
 uniform vec2 resolution;
 uniform float time;
 
@@ -466,108 +165,7 @@ void main() {
     // float c = circle(uv, vec2(sin(time * .4) * .4, cos(time * .4) * .4));
     gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_4' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_4">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_4'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai'
-        });
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
-
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_4').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_4');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_4');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_4');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_4').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_4').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 단순히 step 함수로 영역을 표시해주는 것보다 미적으로 더 괜찮아 보입니다. 색깔 지정을 바꿔가며 테스트해보시면 더 멋진 결과를 찾으실 수도 있을 것 같습니다.
 
@@ -591,7 +189,8 @@ c += circle(uv, vec2(sin(time * .7) * .4, cos(time * .8) * .4), r);
 
 결과는 우리가 확인할 수 있는 것처럼 여러 개의 원이 더해진 결과였습니다. 실제로 그렇게 되는지 한번 해보겠습니다.
 
-<textarea id='shader_text_5' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment'>
 uniform vec2 resolution;
 uniform float time;
 
@@ -608,108 +207,8 @@ void main() {
     c += circle(uv, vec2(0.4, 0.));
     gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_5' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_5">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_5'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai'
-        });
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
 
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_5').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_5');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_5');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_5');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_5').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_5').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 결과는 잘 나옵니다. 그런데 잠깐만요. 가운데 원이 조금 커보이지 않습니까? 착시일까요? 결과를 확인하기 위해서, 각 원의 좌표를 좀 더 가깝게 해보면 어떨까요? 결과는 아래와 같습니다.
 
@@ -732,7 +231,8 @@ void main() {
 
 영향력이 합쳐진다는 것을 Ryan Geiss 의 글에서는 band 를 나눠서 알아보기 쉽게 표현하고 있습니다. 우리도 해볼 수 있습니다.
 
-<textarea id='shader_text_6' width='400' height='400' style='display:none;'>
+<div>
+<textarea class='codeeditor fragment'>
 uniform vec2 resolution;
 uniform float time;
 
@@ -759,108 +259,8 @@ void main() {
 
     gl_FragColor = vec4(c, c * c / 3., 0, 1.0);
 }</textarea>
-<div class='previewContainer'>
-    <iframe id='shader_preview_6' class='previewInside'>
-    </iframe>
 </div>
-<script type="x-shader/x-fragment" id="shader_frag_6">
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-</script>
-<script>
-    (function() {
-        let delay;
-        let editor = CodeMirror.fromTextArea(document.getElementById('shader_text_6'), {
-            mode: 'x-shader/x-fragment',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai'
-        });
-        let stats;
-        let camera, scene, renderer;
-        let material, mesh;
-        let uniforms;
-        let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-        init();
-        animate();
 
-        function init() {
-            camera = new THREE.Camera();
-            camera.position.z = 1;
-            scene = new THREE.Scene();
-            var geometry = new THREE.PlaneBufferGeometry(2, 2);
-            uniforms = {
-                time: {
-                    type: "f",
-                    value: 1.0
-                },
-                resolution: {
-                    type: "v2",
-                    value: new THREE.Vector2()
-                }
-            };
-            material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: VERTEX,
-                fragmentShader: document.getElementById('shader_frag_6').textContent
-            });
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            renderer = new THREE.WebGLRenderer({alpha: true});
-            renderer.setPixelRatio(window.devicePixelRatio);
-            let previewFrame = document.getElementById('shader_preview_6');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            preview.body.style.margin = 0;
-            preview.body.appendChild(renderer.domElement);
-            stats = new Stats();
-            preview.body.appendChild(stats.dom);
-            onWindowResize();
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize(event) {
-            let previewFrame = document.getElementById('shader_preview_6');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-
-            renderer.setSize(preview.body.offsetWidth, preview.body.offsetHeight);
-            uniforms.resolution.value.x = renderer.domElement.width;
-            uniforms.resolution.value.y = renderer.domElement.height;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            stats.update();
-        }
-
-        function render() {
-            uniforms.time.value += 0.02;
-            renderer.render(scene, camera);
-        }
-
-        editor.on("change", function() {
-            clearTimeout(delay);
-            delay = setTimeout(updatePreview, 300);
-        });
-        function updatePreview() {
-            let previewFrame = document.getElementById('shader_preview_6');
-            let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
-            let canvas;
-            let button;
-            let p;
-
-            document.getElementById('shader_text_6').textContent = editor.getValue();
-            material = new THREE.ShaderMaterial({
-                uniforms: material.uniforms,
-                vertexShader: material.vertexShader,
-                fragmentShader: document.getElementById('shader_text_6').textContent
-            });
-            mesh.material = material;
-        }
-        setTimeout(updatePreview, 300);
-    })();
-</script>
 
 6행의 `return floor(r/distance(uv, pos) * 5.) / 5.;` 에서는 `floor` 함수를 썼습니다. [floor](<https://thebookofshaders.com/glossary/?search=floor>) 는 계단 함수로, 실수에서 소수점을 날리는 역할을 합니다. python 의 `int()`, javascript 의 `Math.floor()` 와 같은 역할입니다.
 

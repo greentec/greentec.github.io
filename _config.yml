@@ -11,7 +11,7 @@ author:
 # GitHub Pages / Jekyll configuration
 baseurl:            ''
 permalink:          /:title/
-paginate:           5
+paginate:           999
 paginate-path:      "/page:lang/page:num/"
 defaults:
   -

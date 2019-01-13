@@ -1,8 +1,8 @@
 ---
 layout: page
-permalink: /tags/
+permalink: /tags_en/
 title: Tags
-lang: kr
+lang: en
 ref: tags
 ---
 
@@ -23,9 +23,11 @@ ref: tags
     <h3 id="#{{ tag_name | slugize }}">{{ tag_name }}</h3>
     <a name="{{ tag_name | slugize }}"></a>
     {% for post in site.tags[tag_name] %}
-    <article class="archive-item">
-      <h4><span class="post-date">{{ post.date | date_to_string }} • <a href="{{ root_url }}{{ post.url }}">{{post.title}}</a></span></h4>
-    </article>
+      {% if post.lang == page.lang %}
+        <article class="archive-item">
+          <h4><span class="post-date">{{ post.date | date_to_string }} • <a href="{{ root_url }}{{ post.url }}">{{post.title}}</a></span></h4>
+        </article>
+      {% endif %}
     {% endfor %}
   </div>
 {% endfor %}

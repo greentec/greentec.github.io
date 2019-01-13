@@ -1,7 +1,7 @@
 ---
-title: 육각형으로 구성된 맵 만들기
+title: Create a hexagonal map
 date: 2018-12-09
-lang: kr
+lang: en
 ref: hexagonal-map
 tags:
 - procedural
@@ -15,26 +15,27 @@ interactive: true
 
 &nbsp;
 
-## 도입
+## Introduction
 
-지금은 보안 취약점으로 인한 해킹의 위험 때문에 점점 쓰면 안되는 기술이 되고 있지만, 약 10년~15년 전에는 [플래시](<https://en.wikipedia.org/wiki/Adobe_Flash>)가 최고의 웹 컨텐츠 제작 도구였습니다. 아직 자바스크립트는 정확한 표준을 정하지 못하고 있었기 때문에 익스플로러, 크롬, 오페라 등의 브라우저마다 작성해야 할 코드가 조금씩 달라졌습니다. 생산성을 높이기 위해서는 모든 브라우저에서 동일하게 동작하는 결과물이 나오는 도구가 필요했고, 그것이 바로 Adobe 사의 플래시였습니다.
+It is now a technology that should not be used because of the risk of hacking because of security vulnerabilities, but about 10 to 15 years ago [Flash](<https://en.wikipedia.org/wiki/Adobe_Flash>) created the best web contents. JavaScript has not yet set the right standards, so the code you need to write for browsers such as Explorer, Chrome, and Opera has changed a bit. To increase productivity, we needed a tool that would produce the same results on all browsers, and that was Adobe's Flash.
 
-플래시로는 수많은 게임들도 제작되었는데, 그 중 명작의 반열에 드는 것 중 하나로 [Dice wars](<https://www.gamedesign.jp/games/dicewars/>) 를 뽑고 싶습니다. 이 게임은 깔끔한 벡터 그래픽, 명확한 전략성, 단순하면서도 설득력 있는 게임 규칙이 어우러진 훌륭한 게임입니다. 관심이 있으시면 한번 해보셔도 좋을 것 같습니다. 다행히 제작자가 html5 에서도 돌아가는 버전을 만들어 놓았네요. 오늘은 이 게임의 구성요소 중에서 전장이 되는 랜덤맵을 만드는 부분을 재현해보려고 합니다.
+A lot of games are made in Flash, and I would like to draw [Dice wars](<https://www.gamedesign.jp/games/dicewars/>) as one of the masterpieces. This game is a great game that combines neat vector graphics, clear strategy, and simple yet convincing game rules. If you are interested, I suggest you try it. Fortunately, the author has created a version that also runs on html5. Today, I try to reproduce the part of the game that makes the battleground random map.
 
 ![](<../images/hexagonal_map_0.png>)
 
 &nbsp;
 
-## 육각형 그리드
+## Hexagonal grid
 
-Dice wars 의 랜덤맵은 작은 육각형들로 구성되어 있습니다. 육각형으로 구성된 맵을 만들기 위해서는 육각형 그리드에 대한 설명을 하지 않을 수 없습니다. 이에 대한 자료는 Red Blob Games 의 Amit Patel 이 아주 상세하게 [반응형 웹에 정리해 놓은 자료](<https://www.redblobgames.com/grids/hexagons/>)가 있습니다. 이 블로그에는 이 외에도 유익한 내용이 가득 들어있기 때문에 제 즐겨찾기 최상단에 위치한 페이지 중 하나입니다.
+The random map of Dice wars consists of small hexagons. To create a hexagonal map, I have to explain the hexagonal grid. Amit Patel of Red Blob Games wrote a very detailed [Resources on the Responsive Web](<https://www.redblobgames.com/grids/hexagons/>) about this subject. This blog is one of the pages at the top of my favorites because it is full of other useful content.
 
-Amit Patel 은 육각형 그리드에 대해서 많은 자료 조사를 한 후에 그리드를 구현하는 방법을 간단하게 정리했습니다. 먼저 육각형 그리드는 셀의 평평한 부분이 위쪽에 오는 것(flat topped), 뾰족한 부분이 위쪽에 오는 것(pointy topped)으로 크게 2가지로 분류할 수 있습니다. 또 좌표계(coordinates)를 어떻게 정하느냐에 따라서 Offset, Doubled, Axial, Cube 의 4가지로 분류할 수 있습니다. 각 좌표계는 서로 변환이 가능하기 때문에 사실상 하나의 육각형 그리드를 나타낸다고 할 수 있습니다.
+Amit Patel has done a lot of research on hexagonal grids and then put together a simple way to implement a grid. First, the hexagonal grid can be classified into two broad categories: the flat top of the cell (flat topped) and the pointed top (pointy topped). Depending on how you define the coordinates, you can classify them into four types: Offset, Doubled, Axial, and Cube. Each coordinate system can be converted to another.
 
-저는 Cube 좌표계를 주로 사용합니다. Cube 좌표계는 x, y, z 의 3개 축으로 2차원 평면의 육각형 그리드를 나타내는 표현 방법입니다. 이 좌표계에서는 회전 변환, 벡터 연산이 쉽고 원점(0, 0, 0)을 중심으로 한 대칭성도 쉽게 얻을 수 있기 때문에 여러 가지로 편리한 점이 많습니다.
+I mainly use the Cube coordinate system. The Cube coordinate system is a representation of a two-dimensional hexagonal grid with three axes, `X`, `Y`, and `Z`. In this coordinate system, it is easy to rotate and vectorize, and symmetry around the origin `(0, 0, 0)` can be easily obtained.
 
-아래 코드는 육각형을 javascript 의 function 을 이용해서 클래스처럼 만든 것입니다. [jQuery](<https://jquery.com/>) 를 만든 존 레식이 쓴 [자바스크립트 닌자 비급](<https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=38913750>)에서는 다음과 같이 함수와 생성자를 분리하고 있습니다.
-> 함수와 메서드의 이름은 보통 그들이 하는 것을 설명하는 **동사** (skulk(), creep(), sneak(), doSomethingWonderful() 기타 등등)로 시작한다. 그리고 첫 글자는 **소문자** 이다. 반면, 생성자의 이름은 보통 생성할 객체가 무엇인지를 설명하는 **명사** 이고 **대문자** 로 시작한다. (Ninja(), Samurai(), Ronin(), KungFuPanda() 기타 등등)  - 「자바스트립트 닌자 비급」, 68p.
+The following code creates the hexagon as a class using the javascript function. [Javascript Ninja](<https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=38913750>) written by John Resig who create [jQuery](<https://jquery.com/>) separates the function from the constructor as follows:
+
+> Functions and methods are generally named starting with a **verb** that describes what they do (skulk(), creep(), sneak(), doSomethingWonderful(), and so on) and start with a **lowercase** letter. Constructors, on the other hand, are usually named as a **noun** that describes the object that’s being constructed and start with an **uppercase** character; Ninja(), Samurai(), Ronin(), KungFuPanda(), and so on. - 「Javascript Ninja」, 54p.
 
 <div>
 <textarea id='hex_0' height='10' style='display:none;'>
@@ -44,7 +45,7 @@ function HexCell(x, y, z) {
     this._z = z;
 }
 
-// x=1, y=2, z=3 좌표를 가지는 HexCell 을 생성합니다.
+// Create a HexCell at x=1, y=2, z=3.
 let hexCell = new HexCell(1, 2, 3);</textarea>
 </div>
 <script>
@@ -58,7 +59,7 @@ let hexCell = new HexCell(1, 2, 3);</textarea>
     })();
 </script>
 &nbsp;
-이렇게 HexCell 을 정의한 뒤에 HexCell 로 구성되는 HexGrid 를 만들 수 있습니다.
+After defining HexCell in this way, you can create a HexGrid consisting of HexCell.
 
 <div>
 <textarea id='hex_1' style='display:none;'>
@@ -165,20 +166,20 @@ function drawGrid(gridArray) {
 </script>
 
 &nbsp;
-1행의 initGrid(5) 에서 5는 HexGrid 의 반지름을 나타내는 크기 단위입니다. 즉 중심(0,0,0) 에서 가장 멀리 떨어진 HexCell 까지의 거리가 됩니다. 5를 다른 숫자로 바꿔보면, HexGrid 가 변하는 것을 확인할 수 있습니다.
+In line 1 of `initGrid(5)`, `5` is the unit of measure that represents the radius of the HexGrid. In other words, `5` is the distance from the center `(0,0,0)` to the HexCell farthest from the center. If you change `5` to a different number, you can see that the HexGrid is changing.
 
 &nbsp;
-## 지역 만들기
+## Create a region
 
-Dice wars 의 맵으로 돌아가보면 하나의 맵은 여러 개의 지역으로 나눠져 있는 것을 확인할 수 있습니다. 그리고 이 지역은 각각 여러 개의 HexCell 로 구성되어 있습니다. 그렇다면 각 HexCell 을 중복되지 않게 들고 있는 배열 또는 object가 필요할 것 같습니다. 여기서는 object 를 써보겠습니다.
+Returning to the map of Dice wars, you can see that one map is divided into several regions. And this area is composed of several HexCells each. If so, you may need an array or object that holds each HexCell non-overlapping. We will use object here.
 
-그런데 이런 지역을 어떻게 구성해야 할까요? 간단한 procedural 한 방법을 생각해 보면, 모든 HexCell 에 0~N-1 까지의 ID 를 랜덤하게 부여한 뒤에, Schelling Segregation Model 같은 기법을 사용해서 인접하는 곳에 같은 셀들이 모이도록 하는 작업을 할 수 있을 것 같습니다.
+But how do you organize these areas? If we think of a simple procedural method, we can randomly assign 0 to N-1 IDs to all HexCells, then use the **Schelling Segregation Model** to get the same cells to be contiguous.
 
-Thomas Schelling 은 노벨경제학상을 수상한 미국의 경제학자로, 게임이론을 통해서 주거지의 분리(Segregation) 현상이 어떻게 생기는지에 대한 이론을 정립했습니다. 이 이론은 간단하게 말하면 서로 다른 인종이 인접해서 살고 있다고 했을 때, 소수인 인종이 비슷한 인종을 찾아서 이주하는 현상을 수학적 모델로 정리한 것입니다. 이것을 Schelling Segregation Model 이라고 합니다.
+Thomas Schelling is an American economist who won the Nobel Prize in economics. He established theory on how segregation of settlements occurs through game theory. This theory is simply a mathematical model of the phenomenon of minority races finding and migrating to similar races when different races live together. This is called the Schelling Segregation Model.
 
-참고할 만한 링크로는 [이곳](<http://nifty.stanford.edu/2014/mccown-schelling-model-segregation/>)과, [제가 예전에 만든 프로그램](<https://greentec.github.io/playground/html/Segregation.html>)을 보셔도 되겠습니다. 다만 제 프로그램은 예전에 만들어서 Flash 버전인 점은 아쉬운 부분입니다.
+Here are some links you can see: [here](<http://nifty.stanford.edu/2014/mccown-schelling-model-segregation/>), and [my previously created program](<https://greentec.github.io/playground/html/Segregation.html>). However, my program is a Flash version because it was created a long time ago.
 
-위의 두 개 링크에서는 사각 그리드 위에서의 segregation 모델을 다루고 있습니다. 육각 그리드 위에서도 가능할 것입니다. 먼저 HexCell 에서 race 를 추가해줍니다.
+The two links above cover the segregation model on a rectangular grid. It will also be possible on the hexagonal grid. First, add a race in HexCell.
 
 <div>
 <textarea id='hex_2' height='10' style='display:none;'>
@@ -201,7 +202,7 @@ function HexCell(x, y, z, race) {
     })();
 </script>
 &nbsp;
-이 다음에는 실제로 race 에 따라 각 HexCell 의 색상이 달라지도록 합니다.
+The next step is to actually change the color of each HexCell depending on the race.
 
 <div>
 <textarea id='hex_3' style='display:none;'>
@@ -318,13 +319,13 @@ function drawGrid(gridArray) {
 </script>
 
 &nbsp;
-1행의 raceCount 를 바꿔보면 각 셀이 가질 수 있는 race 의 종류가 바뀌는 것을 확인할 수 있습니다.
+Changing line 1's `raceCount` changes the type of race each cell can have.
 
-그럼 이제 Schelling Segregation Model 을 적용해 보겠습니다. 간단하게 각 셀에서 이웃의 수를 센 다음에 자신과 race 가 같은 이웃의 수가 너무 적다면 임의의 빈 셀로 이동합니다. 그리고 다시 검사 후 이동을 반복해서 모든 셀이 만족하게 될 때까지 이 과정을 반복합니다.
+Now let's apply the Schelling Segregation Model. Simply count the number of neighbors in each cell, and if there are too few neighbors with the same race, move to any empty cell. Repeat this process until all the cells are satisfied.
 
 `let happyNeighborCount = [0, 1, 1, 2, 2, 2, 3];`
 
-`happyNeighborCount` 에는 셀의 이웃 수가 0~6개일 때 몇 개의 셀이 같은 race 이면 만족 상태가 되는지에 대한 정의가 들어있습니다. 이보다 같은 race 의 셀 수가 적을 경우 불만족 상태가 되어 빈 셀로 이동하게 됩니다.
+`happyNeighborCount` defines the minimum number of identical race neighbors needed to be satisfied when the number of neighbors in the cell is 0 to 6. If the number of cells in the same race is less than `happyNeighborCount`, it becomes unsatisfactory and moves to the empty cell.
 
 <div>
 <textarea id='hex_4' style='display:none;'>
@@ -423,7 +424,7 @@ function doSegregation() {
     let previewFrame = document.getElementById('hex_4_preview');
     let preview = previewFrame.contentDocument ||  previewFrame.contentWindow.document;
     let p = preview.getElementById('segregationP');
-    p.innerHTML = `만족도 : ${Math.floor(satisfied / total * 10000) / 100} %`;
+    p.innerHTML = `satisfaction : ${Math.floor(satisfied / total * 10000) / 100} %`;
 }
 
 function shuffleArray(array) {
@@ -567,12 +568,12 @@ function drawGrid(gridArray) {
 </script>
 
 &nbsp;
-1 Step Segregation 버튼을 계속 누르면 만족도가 100% 에 수렴하게 됩니다. 같은 색끼리 합쳐보면 Dice wars 에서 볼 수 있었던 영역과 비슷한 모습이 됩니다.
+If you keep pressing the "1 Step Segregation" button, the satisfaction will converge to 100%. When we combine the same colors, it looks similar to the area we saw in Dice wars.
 
 ![](<../images/hexagonal_map_1.png>)
 
-이렇게 Dice wars 의 맵을 Schelling Segregation Model 을 사용해서 반복적인 방법으로 만들 수 있습니다. 그런데 Dice wars 의 제작자는 다른 방법을 사용한 것 같습니다. 관심이 있으신 분들은 [공개되어 있는 소스](<https://www.gamedesign.jp/games/dicewars/game.js>)의 `make_map()` 함수 부분을 참고하시면 되겠습니다.
+This way, the map of Dice wars can be created in an iterative way using the Schelling Segregation Model. But the creator of Dice wars seems to have used a different method. If you are interested, you can refer to the `make_map()` function section of [Open source](<https://www.gamedesign.jp/games/dicewars/game.js>).
 
-이제 두번째 글인데 마크다운으로 글을 쓰는 게 꽤 힘든 일인 것 같습니다. 더군다나 egloos 에서는 할 수 없었던 interactive 요소가 있는 글을 시도했더니 하루가 훌쩍 갔습니다. 그래도 보람찬 일인 것 같습니다. jekyll 블로그에서 interactive code 를 구현하는 부분에 대해서도 어느 정도 정리가 된다면 블로그에 올릴 수 있도록 하겠습니다. 자료가 많지 않아서 구현하는 데에 너무 오래 걸렸거든요. 그럼 긴 글을 읽어주셔서 감사합니다.
+Now it's the second post, and writing the markdown seems to be a pretty tough job. Furthermore, I tried to write an interactive element that could not be done in egloos. It seems to be a rewarding thing though. Later, if I have some time to spare, I'll be blogging about implementing the interactive code in the jekyll blog. It took too long to implement because there were not enough resources. Thank you for reading the long article.
 
 &nbsp;

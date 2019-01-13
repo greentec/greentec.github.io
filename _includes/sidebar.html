@@ -9,13 +9,17 @@
   </div>
 
   <nav class="sidebar-nav">
-    <a class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}" href="{{ site.baseurl }}/">Home</a>
-    <!-- <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/about/">About</a> -->
-    <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/homepage.html">Inventory</a>
-    <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/tags">Tags</a>
-
+    {% if page.lang == 'kr' %}
+      <a class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}" href="{{ site.baseurl }}/">Home</a>
+      <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/homepage.html">Inventory</a>
+      <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/tags">Tags</a>
+    {% else %}
+      <a class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}" href="{{ site.baseurl }}/index_en/">Home</a>
+      <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/homepage.html">Inventory</a>
+      <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/tags_en">Tags</a>
+    {% endif %}
     <!-- {% assign posts_list = site.posts | sort:"url" %} -->
-    {% assign posts_list = site.posts %}
+    {% assign posts_list = site.posts | where:"lang", page.lang %}
     {% for node in posts_list %}
       {% if node.title != null %}
         <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ node.url }}">📝 {{ node.title }}</a>

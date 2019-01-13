@@ -1,6 +1,8 @@
 ---
 title: Shadertoy 불 쉐이더 분석
 date: 2018-12-15
+lang: kr
+ref: shadertoy-fire-shader
 tags:
 - shader
 - shadertoy

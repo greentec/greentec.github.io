@@ -1,6 +1,8 @@
 ---
 title: Shadertoy 메타볼 분석
 date: 2018-12-12
+lang: kr
+ref: shadertoy-metaball
 tags:
 - shader
 - shadertoy

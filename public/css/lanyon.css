@@ -592,3 +592,7 @@ a.pagination-item:hover {
   margin: 0 10px 0 0;
   padding: 5px 0 0 0;
 }
+
+.en:lang(en), .kr:lang(kr) {
+    font-weight: bold;
+}

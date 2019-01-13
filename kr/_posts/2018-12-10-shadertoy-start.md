@@ -1,6 +1,8 @@
 ---
 title: Shadertoy 기본 쉐이더 분석
 date: 2018-12-10
+lang: kr
+ref: shadertoy-start
 tags:
 - shader
 - shadertoy

@@ -1,6 +1,8 @@
 ---
 title: 임의의 원형 경로 만들기
 date: 2018-12-04
+lang: kr
+ref: circular-path
 tags:
 - procedural
 - algorithm

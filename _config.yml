@@ -12,6 +12,7 @@ author:
 baseurl:            ''
 permalink:          /:title/
 paginate:           5
+paginate-path:      "/page:lang/page:num/"
 defaults:
   -
     scope:

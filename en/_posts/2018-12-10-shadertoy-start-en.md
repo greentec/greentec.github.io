@@ -1,5 +1,5 @@
 ---
-title: Shadertoy: Default Shader Analysis
+title: Shadertoy - Default Shader Analysis
 date: 2018-12-10
 lang: en
 ref: shadertoy-start
@@ -16,7 +16,7 @@ shader: true
 
 &nbsp;
 
-## 도입
+## Introduction
 
 [Shader](<https://en.wikipedia.org/wiki/Shader>) is a language used to render computer graphics, primarily light and shadows. With the development of hardware, especially the GPU, Shader is now able to express many things that previously could not be expressed as performance problems.
 

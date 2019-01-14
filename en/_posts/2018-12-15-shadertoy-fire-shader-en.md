@@ -216,7 +216,7 @@ This function simply creates a random value between `0.0~1.0` for each pixel in 
 
 Having a periodicity is a bad element at random, but if the cycle is very large, it is difficult to predict. This is the `c` that is multiplied by `sin`. Because `43758.5453` is a very large value, the cycle of the `sin` function also increases.
 
-`fract` is the most important part of this function. `fract` is the abbreviation for fraction. Real numbers can be divided into integer part and fractional part, of which the fractional part is called fractional part in English. `fract` flushes the integer part and returns only the fractional parts. This function is opposite of `floor` in [previous post](<https://greentec.github.io/shadertoy-metaball/>).
+`fract` is the most important part of this function. `fract` is the abbreviation for fraction. Real numbers can be divided into integer part and fractional part, of which the fractional part is called fractional part in English. `fract` flushes the integer part and returns only the fractional parts. This function is opposite of `floor` in [previous post](<https://greentec.github.io/shadertoy-metaball-en/>).
 
 [Random page of The book of shaders](<https://thebookofshaders.com/10/>) has a very neat explanation for this. I tried to reproduce it by referring to a lot of this.
 

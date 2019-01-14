@@ -249,7 +249,7 @@ If we uncomment line 3, we can see that the value of `sin(x)` is limited to `0.0
 What is the difference between random and noise? In short, noise used in the shader has **continuity** around it.
 
 ![](<../images/fire_shader_3_1.png>)
-<small>The value of noise has continuity to the surroundings. [출처 링크](<https://www.khanacademy.org/computing/computer-programming/programming-natural-simulations/programming-noise/a/two-dimensional-noise>)</small>
+<small>The value of noise has continuity to the surroundings. [Source link](<https://www.khanacademy.org/computing/computer-programming/programming-natural-simulations/programming-noise/a/two-dimensional-noise>)</small>
 
 On the other hand, the random texture seen above has independent values regardless of its surroundings. As you can see above is because **it should not be predictable**. In the end, the task of creating noise randomly is to create a predictable `noise` with continuity with an unpredictable `rand` function.
 
@@ -385,7 +385,7 @@ When you change to a smaller number, the image becomes blurred and the pattern b
 
 The most important role of `noise` is interpolation. In other words, it smoothly connects between adjacent noise values. Perlin noise is a method of interpolating values between four adjacent vertices in a square grid. Simplex noise is a method of interpolating values between three vertexes of a triangle.[^1]
 
-[^1]: [링크](<https://github.com/stegu/perlin-noise/blob/master/simplexnoise.pdf>) This is a detailed document about Simplex noise.
+[^1]: [link](<https://github.com/stegu/perlin-noise/blob/master/simplexnoise.pdf>) This is a detailed document about Simplex noise.
 
 If the frequency is small, the area to be interpolated is visible because the narrow area is enlarged, and as the frequency becomes larger, the interpolated area becomes almost invisible.
 

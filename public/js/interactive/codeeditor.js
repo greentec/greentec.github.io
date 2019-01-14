@@ -415,6 +415,12 @@ void main(){
                                         {className: "styled-background"});
                     }
                 }
+
+                // hidden
+                if (hasClass(text_area, 'hidden')) {
+                    editor.getWrapperElement().style.display = 'none';
+                }
+
             }
         }
         else {

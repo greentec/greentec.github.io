@@ -151,6 +151,20 @@
                                 value: new THREE.Vector2()
                             }
                         };
+
+                        // texture check
+                        if (hasClass(text_area, 'texture')) {
+                            for (let i = 0; i < 8; i++) {
+                                let texture = 'texture' + (i).toString();
+                                if (text_area.dataset[texture]) {
+                                    uniforms[texture] = {
+                                        type: 't',
+                                        value: new THREE.TextureLoader().load(text_area.dataset[texture])
+                                    }
+                                }
+                            }
+                        }
+
                         material = new THREE.ShaderMaterial({
                             uniforms: uniforms,
                             vertexShader: VERTEX,

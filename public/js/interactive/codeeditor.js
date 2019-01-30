@@ -131,6 +131,7 @@
                     let camera, scene, renderer;
                     let material, mesh;
                     let uniforms;
+                    let mouse = new THREE.Vector2();
                     let VERTEX = `void main() { gl_Position = vec4( position, 1.0 ); }`;
 
                     init_3d();
@@ -141,12 +142,17 @@
                         camera.position.z = 1;
                         scene = new THREE.Scene();
                         var geometry = new THREE.PlaneBufferGeometry(2, 2);
+
                         uniforms = {
                             time: {
                                 type: "f",
                                 value: 1.0
                             },
                             resolution: {
+                                type: "v2",
+                                value: new THREE.Vector2()
+                            },
+                            mouse: {
                                 type: "v2",
                                 value: new THREE.Vector2()
                             }
@@ -194,6 +200,13 @@
 
                         onWindowResize();
                         window.addEventListener('resize', onWindowResize, false);
+                        window.addEventListener('mousemove', function(event) {
+                            const elem_pos = findPos(renderer.domElement);
+                            let mouseX = Math.min(Math.max(event.pageX - elem_pos.left, 0), renderer.domElement.width);
+                            let mouseY = Math.min(Math.max(event.pageY - elem_pos.top, 0), renderer.domElement.height);
+                            mouse.x = (mouseX / renderer.domElement.width) * 2 - 1;
+                            mouse.y = -(mouseY / renderer.domElement.height) * 2 + 1;
+                        }, false);
                     }
 
                     function onWindowResize(event) {
@@ -212,6 +225,7 @@
 
                     function render() {
                         uniforms.time.value += 0.02;
+                        uniforms.mouse.value.copy(mouse);
                         renderer.render(scene, camera);
                     }
 

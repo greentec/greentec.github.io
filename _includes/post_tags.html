@@ -7,7 +7,11 @@
   {% endif %}
   [
   {% for tag in tags %}
-  <a href="/tags/#{{tag|slugize}}">{{tag}}</a>{% unless forloop.last %},{% endunless %}
+    {% if page.lang == 'kr' %}
+      <a href="/tags/#{{tag|slugize}}">{{tag}}</a>{% unless forloop.last %},{% endunless %}
+    {% else %}
+      <a href="/tags_en/#{{tag|slugize}}">{{tag}}</a>{% unless forloop.last %},{% endunless %}
+    {% endif %}
   {% endfor %}
   ]
 </div>

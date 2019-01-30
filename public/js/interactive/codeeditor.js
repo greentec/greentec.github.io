@@ -109,6 +109,9 @@
                             if (hasClass(text_area, 'outside')) {
                                 addClass(canvas, 'previewOutside');
                             }
+                            else if (hasClass(text_area, 'outsideLeft')) {
+                                addClass(canvas, 'previewOutsideLeft');
+                            }
                             else if (hasClass(text_area, 'inside')) {
                                 addClass(canvas, 'previewInside');
                             }
@@ -190,6 +193,9 @@
 
                         if (hasClass(text_area, 'outside')) {
                             addClass(renderer.domElement, 'previewOutside');
+                        }
+                        else if (hasClass(text_area, 'outsideLeft')) {
+                            addClass(renderer.domElement, 'previewOutsideLeft');
                         }
                         else if (hasClass(text_area, 'inside')) {
                             addClass(renderer.domElement, 'previewInside');
@@ -378,6 +384,9 @@ void main(){
 
                         if (hasClass(text_area, 'outside')) {
                             addClass(renderer.domElement, 'previewOutside');
+                        }
+                        else if (hasClass(text_area, 'outsideLeft')) {
+                            addClass(renderer.domElement, 'previewOutsideLeft');
                         }
                         else if (hasClass(text_area, 'inside')) {
                             addClass(renderer.domElement, 'previewInside');

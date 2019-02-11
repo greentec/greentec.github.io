@@ -1,0 +1,174 @@
+function Env(_w, _canvas, _balls_count = 1, _obstacle_count = 0, _marks_count = 0) {
+    this.canvas = _canvas;
+    this.grid = null;
+    this.grid_W = _w;
+    this.grid_width = 30;
+    this.width = null;
+    this.height = null;
+    this.globalReward = -0.1;
+    this.episodes = 0;
+    this.maxEpisodes = 8000;
+    this.steps = 0;
+    this.maxSteps = 200;
+
+    this.balls_count = _balls_count;
+    this.obstacle_count = _obstacle_count;
+    this.marks_count = _marks_count;
+
+    this.initGrid = function(w = 6, h = 6) {
+        this.grid = new Array(h);
+        for (let y = 0; y < h; y++) {
+            this.grid[y] = new Array(w);
+            for (let x = 0; x < w; x++) {
+                this.grid[y][x] = [];
+            }
+        }
+
+        this.width = w;
+        this.height = h;
+    }
+
+    this.setEntity = function(agent) {
+        if (!this.grid) {
+            this.initGrid(this.grid_W, this.grid_W);
+        }
+
+        // balls
+        let population = new Array(this.grid_W * this.grid_W).fill(0).map((c,i) => i);
+        obstacle_pos_array = this.sample(population, population.length);
+
+        let now_ball_count = 0;
+        while (true) {
+            let pos = obstacle_pos_array.pop();
+            let x = pos % this.grid_W;
+            let y = Math.floor(pos / this.grid_W);
+            if (isNaN(pos) || isNaN(x) || isNaN(y)) {
+                console.log('NaN Error', pos, x, y);
+                return null;
+            }
+            if (x !== agent.x && y !== agent.y &&
+                x !== 0 && x !== this.width - 1 &&
+                y !== 0 && y !== this.height - 1) {
+                this.grid[y][x].push( new Entity(y, x, 0, 'GREEN', 'ball') );
+                now_ball_count += 1;
+
+                if (now_ball_count >= this.balls_count) {
+                    break;
+                }
+            }
+            else {
+                console.log('ball initial failed');
+            }
+        }
+    };
+
+    this.draw = function() {
+        this.canvas.width = this.canvas.width;
+        let ctx = this.canvas.getContext('2d');
+        let entity;
+
+        for (let y = 0; y < this.height; y += 1) {
+            for (let x = 0; x < this.width; x += 1) {
+                for (let i = 0; i < this.grid[y][x].length; i += 1) {
+                    entity = this.grid[y][x][i];
+                    ctx.beginPath();
+                    ctx.fillStyle = colors[entity.color];
+
+                    switch (entity.type) {
+
+                        case 'goal':
+                        case 'box':
+                            ctx.fillRect(x * this.grid_width, y * this.grid_width, this.grid_width, this.grid_width);
+                            break;
+
+                        case 'ball':
+                            ctx.arc((x + 0.5) * this.grid_width, (y + 0.5) * this.grid_width, this.grid_width / 3, 0, Math.PI * 2);
+                            ctx.fill();
+                            break;
+
+                        case 'mark':
+                            ctx.strokeStyle = colors[entity.color];
+                            ctx.lineWidth = 3;
+                            ctx.moveTo(x * this.grid_width + this.grid_width * 0.1, y * this.grid_width + this.grid_width * 0.1);
+                            ctx.lineTo(x * this.grid_width + this.grid_width * 0.9, y * this.grid_width + this.grid_width * 0.9);
+                            ctx.moveTo(x * this.grid_width + this.grid_width * 0.9, y * this.grid_width + this.grid_width * 0.1);
+                            ctx.lineTo(x * this.grid_width + this.grid_width * 0.1, y * this.grid_width + this.grid_width * 0.9);
+                            ctx.stroke();
+                            break;
+                    }
+                    ctx.closePath();
+                }
+            }
+        }
+    };
+
+
+    // from https://stackoverflow.com/questions/19269545/how-to-get-n-no-elements-randomly-from-an-array/45556840#45556840
+    this.sample = function(population, k) {
+        /*
+            Chooses k unique random elements from a population sequence or set.
+
+            Returns a new list containing elements from the population while
+            leaving the original population unchanged.  The resulting list is
+            in selection order so that all sub-slices will also be valid random
+            samples.  This allows raffle winners (the sample) to be partitioned
+            into grand prize and second place winners (the subslices).
+
+            Members of the population need not be hashable or unique.  If the
+            population contains repeats, then each occurrence is a possible
+            selection in the sample.
+
+            To choose a sample in a range of integers, use range as an argument.
+            This is especially fast and space efficient for sampling from a
+            large population:   sample(range(10000000), 60)
+
+            Sampling without replacement entails tracking either potential
+            selections (the pool) in a list or previous selections in a set.
+
+            When the number of selections is small compared to the
+            population, then tracking selections is efficient, requiring
+            only a small set and an occasional reselection.  For
+            a larger number of selections, the pool tracking method is
+            preferred since the list takes less space than the
+            set and it doesn't suffer from frequent reselections.
+        */
+
+        if (!Array.isArray(population))
+            throw new TypeError("Population must be an array.");
+        var n = population.length;
+        if (k < 0 || k > n)
+            throw new RangeError("Sample larger than population or is negative");
+
+        var result = new Array(k);
+        var setsize = 21;   // size of a small set minus size of an empty list
+
+        if (k > 5) {
+            setsize += Math.pow(4, Math.ceil(Math.log(k * 3, 4)))
+        }
+
+        if (n <= setsize) {
+            // An n-length list is smaller than a k-length set
+            var pool = population.slice();
+            for (var i = 0; i < k; i++) {          // invariant:  non-selected at [0,n-i)
+                var j = Math.random() * (n - i) | 0;
+                result[i] = pool[j];
+                pool[j] = pool[n - i - 1];       // move non-selected item into vacancy
+            }
+        }
+        else {
+            var selected = new Set();
+            for (var i = 0; i < k; i++) {
+                var j = Math.random() * (n - i) | 0;
+                while (selected.has(j)) {
+                    j = Math.random() * (n - i) | 0;
+                }
+                selected.add(j);
+                result[i] = population[j];
+            }
+        }
+
+        return result;
+    }
+
+
+}

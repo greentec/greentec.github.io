@@ -58,16 +58,16 @@ const post = document.getElementsByClassName('post')[0];
 let button = document.createElement('button');
 button.style.position = 'absolute';
 button.style.top = (canvas.parentNode.offsetTop + 10).toString() + 'px';
-button.style.width = 350 - env.grid_W * env.grid_width - 20;
-button.style.left = (post.offsetWidth - button.style.width - 20).toString() + 'px';
+button.width = 350 - env.grid_W * env.grid_width - 20;
+button.style.left = (post.offsetLeft + post.offsetWidth - button.width - 20).toString() + 'px';
 button.innerHTML = 'Step(random action)';
 canvas.parentNode.appendChild(button);
 
 let button2 = document.createElement('button');
 button2.style.position = 'absolute';
 button2.style.top = (canvas.parentNode.offsetTop + 35).toString() + 'px';
-button2.style.width = 350 - env.grid_W * env.grid_width - 20;
-button2.style.left = (post.offsetWidth - button2.style.width - 20).toString() + 'px';
+button2.width = 350 - env.grid_W * env.grid_width - 20;
+button2.style.left = (post.offsetLeft + post.offsetWidth - button2.width - 20).toString() + 'px';
 button2.innerHTML = 'Loop(random action)';
 canvas.parentNode.appendChild(button2);
 
@@ -126,10 +126,10 @@ function iterate(is_loop = true) {
 
 window.addEventListener('resize', function() {
     button.style.top = (canvas.parentNode.offsetTop + 10).toString() + 'px';
-    button.style.left = (post.offsetWidth - button.style.width - 20).toString() + 'px';
+    button.style.left = (post.offsetLeft + post.offsetWidth - button.width - 20).toString() + 'px';
 
     button2.style.top = (canvas.parentNode.offsetTop + 35).toString() + 'px';
-    button2.style.left = (post.offsetWidth - button2.style.width - 20).toString() + 'px';
+    button2.style.left = (post.offsetLeft + post.offsetWidth - button2.width - 20).toString() + 'px';
 });</textarea>
 </div>
 
@@ -163,7 +163,7 @@ window.addEventListener('resize', function() {
 
 여기서의 C 는 위에 있는 경우들과 동일하게 높은 가치를 가지고 있을까요? 모든 것이 안정된 지금 예시의 Grid World 라면 그렇다고 말할 수도 있겠습니다. 하지만 step 을 진행할 때마다 일정 확률로 폭탄이 터진다면 어떨까요? 목표로 가는 길에 닿으면 -100 의 보상을 주는 방해 요소가 나타난다면? 그럼에도 C 로 가는 것이 일단은 최적의 선택이기는 하지만, 바로 눈앞에 한 걸음만 내딛으면 보상이 있는 경우보다는 가치가 높다고 말할 수 없을 것 같습니다.
 
-이런 경우를 설명하기 위해 감가율(discount rate)이 도입됩니다. 감가율이란 현재 받을 수 있는 보상이 미래에 받는 보상보다 가치가 높다는, 반대의 경우 미래의 보상은 현재의 보상보다 가치가 낮다는 것을 의미하는 개념입니다. `0.0~1.0` 의 숫자로 표현되며, 보통 `0.95`, `0.99` 등의 값이 쓰입니다. 
+이런 경우를 설명하기 위해 감가율(discount rate)이 도입됩니다. 감가율이란 현재 받을 수 있는 보상이 미래에 받는 보상보다 가치가 높다는, 반대의 경우 미래의 보상은 현재의 보상보다 가치가 낮다는 것을 의미하는 개념입니다. `0.0~1.0` 의 숫자로 표현되며, 보통 `0.95`, `0.99` 등의 값이 쓰입니다.
 
 
 

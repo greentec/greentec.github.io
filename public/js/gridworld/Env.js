@@ -1,4 +1,4 @@
-function Env(_w, _canvas, _balls_count = 1, _obstacle_count = 0, _marks_count = 0) {
+function Env(_w, _canvas) {
     this.canvas = _canvas;
     this.grid = null;
     this.grid_W = _w;
@@ -7,13 +7,16 @@ function Env(_w, _canvas, _balls_count = 1, _obstacle_count = 0, _marks_count = 
     this.height = null;
     this.globalReward = -0.1;
     this.episodes = 0;
-    this.maxEpisodes = 8000;
+    this.maxEpisodes = 100;
     this.steps = 0;
     this.maxSteps = 200;
 
-    this.balls_count = _balls_count;
-    this.obstacle_count = _obstacle_count;
-    this.marks_count = _marks_count;
+    this.balls_count = 0;
+    this.obstacles_count = 0;
+    this.marks_count = 0;
+
+    this.agent = null;
+    const ctx = this.canvas.getContext('2d');
 
     this.initGrid = function(w = 6, h = 6) {
         this.grid = new Array(h);
@@ -26,30 +29,134 @@ function Env(_w, _canvas, _balls_count = 1, _obstacle_count = 0, _marks_count = 
 
         this.width = w;
         this.height = h;
+
+        this.canvas.style.backgroundColor = 'rgb(0,0,0)';
     }
 
-    this.setEntity = function(agent) {
+    this.drawOutline = function() {
+        ctx.beginPath();
+        ctx.strokeStyle = 'white';
+        for (let i = 0; i <= this.width; i++) {
+            ctx.moveTo(i * this.grid_width, 0);
+            ctx.lineTo(i * this.grid_width, this.height * this.grid_width);
+        }
+        for (let i = 0; i <= this.height; i++) {
+            ctx.moveTo(0, i * this.grid_width);
+            ctx.lineTo(this.width * this.grid_width, i * this.grid_width);
+        }
+        ctx.stroke();
+
+        ctx.closePath();
+    }
+
+    this.drawInfo = function() {
+        ctx.beginPath();
+        ctx.fillStyle = 'white';
+        ctx.font = '14px monospace';
+
+        ctx.fillText(`step: ${this.steps}/${this.maxSteps}`, 10, this.grid_W * this.grid_width + 20);
+        ctx.fillText(`episode: ${this.episodes}/${this.maxEpisodes}`, 10, this.grid_W * this.grid_width + 40);
+        ctx.fillText(`reward: ${Math.floor(this.agent.reward * 10) / 10}`, 10, this.grid_W * this.grid_width + 60);
+        ctx.closePath();
+    }
+
+    this.drawRewardGraph = function(rewards_array, indent_x, indent_y) {
+        let max = Math.max(...rewards_array);
+        let min = Math.min(...rewards_array);
+
+        const graph_height = 100;
+        const graph_width = 110;
+        const graph_indent = 20;
+        const graph_w = graph_width / (rewards_array.length - 1); // one data width
+
+        ctx.save();
+        ctx.translate(indent_x, indent_y);
+
+        // axis
+        ctx.beginPath();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.moveTo(graph_indent, graph_indent);
+        ctx.lineTo(graph_indent, graph_indent + graph_height + 5);
+        ctx.lineTo(graph_indent + graph_width, graph_indent + graph_height + 5);
+
+        ctx.stroke();
+        ctx.closePath();
+
+        // text
+        ctx.beginPath();
+        ctx.font = '12px monospace';
+        ctx.fillStyle = 'white';
+        ctx.fillText('Reward', 100, graph_indent); // title
+        ctx.fillText(max, 0, graph_indent);
+        ctx.fillText(min, 0, graph_indent + graph_height);
+
+        ctx.fillText(this.episodes, graph_indent + graph_width - 10, graph_indent + graph_height + 20);
+
+        ctx.closePath();
+
+        // line graph
+        //   rewards
+        ctx.beginPath();
+        ctx.strokeStyle = 'yellow';
+        ctx.lineWidth = 1;
+        ctx.moveTo(graph_indent, graph_indent + graph_height - (rewards_array[0] - min) / (max - min) * graph_height);
+        for (let i = 1; i < rewards_array.length; i += 1) {
+            ctx.lineTo(graph_indent + graph_w * i, graph_indent + graph_height - (rewards_array[i] - min) / (max - min) * graph_height);
+        }
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore();
+    }
+
+    this.setEntity = function(agent, info, init_pos = null) {
+        this.agent = agent;
+
         if (!this.grid) {
             this.initGrid(this.grid_W, this.grid_W);
         }
 
-        // balls
-        let population = new Array(this.grid_W * this.grid_W).fill(0).map((c,i) => i);
-        obstacle_pos_array = this.sample(population, population.length);
+        let entity_pos_array;
+        if (init_pos !== null) {
+            entity_pos_array = init_pos.map(c => c[0] + c[1] * this.grid_W);
+        }
+        else {
+            // entities
+            let population = new Array(this.grid_W * this.grid_W).fill(0).map((c,i) => i);
+            entity_pos_array = this.sample(population, population.length);
+        }
 
         let now_ball_count = 0;
+        let now_obstacle_count = 0;
+        let now_marks_count = 0;
+
+        for (let key in info) {
+            switch (key) {
+                case 'ball':
+                    this.balls_count = info[key];
+                    break;
+                case 'obstacle':
+                    this.obstacles_count = info[key];
+                    break;
+                case 'mark':
+                    this.marks_count = info[key];
+                    break;
+            }
+        }
+
+
+        // ball
         while (true) {
-            let pos = obstacle_pos_array.pop();
+            let pos = entity_pos_array.pop();
             let x = pos % this.grid_W;
             let y = Math.floor(pos / this.grid_W);
             if (isNaN(pos) || isNaN(x) || isNaN(y)) {
                 console.log('NaN Error', pos, x, y);
                 return null;
             }
-            if (x !== agent.x && y !== agent.y &&
-                x !== 0 && x !== this.width - 1 &&
-                y !== 0 && y !== this.height - 1) {
-                this.grid[y][x].push( new Entity(y, x, 0, 'GREEN', 'ball') );
+            if (x !== agent.x && y !== agent.y) {
+                this.grid[y][x].push( new Entity(y, x, 0, 'LIGHTBLUE', 'ball') );
                 now_ball_count += 1;
 
                 if (now_ball_count >= this.balls_count) {
@@ -63,7 +170,10 @@ function Env(_w, _canvas, _balls_count = 1, _obstacle_count = 0, _marks_count = 
     };
 
     this.draw = function() {
-        this.canvas.width = this.canvas.width;
+        // this.canvas.width = this.canvas.width;
+        this.drawOutline();
+        this.drawInfo();
+
         let ctx = this.canvas.getContext('2d');
         let entity;
 
@@ -170,5 +280,13 @@ function Env(_w, _canvas, _balls_count = 1, _obstacle_count = 0, _marks_count = 
         return result;
     }
 
-
+    this.reset = function() {
+        for (let y = 0; y < this.height; y += 1) {
+            for (let x = 0; x < this.width; x += 1) {
+                for (let i = 0; i < this.grid[y][x].length; i += 1) {
+                    this.grid[y][x].pop();
+                }
+            }
+        }
+    }
 }

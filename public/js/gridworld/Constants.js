@@ -1,10 +1,11 @@
 const colors = {
-    RED:    '#FF0000',
-    GREEN:  '#00FF00',
-    BLUE:   '#0000FF',
-    PURPLE: '#7027C3',
-    YELLOW: '#FFFF00',
-    GREY:   '#646464'
+    RED:        '#FF0000',
+    GREEN:      '#00FF00',
+    LIGHTBLUE:  '#00BCF2',
+    BLUE:       '#0000FF',
+    PURPLE:     '#7027C3',
+    YELLOW:     '#FFFF00',
+    GREY:       '#646464'
 };
 
 const object_to_idx = {

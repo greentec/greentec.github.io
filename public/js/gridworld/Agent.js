@@ -34,7 +34,7 @@ function Agent(_env, _x, _y, _canvas) {
                 reward += entity.reward;
 
                 // if (entity.type === 'goal' || entity.type === 'box') {
-                if (entity.type === 'goal') {
+                if (entity.type === 'ball') {
                     done = true;
                 }
                 // else if (entity.type === 'ball') {

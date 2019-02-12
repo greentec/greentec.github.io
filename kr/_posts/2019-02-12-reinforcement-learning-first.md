@@ -58,7 +58,7 @@ const post = document.getElementsByClassName('post')[0];
 let button = document.createElement('button');
 button.style.position = 'absolute';
 button.style.top = (canvas.parentNode.offsetTop + 10).toString() + 'px';
-button.width = 350 - env.grid_W * env.grid_width - 20;
+button.width = 350 - env.grid_W * env.grid_width - 30;
 button.style.left = (post.offsetLeft + post.offsetWidth - button.width - 20).toString() + 'px';
 button.innerHTML = 'Step(random action)';
 canvas.parentNode.appendChild(button);
@@ -66,7 +66,7 @@ canvas.parentNode.appendChild(button);
 let button2 = document.createElement('button');
 button2.style.position = 'absolute';
 button2.style.top = (canvas.parentNode.offsetTop + 35).toString() + 'px';
-button2.width = 350 - env.grid_W * env.grid_width - 20;
+button2.width = 350 - env.grid_W * env.grid_width - 30;
 button2.style.left = (post.offsetLeft + post.offsetWidth - button2.width - 20).toString() + 'px';
 button2.innerHTML = 'Loop(random action)';
 canvas.parentNode.appendChild(button2);
@@ -126,10 +126,10 @@ function iterate(is_loop = true) {
 
 window.addEventListener('resize', function() {
     button.style.top = (canvas.parentNode.offsetTop + 10).toString() + 'px';
-    button.style.left = (post.offsetLeft + post.offsetWidth - button.width - 20).toString() + 'px';
+    button.style.left = (post.offsetLeft + post.offsetWidth - button.width - 30).toString() + 'px';
 
     button2.style.top = (canvas.parentNode.offsetTop + 35).toString() + 'px';
-    button2.style.left = (post.offsetLeft + post.offsetWidth - button2.width - 20).toString() + 'px';
+    button2.style.left = (post.offsetLeft + post.offsetWidth - button2.width - 30).toString() + 'px';
 });</textarea>
 </div>
 

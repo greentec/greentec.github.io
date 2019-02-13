@@ -384,7 +384,7 @@ let canvas = document.getElementById('editor_canvas_2');
 let ctx = canvas.getContext('2d');
 let env = new Env(6, canvas);
 let agent = new Agent(env, 0, 0, canvas);
-env.setEntity(agent, {'ball': 1, 'box': 2}, [[5, 5], [2, 3], [1, 4]]);
+env.setEntity(agent, {'ball': 1, 'box': 3}, [[5, 5], [3, 3], [2, 4], [1, 5]]);
 
 const post = document.getElementsByClassName('post')[0];
 let button = document.createElement('button');
@@ -577,7 +577,9 @@ window.addEventListener('resize', function() {
 });</textarea>
 </div>
 
-노란색 네모를 (x=1, y=4), (x=2, y=3) 두 곳에 배치했습니다. 이곳에 도달하면 에이전트는 -1 의 보상을 받습니다.
+노란색 네모를 (x=1, y=5), (x=2, y=4), (x=3, y=3) 세 곳에 배치했습니다. 이곳에 도달하면 에이전트는 -1 의 보상을 받습니다.
+
+Get Value 버튼을 눌러서 각 상태의 가치함수를 업데이트하면, 위에서 정했던 규약대로 노란색 네모가 있는 곳은 -1 로 업데이트되지 않는 것을 확인할 수 있습니다. 여러 번 눌러서 가치함수를 업데이트하면 Grid World 의 왼쪽 아래는 가치함수의 도달이 느린 것을 알 수 있습니다. Loop(Value) 버튼을 눌러서 에이전트를 움직여보면 막힌 구간을 피해서 오른쪽 위 경로로 이동해서 목표에 도달하는 것을 확인할 수 있습니다.
 
 
 

@@ -63,6 +63,9 @@ function Env(_w, _canvas) {
     this.drawRewardGraph = function(rewards_array, indent_x, indent_y) {
         let max = Math.max(...rewards_array);
         let min = Math.min(...rewards_array);
+        if (max === min) {
+            min = max - Math.abs(max);
+        }
 
         const graph_height = 100;
         const graph_width = 110;
@@ -156,7 +159,7 @@ function Env(_w, _canvas) {
                 return null;
             }
             if (x !== agent.x && y !== agent.y) {
-                this.grid[y][x].push( new Entity(y, x, 0, 'LIGHTBLUE', 'ball') );
+                this.grid[y][x].push( new Entity(y, x, 1, 'LIGHTBLUE', 'ball') );
                 now_ball_count += 1;
 
                 if (now_ball_count >= this.balls_count) {

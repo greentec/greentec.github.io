@@ -175,11 +175,11 @@ window.addEventListener('resize', function() {
 
 그림 3의 C 는 위의 그림 1, 2의 C 와 동일하게 높은 가치를 가지고 있을까요? 모든 것이 안정된 지금 예시의 Grid World 라면 그렇다고 말할 수도 있겠습니다. 하지만 step 을 진행할 때마다 일정 확률로 폭탄이 터진다면 어떨까요? 목표로 가는 길에 닿으면 -100 의 보상을 주는 방해 요소가 나타난다면? 그럼에도 C 로 가는 것이 일단 최적의 선택이기는 하지만, 바로 눈앞에 한 걸음만 내딛으면 보상이 있는 경우보다는 가치가 높다고 말할 수 없을 것 같습니다.
 
-이런 경우를 설명하기 위해 감가율(discount rate)이 도입됩니다. 감가율이란 현재 받을 수 있는 보상이 미래에 받는 보상보다 가치가 높다는, 반대의 경우 **미래의 보상은 현재의 보상보다 가치가 낮다** 는 것을 의미하는 개념입니다. `0.0~1.0` 의 숫자로 표현되며, 보통 `0.95`, `0.99` 등의 값이 쓰입니다. 수학식에서는 $$\gamma$$ 라는 기호로 표현합니다.
+이런 경우를 설명하기 위해 감가율(discount rate)이 도입됩니다. 감가율이란 현재 받을 수 있는 보상이 미래에 받는 보상보다 가치가 높다는, 반대의 경우 **미래의 보상은 현재의 보상보다 가치가 낮다** 는 것을 의미하는 개념입니다. `0.0~1.0` 의 숫자로 표현되며, 보통 `0.95`, `0.99` 등의 값이 쓰입니다. 수학식에서는 $$\gamma$$(감마) 라는 기호로 표현합니다.
 
 그럼 이 $$\gamma$$ 를 사용해서 가치 함수를 계산해보도록 하겠습니다. $$\gamma=0.9$$ 를 사용하겠습니다.
 
-모든 상태에 대해서 가치 함수를 처음에는 0 으로 넣습니다. 다만 목표 격자는 도달하면 Episode 가 종료되는 상태이기 때문에 가치 함수를 보상과 같은 값으로 고정시켜서 넣습니다.
+모든 상태에 대해서 가치 함수를 처음에는 0 으로 넣습니다. 다만 목표 격자는 도달하면 Episode 가 종료되는 상태이기 때문에 가치 함수를 보상과 같은 값으로 고정시켜서 넣습니다. 즉 목표 격자의 가치는 +1 이 됩니다.
 
 <div>
 <textarea class='codeeditor canvas hidden'>
@@ -207,14 +207,177 @@ button2.style.left = (post.offsetLeft + post.offsetWidth - button2.width - 20).t
 button2.innerHTML = 'Get Value x10';
 canvas.parentNode.appendChild(button2);
 
+let button3 = document.createElement('button');
+button3.style.position = 'absolute';
+button3.style.top = (canvas.parentNode.offsetTop + 60).toString() + 'px';
+button3.width = 350 - env.grid_W * env.grid_width - 30;
+button3.style.left = (post.offsetLeft + post.offsetWidth - button3.width - 20).toString() + 'px';
+button3.innerHTML = 'Loop(Value)';
+canvas.parentNode.appendChild(button3);
+
+let value_array = new Array(env.grid_W * env.grid_W).fill(0);
+value_array[value_array.length - 1] = 1;
+const gamma = 0.9;
+
+drawValue();
+
+function drawValue() {
+    ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
+
+    let x, y;
+    for (let i = 0; i < value_array.length; i += 1) {
+        ctx.beginPath();
+        ctx.fillStyle = `rgb(0, ${Math.floor(value_array[i] * 255)}, 0)`;
+        x = i % env.grid_W;
+        y = Math.floor(i / env.grid_W);
+        ctx.fillRect(x * env.grid_width, y * env.grid_width, env.grid_width, env.grid_width);
+        ctx.closePath();
+    }
+
+    ctx.beginPath();
+    ctx.fillStyle = 'white';
+    ctx.font = '11px monospace';
+    for (let i = 0; i < value_array.length; i += 1) {
+        x = i % env.grid_W;
+        y = Math.floor(i / env.grid_W);
+        ctx.fillText(value_array[i], (x+0.1) * env.grid_width, (y+0.5) * env.grid_width);
+    }
+    ctx.closePath();
+
+    env.drawOutline();
+}
+
+function value_iterate() {
+    let new_value_array = value_array.slice();
+    let x, y;
+    let nx, ny;
+    let new_value;
+    for (let i = 0; i < value_array.length - 1; i += 1) {
+        x = i % env.grid_W;
+        y = Math.floor(i / env.grid_W);
+        new_value = -Number.MAX_VALUE;
+        for (let j = 0; j < dirs.length; j += 1) {
+            nx = x + dirs[j][0];
+            ny = y + dirs[j][1];
+            if (nx >= 0 && nx < env.width &&
+                ny >= 0 && ny < env.height) {
+                new_value = Math.max(new_value, value_array[nx + ny * env.grid_W] * gamma);
+            }
+        }
+
+        new_value_array[i] = new_value;
+        new_value_array[i] = Math.max(0, new_value_array[i]);
+        new_value_array[i] = Math.floor(new_value_array[i] * 100) / 100;
+    }
+    value_array = new_value_array;
+}
+
+button.onclick = function() {
+    value_iterate();
+    drawValue();
+}
+
+button2.onclick = function() {
+    for (let i = 0; i < 10; i += 1) {
+        value_iterate();
+    }
+    drawValue();
+}
+
+let is_running = false;
+let rewards_array = [];
+
+button3.onclick = function() {
+    if (is_running) return;
+    is_running = true;
+    iterate(true);
+}
+
+function iterate(is_loop = true) {
+    let values = [];
+    let x, y, idx;
+    for (let i = 0; i < dirs.length; i += 1) {
+        x = agent.x + dirs[i][0];
+        y = agent.y + dirs[i][1];
+        if (x >= 0 && x < env.width &&
+            y >= 0 && y < env.height) {
+            idx = x + y * env.grid_W;
+            values.push(value_array[idx]);
+        }
+        else {
+            values.push(-Number.MAX_VALUE);
+        }
+    }
+
+    // find max values
+    const m = Math.max(...values);
+    values = values.map((c,i) => c == m ? i : -1).filter(c => c >= 0);
+    let action = values[Math.floor(Math.random() * values.length)];
+    let reward, done;
+    [reward, done] = agent.step(action);
+    agent.reward += reward;
+    ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
+
+    env.steps += 1;
+    drawValue();
+    env.draw();
+    agent.draw();
+
+
+    if (done || env.steps >= env.maxSteps) {
+        rewards_array.push(Math.floor(agent.reward * 10) / 10);
+        if (rewards_array.length > 1) {
+            ctx.clearRect(env.grid_W * env.grid_width + 10, 0, canvas.width, canvas.height);
+            env.drawRewardGraph(rewards_array, 195, 80);
+        }
+
+        agent.x = 0;
+        agent.y = 0;
+        agent.reward = 0;
+        agent.dir = 3;
+
+        env.episodes += 1;
+        env.steps = 0;
+        env.reset();
+
+        while (true) {
+            if (env.setEntity(agent, {'ball': 1}, [[5, 5]]) !== null) {
+                break;
+            }
+        }
+    }
+    if (is_loop && env.episodes < env.maxEpisodes) {
+        window.requestAnimationFrame(iterate);
+    }
+}
+
 window.addEventListener('resize', function() {
     button.style.top = (canvas.parentNode.offsetTop + 10).toString() + 'px';
     button.style.left = (post.offsetLeft + post.offsetWidth - button.width - 30).toString() + 'px';
 
     button2.style.top = (canvas.parentNode.offsetTop + 35).toString() + 'px';
     button2.style.left = (post.offsetLeft + post.offsetWidth - button2.width - 30).toString() + 'px';
+
+    button3.style.top = (canvas.parentNode.offsetTop + 60).toString() + 'px';
+    button3.style.left = (post.offsetLeft + post.offsetWidth - button3.width - 50).toString() + 'px';
 });</textarea>
 </div>
+
+이때 어떤 격자의 가치는 다음과 같은 수식으로 계산할 수 있습니다.
+
+$$
+V_{격자} = max(\gamma \times V_{이웃 격자})
+$$
+
+오른쪽의 Get Value 버튼을 누르면 가치를 한번 계산해서 값을 업데이트합니다. 목표 주변의 2개 격자에서 가치가 새로 계산된 것을 확인할 수 있습니다. Get Value 를 여러 번 누르면 시작지점까지 연쇄적으로 가치가 업데이트됩니다.
+
+Loop(Value) 버튼을 누르면 에이전트는 현재 위치한 격자의 이웃 격자의 가치값을 비교해서 높은 값을 가진 격자로 움직입니다. 만약 모든 격자의 값이 같다면 랜덤한 위치로 이동합니다. Grid World 전체의 가치 함수가 계산된 상태라면 에이전트는 즉시 최적의 경로를 찾아냅니다.
+
+![](<../images/rl_7.png>)
+<small>가치가 계산된 초록색 영역에서 에이전트는 즉시 최적 경로를 찾아냅니다.</small>
+
+
+
 
 
 

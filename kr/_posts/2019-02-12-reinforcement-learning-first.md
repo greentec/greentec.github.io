@@ -161,25 +161,59 @@ window.addEventListener('resize', function() {
 일단 문제를 거꾸로 생각해보겠습니다. 목표에 도달하기 바로 전인 (x=4, y=5) 에 에이전트가 위치할 때, 에이전트는 A, B, C 중 어디로 움직여야 할까요? 당연히 C 로 움직이는 것이 최적의 선택이 될 것입니다. C 로 움직이면 보상은 +1, A 나 B 로 움직이면 보상은 -0.1 이기 때문입니다.
 
 ![](<../images/rl_4.png>)
+<small>그림 1</small>
 
 이때 C 의 가치(value)는 A, B 보다 높을 수밖에 없습니다. 그럼 여기서 한 칸 떨어져 있는 위치에서는 어떨까요? 여기서도 당연히 C 가 제일 최적의 선택일 것입니다. 당장 다음 step 에서 받는 보상은 A, B, C 모두 -0.1 로 동일합니다. 그럼에도 C 를 선택하는 이유는 목표에 제일 가까운 위치이기 때문입니다. 즉 C 를 선택하면 다음에 얻을 수 있는 보상이 A 와 B 를 선택했을 때보다 훨씬 클 가능성이 있기 때문입니다.
 
 ![](<../images/rl_5.png>)
+<small>그림 2</small>
 
-그런데 위 그림의 C 와 아래 그림의 C 는 같은 가치를 가지고 있을까요? 이런 경우는 어떨까요?
+그런데 그림 1의 C 와 그림 2의 C 는 같은 가치를 가지고 있을까요? 이런 경우는 어떨까요?
 
 ![](<../images/rl_6.png>)
+<small>그림 3</small>
 
-여기서의 C 는 위에 있는 경우들과 동일하게 높은 가치를 가지고 있을까요? 모든 것이 안정된 지금 예시의 Grid World 라면 그렇다고 말할 수도 있겠습니다. 하지만 step 을 진행할 때마다 일정 확률로 폭탄이 터진다면 어떨까요? 목표로 가는 길에 닿으면 -100 의 보상을 주는 방해 요소가 나타난다면? 그럼에도 C 로 가는 것이 일단 최적의 선택이기는 하지만, 바로 눈앞에 한 걸음만 내딛으면 보상이 있는 경우보다는 가치가 높다고 말할 수 없을 것 같습니다.
+그림 3의 C 는 위의 그림 1, 2의 C 와 동일하게 높은 가치를 가지고 있을까요? 모든 것이 안정된 지금 예시의 Grid World 라면 그렇다고 말할 수도 있겠습니다. 하지만 step 을 진행할 때마다 일정 확률로 폭탄이 터진다면 어떨까요? 목표로 가는 길에 닿으면 -100 의 보상을 주는 방해 요소가 나타난다면? 그럼에도 C 로 가는 것이 일단 최적의 선택이기는 하지만, 바로 눈앞에 한 걸음만 내딛으면 보상이 있는 경우보다는 가치가 높다고 말할 수 없을 것 같습니다.
 
-이런 경우를 설명하기 위해 감가율(discount rate)이 도입됩니다. 감가율이란 현재 받을 수 있는 보상이 미래에 받는 보상보다 가치가 높다는, 반대의 경우 미래의 보상은 현재의 보상보다 가치가 낮다는 것을 의미하는 개념입니다. `0.0~1.0` 의 숫자로 표현되며, 보통 `0.95`, `0.99` 등의 값이 쓰입니다. 수학식에서는 $$\gamma$$ 라는 기호로 표현합니다.
+이런 경우를 설명하기 위해 감가율(discount rate)이 도입됩니다. 감가율이란 현재 받을 수 있는 보상이 미래에 받는 보상보다 가치가 높다는, 반대의 경우 **미래의 보상은 현재의 보상보다 가치가 낮다** 는 것을 의미하는 개념입니다. `0.0~1.0` 의 숫자로 표현되며, 보통 `0.95`, `0.99` 등의 값이 쓰입니다. 수학식에서는 $$\gamma$$ 라는 기호로 표현합니다.
 
 그럼 이 $$\gamma$$ 를 사용해서 가치 함수를 계산해보도록 하겠습니다. $$\gamma=0.9$$ 를 사용하겠습니다.
 
-모든 상태에 대해서 가치 함수를 처음에는 0 으로 넣습니다. 다만 목표 격자의 경우에는 +1 의 보상을 주기 때문에 가치 함수를 +1 로 고정합니다.
+모든 상태에 대해서 가치 함수를 처음에는 0 으로 넣습니다. 다만 목표 격자는 도달하면 Episode 가 종료되는 상태이기 때문에 가치 함수를 보상과 같은 값으로 고정시켜서 넣습니다.
 
+<div>
+<textarea class='codeeditor canvas hidden'>
+let canvas = document.getElementById('editor_canvas_1');
+let ctx = canvas.getContext('2d');
+let env = new Env(6, canvas);
+let agent = new Agent(env, 0, 0, canvas);
+env.setEntity(agent, {'ball': 1}, [[5, 5]]);
+env.draw();
 
+let button = document.createElement('button');
+button.style.position = 'absolute';
+button.style.top = (canvas.parentNode.offsetTop + 10).toString() + 'px';
+button.width = 350 - env.grid_W * env.grid_width - 30;
+button.style.left = (post.offsetLeft + post.offsetWidth - button.width - 20).toString() + 'px';
+button.innerHTML = 'Get Value';
+canvas.parentNode.appendChild(button);
 
+let button2 = document.createElement('button');
+button2.style.position = 'absolute';
+button2.style.top = (canvas.parentNode.offsetTop + 35).toString() + 'px';
+button2.width = 350 - env.grid_W * env.grid_width - 30;
+button2.style.left = (post.offsetLeft + post.offsetWidth - button2.width - 20).toString() + 'px';
+button2.innerHTML = 'Get Value x10';
+canvas.parentNode.appendChild(button2);
+
+window.addEventListener('resize', function() {
+    button.style.top = (canvas.parentNode.offsetTop + 10).toString() + 'px';
+    button.style.left = (post.offsetLeft + post.offsetWidth - button.width - 30).toString() + 'px';
+
+    button2.style.top = (canvas.parentNode.offsetTop + 35).toString() + 'px';
+    button2.style.left = (post.offsetLeft + post.offsetWidth - button2.width - 30).toString() + 'px';
+});</textarea>
+</div>
 
 
 

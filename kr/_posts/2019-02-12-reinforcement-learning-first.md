@@ -190,6 +190,7 @@ let agent = new Agent(env, 0, 0, canvas);
 env.setEntity(agent, {'ball': 1}, [[5, 5]]);
 env.draw();
 
+const post = document.getElementsByClassName('post')[0];
 let button = document.createElement('button');
 button.style.position = 'absolute';
 button.style.top = (canvas.parentNode.offsetTop + 10).toString() + 'px';

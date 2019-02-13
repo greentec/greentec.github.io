@@ -12,7 +12,7 @@ function Env(_w, _canvas) {
     this.maxSteps = 200;
 
     this.balls_count = 0;
-    this.obstacles_count = 0;
+    this.boxes_count = 0;
     this.marks_count = 0;
 
     this.agent = null;
@@ -131,43 +131,53 @@ function Env(_w, _canvas) {
         }
 
         let now_ball_count = 0;
-        let now_obstacle_count = 0;
+        let now_box_count = 0;
         let now_marks_count = 0;
+        let total_count = 0;
 
         for (let key in info) {
             switch (key) {
                 case 'ball':
                     this.balls_count = info[key];
+                    total_count += this.balls_count;
                     break;
-                case 'obstacle':
-                    this.obstacles_count = info[key];
+
+                case 'box':
+                    this.boxes_count = info[key];
+                    total_count += this.boxes_count;
                     break;
+
                 case 'mark':
                     this.marks_count = info[key];
+                    total_count += this.marks_count;
                     break;
             }
         }
 
-
-        // ball
         while (true) {
-            let pos = entity_pos_array.pop();
+            let pos = entity_pos_array.shift();
             let x = pos % this.grid_W;
             let y = Math.floor(pos / this.grid_W);
             if (isNaN(pos) || isNaN(x) || isNaN(y)) {
                 console.log('NaN Error', pos, x, y);
                 return null;
             }
-            if (x !== agent.x && y !== agent.y) {
-                this.grid[y][x].push( new Entity(y, x, 1, 'LIGHTBLUE', 'ball') );
-                now_ball_count += 1;
 
-                if (now_ball_count >= this.balls_count) {
-                    break;
+            if (x !== agent.x && y !== agent.y) {
+                if (now_ball_count < this.balls_count) {
+                    this.grid[y][x].push( new Entity(y, x, 1, 'LIGHTBLUE', 'ball') );
+                    now_ball_count += 1;
+                    total_count -= 1;
+                }
+                else if (now_box_count < this.boxes_count) {
+                    this.grid[y][x].push( new Entity(y, x, -1, 'YELLOW', 'box') );
+                    now_box_count += 1;
+                    total_count -= 1;
                 }
             }
-            else {
-                console.log('ball initial failed');
+
+            if (total_count <= 0) {
+                break;
             }
         }
     };
@@ -190,8 +200,11 @@ function Env(_w, _canvas) {
                     switch (entity.type) {
 
                         case 'goal':
-                        case 'box':
                             ctx.fillRect(x * this.grid_width, y * this.grid_width, this.grid_width, this.grid_width);
+                            break;
+
+                        case 'box':
+                            ctx.fillRect((x + 0.2) * this.grid_width, (y + 0.2) * this.grid_width, this.grid_width * 0.6, this.grid_width * 0.6);
                             break;
 
                         case 'ball':

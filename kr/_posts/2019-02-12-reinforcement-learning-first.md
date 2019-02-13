@@ -175,7 +175,7 @@ window.addEventListener('resize', function() {
 
 그림 3의 C 는 위의 그림 1, 2의 C 와 동일하게 높은 가치를 가지고 있을까요? 모든 것이 안정된 지금 예시의 Grid World 라면 그렇다고 말할 수도 있겠습니다. 하지만 step 을 진행할 때마다 일정 확률로 폭탄이 터진다면 어떨까요? 목표로 가는 길에 닿으면 -100 의 보상을 주는 방해 요소가 나타난다면? 그럼에도 C 로 가는 것이 일단 최적의 선택이기는 하지만, 바로 눈앞에 한 걸음만 내딛으면 보상이 있는 경우보다는 가치가 높다고 말할 수 없을 것 같습니다.
 
-이런 경우를 설명하기 위해 감가율(discount rate)이 도입됩니다. 감가율이란 현재 받을 수 있는 보상이 미래에 받는 보상보다 가치가 높다는, 반대의 경우 **미래의 보상은 현재의 보상보다 가치가 낮다** 는 것을 의미하는 개념입니다. `0.0~1.0` 의 숫자로 표현되며, 보통 `0.95`, `0.99` 등의 값이 쓰입니다. 수학식에서는 $$\gamma$$(감마) 라는 기호로 표현합니다.
+이런 경우를 설명하기 위해 감가율(discount rate)이 도입됩니다. 감가율이란 현재 받을 수 있는 보상이 미래에 받는 보상보다 가치가 높다는, 반대로 말하면 **미래의 보상은 현재의 보상보다 가치가 낮다** 는 것을 의미하는 개념입니다. `0.0~1.0` 의 숫자로 표현되며, 보통 `0.95`, `0.99` 등의 값이 쓰입니다. 수학식에서는 $$\gamma$$(감마) 라는 기호로 표현합니다.
 
 그럼 이 $$\gamma$$ 를 사용해서 가치 함수를 계산해보도록 하겠습니다. $$\gamma=0.9$$ 를 사용하겠습니다.
 
@@ -188,7 +188,6 @@ let ctx = canvas.getContext('2d');
 let env = new Env(6, canvas);
 let agent = new Agent(env, 0, 0, canvas);
 env.setEntity(agent, {'ball': 1}, [[5, 5]]);
-env.draw();
 
 const post = document.getElementsByClassName('post')[0];
 let button = document.createElement('button');
@@ -220,6 +219,7 @@ value_array[value_array.length - 1] = 1;
 const gamma = 0.9;
 
 drawValue();
+env.draw();
 
 function drawValue() {
     ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
@@ -376,8 +376,208 @@ Loop(Value) 버튼을 누르면 에이전트는 현재 위치한 격자의 이�
 ![](<../images/rl_7.png>)
 <small>가치가 계산된 초록색 영역에서 에이전트는 즉시 최적 경로를 찾아냅니다.</small>
 
+에이전트가 빠지면 페널티를 받는 구덩이를 추가해보면 어떨까요?
+
+<div>
+<textarea class='codeeditor canvas hidden'>
+let canvas = document.getElementById('editor_canvas_2');
+let ctx = canvas.getContext('2d');
+let env = new Env(6, canvas);
+let agent = new Agent(env, 0, 0, canvas);
+env.setEntity(agent, {'ball': 1, 'box': 2}, [[5, 5], [2, 3], [1, 4]]);
+
+const post = document.getElementsByClassName('post')[0];
+let button = document.createElement('button');
+button.style.position = 'absolute';
+button.style.top = (canvas.parentNode.offsetTop + 10).toString() + 'px';
+button.width = 350 - env.grid_W * env.grid_width - 30;
+button.style.left = (post.offsetLeft + post.offsetWidth - button.width - 20).toString() + 'px';
+button.innerHTML = 'Get Value';
+canvas.parentNode.appendChild(button);
+
+let button2 = document.createElement('button');
+button2.style.position = 'absolute';
+button2.style.top = (canvas.parentNode.offsetTop + 35).toString() + 'px';
+button2.width = 350 - env.grid_W * env.grid_width - 30;
+button2.style.left = (post.offsetLeft + post.offsetWidth - button2.width - 20).toString() + 'px';
+button2.innerHTML = 'Get Value x10';
+canvas.parentNode.appendChild(button2);
+
+let button3 = document.createElement('button');
+button3.style.position = 'absolute';
+button3.style.top = (canvas.parentNode.offsetTop + 60).toString() + 'px';
+button3.width = 350 - env.grid_W * env.grid_width - 30;
+button3.style.left = (post.offsetLeft + post.offsetWidth - button3.width - 20).toString() + 'px';
+button3.innerHTML = 'Loop(Value)';
+canvas.parentNode.appendChild(button3);
+
+let value_array = new Array(env.grid_W * env.grid_W).fill(0);
+let initial_value_obj = {};
+for (let y = 0; y < env.height; y++) {
+    for (let x = 0; x < env.width; x++) {
+        if (env.grid[y][x].length !== 0) {
+            value_array[x + y * env.grid_W] = env.grid[y][x][0].reward;
+            initial_value_obj[(x + y * env.grid_W).toString()] = env.grid[y][x][0].reward;
+        }
+    }
+}
+const gamma = 0.9;
+
+drawValue();
+env.draw();
+
+function drawValue() {
+    ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
+
+    let x, y;
+    for (let i = 0; i < value_array.length; i += 1) {
+        ctx.beginPath();
+        if (value_array[i] >= 0) {
+            ctx.fillStyle = `rgb(0, ${Math.floor(value_array[i] * 255)}, 0)`;
+        }
+        else {
+            ctx.fillStyle = `rgb(${Math.floor(Math.abs(value_array[i]) * 255)}, 0, 0)`;
+        }
+        x = i % env.grid_W;
+        y = Math.floor(i / env.grid_W);
+        ctx.fillRect(x * env.grid_width, y * env.grid_width, env.grid_width, env.grid_width);
+        ctx.closePath();
+    }
+
+    ctx.beginPath();
+    ctx.fillStyle = 'white';
+    ctx.font = '11px monospace';
+    for (let i = 0; i < value_array.length; i += 1) {
+        x = i % env.grid_W;
+        y = Math.floor(i / env.grid_W);
+        ctx.fillText(value_array[i], (x+0.1) * env.grid_width, (y+0.5) * env.grid_width);
+    }
+    ctx.closePath();
+
+    env.drawOutline();
+}
+
+function value_iterate() {
+    let new_value_array = value_array.slice();
+    let x, y;
+    let nx, ny;
+    let new_value;
+    for (let i = 0; i < value_array.length; i += 1) {
+        if (initial_value_obj.hasOwnProperty(i.toString())) {
+            new_value_array[i] = initial_value_obj[i.toString()];
+            continue;
+        }
+        x = i % env.grid_W;
+        y = Math.floor(i / env.grid_W);
+        new_value = -Number.MAX_VALUE;
+        for (let j = 0; j < dirs.length; j += 1) {
+            nx = x + dirs[j][0];
+            ny = y + dirs[j][1];
+            if (nx >= 0 && nx < env.width &&
+                ny >= 0 && ny < env.height) {
+                new_value = Math.max(new_value, value_array[nx + ny * env.grid_W] * gamma);
+            }
+        }
+
+        new_value_array[i] = new_value;
+        new_value_array[i] = Math.max(0, new_value_array[i]);
+        new_value_array[i] = Math.floor(new_value_array[i] * 100) / 100;
+    }
+    value_array = new_value_array;
+}
+
+button.onclick = function() {
+    value_iterate();
+    drawValue();
+}
+
+button2.onclick = function() {
+    for (let i = 0; i < 10; i += 1) {
+        value_iterate();
+    }
+    drawValue();
+}
+
+let is_running = false;
+let rewards_array = [];
+
+button3.onclick = function() {
+    if (is_running) return;
+    is_running = true;
+    iterate(true);
+}
+
+function iterate(is_loop = true) {
+    let values = [];
+    let x, y, idx;
+    for (let i = 0; i < dirs.length; i += 1) {
+        x = agent.x + dirs[i][0];
+        y = agent.y + dirs[i][1];
+        if (x >= 0 && x < env.width &&
+            y >= 0 && y < env.height) {
+            idx = x + y * env.grid_W;
+            values.push(value_array[idx]);
+        }
+        else {
+            values.push(-Number.MAX_VALUE);
+        }
+    }
+
+    // find max values
+    const m = Math.max(...values);
+    values = values.map((c,i) => c == m ? i : -1).filter(c => c >= 0);
+    let action = values[Math.floor(Math.random() * values.length)];
+    let reward, done;
+    [reward, done] = agent.step(action);
+    agent.reward += reward;
+    ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
+
+    env.steps += 1;
+    drawValue();
+    env.draw();
+    agent.draw();
 
 
+    if (done || env.steps >= env.maxSteps) {
+        rewards_array.push(Math.floor(agent.reward * 10) / 10);
+        if (rewards_array.length > 1) {
+            ctx.clearRect(env.grid_W * env.grid_width + 10, 0, canvas.width, canvas.height);
+            env.drawRewardGraph(rewards_array, 195, 80);
+        }
+
+        agent.x = 0;
+        agent.y = 0;
+        agent.reward = 0;
+        agent.dir = 3;
+
+        env.episodes += 1;
+        env.steps = 0;
+        env.reset();
+
+        while (true) {
+            if (env.setEntity(agent, {'ball': 1}, [[5, 5]]) !== null) {
+                break;
+            }
+        }
+    }
+    if (is_loop && env.episodes < env.maxEpisodes) {
+        window.requestAnimationFrame(iterate);
+    }
+}
+
+window.addEventListener('resize', function() {
+    button.style.top = (canvas.parentNode.offsetTop + 10).toString() + 'px';
+    button.style.left = (post.offsetLeft + post.offsetWidth - button.width - 30).toString() + 'px';
+
+    button2.style.top = (canvas.parentNode.offsetTop + 35).toString() + 'px';
+    button2.style.left = (post.offsetLeft + post.offsetWidth - button2.width - 30).toString() + 'px';
+
+    button3.style.top = (canvas.parentNode.offsetTop + 60).toString() + 'px';
+    button3.style.left = (post.offsetLeft + post.offsetWidth - button3.width - 50).toString() + 'px';
+});</textarea>
+</div>
+
+노란색 네모를 (x=1, y=4), (x=2, y=3) 두 곳에 배치했습니다. 이곳에 도달하면 에이전트는 -1 의 보상을 받습니다.
 
 
 

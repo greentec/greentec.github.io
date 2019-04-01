@@ -7,6 +7,7 @@ function Agent(_env, _x, _y, _canvas) {
     this.visionForward = 7; // must be odd..
     this.action = null;
     this.reward = 0;
+    this.ball_count = 0;
     // this.states = createQueue(100);
     // this.actions = createQueue(100);
     // this.rewards = createQueue(100);
@@ -35,7 +36,13 @@ function Agent(_env, _x, _y, _canvas) {
 
                 // if (entity.type === 'goal' || entity.type === 'box') {
                 if (entity.type === 'ball') {
-                    done = true;
+                    // done = true;
+                    this.ball_count -= 1;
+                    this.env.grid[this.y][this.x].pop(); // empty ball
+                    
+                    if (this.ball_count <= 0) {
+                        done = true;
+                    }
                 }
                 // else if (entity.type === 'ball') {
                 //     ball_count -= 1;

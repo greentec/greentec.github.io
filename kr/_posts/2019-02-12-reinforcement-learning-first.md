@@ -50,6 +50,7 @@ let canvas = document.getElementById('editor_canvas_0');
 let ctx = canvas.getContext('2d');
 let env = new Env(6, canvas);
 let agent = new Agent(env, 0, 0, canvas);
+agent.ball_count = 1;
 env.setEntity(agent, {'ball': 1}, [[5, 5]]);
 env.draw();
 agent.draw();
@@ -108,6 +109,7 @@ function iterate(is_loop = true) {
         agent.y = 0;
         agent.reward = 0;
         agent.dir = 3;
+        agent.ball_count = 1;
 
         env.episodes += 1;
         env.steps = 0;
@@ -189,6 +191,7 @@ let ctx = canvas.getContext('2d');
 let env = new Env(6, canvas);
 env.maxEpisodes = 50;
 let agent = new Agent(env, 0, 0, canvas);
+agent.ball_count = 1;
 env.setEntity(agent, {'ball': 1}, [[5, 5]]);
 env.draw();
 agent.draw();
@@ -326,6 +329,7 @@ function iterate(is_loop = true) {
         agent.y = 0;
         agent.reward = 0;
         agent.dir = 3;
+        agent.ball_count = 1;
 
         env.episodes += 1;
         env.steps = 0;
@@ -399,6 +403,7 @@ let ctx = canvas.getContext('2d');
 let env = new Env(6, canvas);
 env.maxEpisodes = 50;
 let agent = new Agent(env, 0, 0, canvas);
+agent.ball_count = 1;
 env.setEntity(agent, {'ball': 1}, [[5, 5]]);
 env.draw();
 agent.draw();
@@ -537,6 +542,7 @@ function iterate(is_loop = true) {
         agent.y = 0;
         agent.reward = 0;
         agent.dir = 3;
+        agent.ball_count = 1;
 
         env.episodes += 1;
         env.steps = 0;
@@ -595,6 +601,7 @@ let canvas = document.getElementById('editor_canvas_3');
 let ctx = canvas.getContext('2d');
 let env = new Env(6, canvas);
 let agent = new Agent(env, 0, 0, canvas);
+agent.ball_count = 1;
 env.setEntity(agent, {'ball': 1}, [[5, 5]]);
 
 const post = document.getElementsByClassName('post')[0];
@@ -747,6 +754,7 @@ function iterate(is_loop = true) {
         agent.y = 0;
         agent.reward = 0;
         agent.dir = 3;
+        agent.ball_count = 1;
 
         env.episodes += 1;
         env.steps = 0;
@@ -798,6 +806,7 @@ let canvas = document.getElementById('editor_canvas_4');
 let ctx = canvas.getContext('2d');
 let env = new Env(6, canvas);
 let agent = new Agent(env, 0, 0, canvas);
+agent.ball_count = 1;
 env.setEntity(agent, {'ball': 1, 'box': 3}, [[5, 5], [3, 3], [2, 4], [1, 5]]);
 
 const post = document.getElementsByClassName('post')[0];
@@ -962,6 +971,7 @@ function iterate(is_loop = true) {
         agent.y = 0;
         agent.reward = 0;
         agent.dir = 3;
+        agent.ball_count = 1;
 
         env.episodes += 1;
         env.steps = 0;

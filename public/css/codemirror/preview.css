@@ -40,6 +40,15 @@
     overflow: hidden;
     float: right;
 }
+.previewOutside_410 {
+    width: 58%;
+    height: 310px;
+    min-width: 410px !important;
+    min-height: 310px !important;
+    border: 1px solid gray;
+    overflow: hidden;
+    float: right;
+}
 .previewOutsideLeft {
     width: 49%;
     height: 280px;

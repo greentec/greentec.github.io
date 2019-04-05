@@ -39,15 +39,14 @@ function Agent(_env, _x, _y, _canvas) {
                     // done = true;
                     this.ball_count -= 1;
                     this.env.grid[this.y][this.x].pop(); // empty ball
-                    
+
                     if (this.ball_count <= 0) {
                         done = true;
                     }
                 }
-                // else if (entity.type === 'ball') {
-                //     ball_count -= 1;
-                //     this.env.grid[this.y][this.x].pop(); // empty ball
-                // }
+                else if (entity.type === 'box') {
+                    done = true;
+                }
             }
         }
         else {

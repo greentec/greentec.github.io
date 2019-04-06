@@ -4,7 +4,8 @@ function Agent(_env, _x, _y, _canvas) {
     this.y = _y;
     this.canvas = _canvas;
     this.dir = Math.floor(Math.random() * dirs.length);
-    this.visionForward = 7; // must be odd..
+    this.vision = false;
+    this.visionForward = 2;
     this.action = null;
     this.reward = 0;
     this.ball_count = 0;
@@ -58,18 +59,44 @@ function Agent(_env, _x, _y, _canvas) {
 
     this.draw = function() {
         let ctx = this.canvas.getContext('2d');
+        const grid_width = this.env.grid_width;
+
+        if (this.vision) {
+            let left, top, w, h;
+            left = this.x - this.visionForward;
+            top = this.y - this.visionForward;
+            left *= grid_width;
+            top *= grid_width;
+
+            w = (this.visionForward * 2 + 1) * grid_width;
+            if (left + w > this.env.grid_W * grid_width) {
+                w = this.env.grid_W * grid_width - left;
+            }
+            h = (this.visionForward * 2 + 1) * grid_width;
+            if (top + h > this.env.grid_W * grid_width) {
+                h = this.env.grid_W * grid_width - top;
+            }
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            ctx.fillRect(left, top, w, h);
+            ctx.closePath();
+            ctx.restore();
+        }
+
         ctx.save();
         ctx.beginPath();
-        ctx.translate(this.x * this.env.grid_width + this.env.grid_width / 2,
-                      this.y * this.env.grid_width + this.env.grid_width / 2);
+        ctx.translate(this.x * grid_width + grid_width / 2,
+                      this.y * grid_width + grid_width / 2);
         ctx.rotate(Math.PI / 2 * this.dir);
-        ctx.translate(-this.x * this.env.grid_width - this.env.grid_width / 2,
-                      -this.y * this.env.grid_width - this.env.grid_width / 2);
+        ctx.translate(-this.x * grid_width - grid_width / 2,
+                      -this.y * grid_width - grid_width / 2);
         ctx.fillStyle = colors['RED'];
-        ctx.moveTo(this.x * this.env.grid_width + this.env.grid_width * 9 / 10, this.y * this.env.grid_width + this.env.grid_width / 2);
-        ctx.lineTo(this.x * this.env.grid_width + this.env.grid_width / 10, this.y * this.env.grid_width + this.env.grid_width / 10);
-        ctx.lineTo(this.x * this.env.grid_width + this.env.grid_width / 10, this.y * this.env.grid_width + this.env.grid_width * 9 / 10);
-        ctx.lineTo(this.x * this.env.grid_width + this.env.grid_width * 9 / 10, this.y * this.env.grid_width + this.env.grid_width / 2);
+        ctx.moveTo(this.x * grid_width + grid_width * 9 / 10, this.y * grid_width + grid_width / 2);
+        ctx.lineTo(this.x * grid_width + grid_width / 10, this.y * grid_width + grid_width / 10);
+        ctx.lineTo(this.x * grid_width + grid_width / 10, this.y * grid_width + grid_width * 9 / 10);
+        ctx.lineTo(this.x * grid_width + grid_width * 9 / 10, this.y * grid_width + grid_width / 2);
         ctx.fill();
         ctx.closePath();
         ctx.restore();

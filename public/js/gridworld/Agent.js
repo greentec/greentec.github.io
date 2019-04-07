@@ -9,9 +9,7 @@ function Agent(_env, _x, _y, _canvas) {
     this.action = null;
     this.reward = 0;
     this.ball_count = 0;
-    // this.states = createQueue(100);
-    // this.actions = createQueue(100);
-    // this.rewards = createQueue(100);
+    
     let model, optimizer;
     // [model, optimizer] = createPolicyNetwork(agent);
     // this.model = model;

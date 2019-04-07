@@ -104,4 +104,4 @@ function EmptyQueueException () {
 	this.name = "EmptyQueueException";
 }
 
-module.exports = queue;
+// module.exports = queue;

@@ -5,11 +5,15 @@ function DQNAgent(_env, _x, _y, _canvas) {
     this.canvas = _canvas;
     this.dir = Math.floor(Math.random() * dirs.length);
     this.vision = false;
-    this.visionForward = 2;
+    this.visionForward = 3;
     this.action = null;
     this.reward = 0;
     this.ball_count = 0;
+    this.train_start = 1000;
     this.sample_max = 50000;
+    this.learn_step = 10;
+    this.batch_size = 64;
+    this.gamma = 0.99;
     this.memory = queue.createQueue(this.sample_max);
 
     this.action_size = 4;
@@ -48,14 +52,14 @@ function DQNAgent(_env, _x, _y, _canvas) {
 
     this.append_sample = function(state, action, reward, next_state, done) {
         this.memory.push([math.reshape(state, [7,7,1]), action, reward, math.reshape(next_state, [7,7,1]), done]);
-        if (this.memory.getLength() > sample_max) {
+        if (this.memory.getLength() > this.sample_max) {
             this.memory.shift();
         }
     }
 
     this.train_model = async function() {
         const population = new Array(this.memory.getLength()).fill(0).map((c,i) => i);
-        const mini_batch = sample(population, batch_size);
+        const mini_batch = sample(population, this.batch_size);
 
         let array_prev_state = [];
         let array_action = [];
@@ -83,18 +87,21 @@ function DQNAgent(_env, _x, _y, _canvas) {
         let target_data = target.dataSync();
         let target_val_data = target_val.dataSync();
 
-        for (let i = 0; i < batch_size; i += 1) {
+        for (let i = 0; i < this.batch_size; i += 1) {
             if (array_done[i]) {
                 target_data[i * this.action_size + array_action[i]] = array_reward[i];
             }
             else {
-                target_data[i * this.action_size + array_action[i]] = array_reward[i] + discountRate * Math.max(...target_val_data.slice(batch_size * this.action_size, batch_size * this.action_size + this.action_size));
+                target_data[i * this.action_size + array_action[i]] =
+                    array_reward[i] +
+                    this.gamma *
+                    Math.max(...target_val_data.slice(i * this.action_size, (i+1) * this.action_size));
             }
         }
 
-        const target2 = tf.tensor2d(target_data, [batch_size, 4]);
+        const target2 = tf.tensor2d(target_data, [this.batch_size, 4]);
 
-        await this.model.fit(batch_prev_state, target2, {batchSize: batch_size, epochs: 1})
+        await this.model.fit(batch_prev_state, target2, {batchSize: this.batch_size, epochs: 1})
             .then(() => {
                 batch_prev_state.dispose();
                 batch_action.dispose();

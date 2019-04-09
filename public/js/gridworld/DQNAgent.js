@@ -14,7 +14,8 @@ function DQNAgent(_env, _x, _y, _canvas) {
     this.learn_step = 10;
     this.batch_size = 64;
     this.gamma = 0.99;
-    this.memory = queue.createQueue(this.sample_max);
+    // this.memory = queue.createQueue(this.sample_max);
+    this.memory = [];
 
     this.action_size = 4;
     this.model = createNetwork(this);
@@ -52,13 +53,15 @@ function DQNAgent(_env, _x, _y, _canvas) {
 
     this.append_sample = function(state, action, reward, next_state, done) {
         this.memory.push([math.reshape(state, [7,7,1]), action, reward, math.reshape(next_state, [7,7,1]), done]);
-        if (this.memory.getLength() > this.sample_max) {
+        // if (this.memory.getLength() > this.sample_max) {
+        if (this.memory.length > this.sample_max) {
             this.memory.shift();
         }
     }
 
     this.train_model = async function() {
-        const population = new Array(this.memory.getLength()).fill(0).map((c,i) => i);
+        // const population = new Array(this.memory.getLength()).fill(0).map((c,i) => i);
+        const population = new Array(this.memory.length).fill(0).map((c,i) => i);
         const mini_batch = sample(population, this.batch_size);
 
         let array_prev_state = [];
@@ -68,11 +71,16 @@ function DQNAgent(_env, _x, _y, _canvas) {
         let array_done = [];
 
         for (let i = 0; i < mini_batch.length; i += 1) {
-            array_prev_state.push(this.memory.getIndex(mini_batch[i])[0]);
-            array_action.push(this.memory.getIndex(mini_batch[i])[1]);
-            array_reward.push(this.memory.getIndex(mini_batch[i])[2]);
-            array_next_state.push(this.memory.getIndex(mini_batch[i])[3]);
-            array_done.push(this.memory.getIndex(mini_batch[i])[4]? 0 : 1);
+            // array_prev_state.push(this.memory.getIndex(mini_batch[i])[0]);
+            // array_action.push(this.memory.getIndex(mini_batch[i])[1]);
+            // array_reward.push(this.memory.getIndex(mini_batch[i])[2]);
+            // array_next_state.push(this.memory.getIndex(mini_batch[i])[3]);
+            // array_done.push(this.memory.getIndex(mini_batch[i])[4]? 0 : 1);
+            array_prev_state.push(this.memory[mini_batch[i]][0]);
+            array_action.push(this.memory[mini_batch[i]][1]);
+            array_reward.push(this.memory[mini_batch[i]][2]);
+            array_next_state.push(this.memory[mini_batch[i]][3]);
+            array_done.push(this.memory[mini_batch[i]][4]? 0 : 1);
         }
 
         const batch_prev_state = tf.tensor4d(array_prev_state);

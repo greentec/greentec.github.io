@@ -665,7 +665,8 @@ async function iterate(is_loop = true) {
 
     global_step += 1;
     if (global_step % agent.learn_step === 0) {
-        if (agent.memory.getLength() >= agent.train_start) {
+        // if (agent.memory.getLength() >= agent.train_start) {
+        if (agent.memory.length >= agent.train_start) {
             await agent.train_model();
         }
     }

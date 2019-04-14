@@ -14,6 +14,7 @@ function DQNAgent(_env, _x, _y, _canvas) {
     this.learn_step = 10;
     this.batch_size = 64;
     this.gamma = 0.99;
+    this.tau = 1e-3;
     // this.memory = queue.createQueue(this.sample_max);
     this.memory = [];
 
@@ -43,6 +44,16 @@ function DQNAgent(_env, _x, _y, _canvas) {
             loss: 'meanSquaredError'
         });
         return model;
+    }
+
+    this.soft_update = function() {
+        tf.tidy(() => {
+            for (let i = 0; i < this.model.weights.length; i += 1) {
+                this.target_model.weights[i].val.assign(
+                    tf.add(this.model.weights[i].val.mul(this.tau), this.target_model.weights[i].val.mul(1-this.tau))
+                );
+            }
+        });
     }
 
     this.update_target_model = function() {

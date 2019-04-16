@@ -54,7 +54,7 @@ function Env(_w, _canvas) {
         ctx.fillStyle = 'white';
         ctx.font = '14px monospace';
 
-        ctx.fillText(`step: ${this.steps+1}/${this.maxSteps}`, 10, this.grid_W * this.grid_width + 20);
+        ctx.fillText(`step: ${this.steps}/${this.maxSteps}`, 10, this.grid_W * this.grid_width + 20);
         ctx.fillText(`episode: ${this.episodes+1}/${this.maxEpisodes}`, 10, this.grid_W * this.grid_width + 40);
         ctx.fillText(`reward: ${Math.floor(this.agent.reward * 10) / 10}`, 10, this.grid_W * this.grid_width + 60);
         ctx.closePath();

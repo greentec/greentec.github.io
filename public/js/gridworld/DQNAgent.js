@@ -1,4 +1,4 @@
-function DQNAgent(_env, _x, _y, _canvas) {
+function DQNAgent(_env, _x, _y, _canvas, kernelInitializer='none') {
     this.env = _env;
     this.x = _x;
     this.y = _y;
@@ -19,35 +19,35 @@ function DQNAgent(_env, _x, _y, _canvas) {
     this.memory = [];
 
     this.action_size = 4;
-    this.model = createNetwork(this);
-    this.target_model = createNetwork(this);
+    this.model = createNetwork(this, kernelInitializer);
+    this.target_model = createNetwork(this, kernelInitializer);
 
-    function createNetwork(agent) {
+    function createNetwork(agent, kernelInitializer='none') {
         const model = tf.sequential();
         model.add(tf.layers.conv2d({
             inputShape: [7, 7, 1],
             kernelSize: 3,
             filters: 8,
             activation: 'relu',
-            kernelInitializer: 'glorotUniform'
+            kernelInitializer: kernelInitializer
         }));
         model.add(tf.layers.conv2d({
             kernelSize: 3,
             filters: 16,
             activation: 'relu',
-            kernelInitializer: 'glorotUniform'
+            kernelInitializer: kernelInitializer
         }));
         model.add(tf.layers.conv2d({
             kernelSize: 3,
             filters: 32,
             activation: 'relu',
-            kernelInitializer: 'glorotUniform'
+            kernelInitializer: kernelInitializer
         }));
         model.add(tf.layers.flatten({}));
         model.add(tf.layers.dense({
             units: 16,
             activation: 'relu',
-            kernelInitializer: 'glorotUniform'
+            kernelInitializer: kernelInitializer
         }));
         model.add(tf.layers.dense({
             units: agent.action_size

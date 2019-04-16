@@ -94,7 +94,7 @@ function Env(_w, _canvas) {
         ctx.fillText(max, 0, graph_indent);
         ctx.fillText(min, 0, graph_indent + graph_height);
 
-        ctx.fillText(this.episodes, graph_indent + graph_width - 10, graph_indent + graph_height + 20);
+        ctx.fillText(this.episodes+1, graph_indent + graph_width - 10, graph_indent + graph_height + 20);
 
         ctx.closePath();
 

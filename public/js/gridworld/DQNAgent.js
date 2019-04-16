@@ -28,13 +28,30 @@ function DQNAgent(_env, _x, _y, _canvas) {
             inputShape: [7, 7, 1],
             kernelSize: 3,
             filters: 8,
-            activation: 'relu'
+            activation: 'relu',
+            kernelInitializer: 'glorotUniform'
         }));
-        model.add(tf.layers.conv2d({kernelSize: 3, filters: 16, activation: 'relu'}));
-        model.add(tf.layers.conv2d({kernelSize: 3, filters: 32, activation: 'relu'}));
+        model.add(tf.layers.conv2d({
+            kernelSize: 3,
+            filters: 16,
+            activation: 'relu',
+            kernelInitializer: 'glorotUniform'
+        }));
+        model.add(tf.layers.conv2d({
+            kernelSize: 3,
+            filters: 32,
+            activation: 'relu',
+            kernelInitializer: 'glorotUniform'
+        }));
         model.add(tf.layers.flatten({}));
-        model.add(tf.layers.dense({units: 16, activation: 'relu'}));
-        model.add(tf.layers.dense({units: agent.action_size}));
+        model.add(tf.layers.dense({
+            units: 16,
+            activation: 'relu',
+            kernelInitializer: 'glorotUniform'
+        }));
+        model.add(tf.layers.dense({
+            units: agent.action_size
+        }));
 
         model.summary();
 

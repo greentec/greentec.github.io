@@ -1,4 +1,4 @@
-function DQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal') {
+function DuelingDQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal') {
     this.env = _env;
     this.x = _x;
     this.y = _y;
@@ -15,7 +15,6 @@ function DQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal') {
     this.batch_size = 64;
     this.gamma = 0.99;
     this.tau = 1e-3;
-    // this.memory = queue.createQueue(this.sample_max);
     this.memory = [];
 
     this.action_size = 4;
@@ -23,35 +22,56 @@ function DQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal') {
     this.target_model = createNetwork(this, kernelInitializer);
 
     function createNetwork(agent, kernelInitializer='randomNormal') {
-        const model = tf.sequential();
-        model.add(tf.layers.conv2d({
+        const input_state = tf.input({shape: [7, 7, 1]});
+        const conv1 = tf.layers.conv2d({
             inputShape: [7, 7, 1],
             kernelSize: 3,
             filters: 8,
             activation: 'relu',
             kernelInitializer: kernelInitializer
-        }));
-        model.add(tf.layers.conv2d({
+        }).apply(input_state);
+
+        const conv2 = tf.layers.conv2d({
             kernelSize: 3,
             filters: 16,
             activation: 'relu',
             kernelInitializer: kernelInitializer
-        }));
-        model.add(tf.layers.conv2d({
+        }).apply(conv1);
+
+        const conv3 = tf.layers.conv2d({
             kernelSize: 3,
             filters: 32,
             activation: 'relu',
             kernelInitializer: kernelInitializer
-        }));
-        model.add(tf.layers.flatten({}));
-        model.add(tf.layers.dense({
+        }).apply(conv2);
+
+        const flat = tf.layers.flatten({}).apply(conv3);
+        const v_dense = tf.layers.dense({
             units: 16,
             activation: 'relu',
             kernelInitializer: kernelInitializer
-        }));
-        model.add(tf.layers.dense({
-            units: agent.action_size
-        }));
+        }).apply(flat);
+        const adv_dense = tf.layers.dense({
+            units: 16,
+            activation: 'relu',
+            kernelInitializer: kernelInitializer
+        }).apply(flat);
+
+        const v_final = tf.layers.dense({
+            units: 1,
+            activation: 'relu',
+            kernelInitializer: kernelInitializer
+        }).apply(v_dense);
+        const adv_final = tf.layers.dense({
+            units: agent.action_size,
+            activation: 'relu',
+            kernelInitializer: kernelInitializer
+        }).apply(adv_dense);
+
+        // const output = tf.layers.add().apply([v_final, adv_final, -tf.div(tf.mean(adv_final, -1), 4)]);
+        const output = tf.layers.add().apply([v_final, adv_final]);
+
+        const model = tf.model({inputs: input_state, outputs: output});
 
         model.summary();
 
@@ -81,7 +101,6 @@ function DQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal') {
 
     this.append_sample = function(state, action, reward, next_state, done) {
         this.memory.push([math.reshape(state, [7,7,1]), action, reward, math.reshape(next_state, [7,7,1]), done]);
-        // if (this.memory.getLength() > this.sample_max) {
         if (this.memory.length > this.sample_max) {
             this.memory.shift();
         }

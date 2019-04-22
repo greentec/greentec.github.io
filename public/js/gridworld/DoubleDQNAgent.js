@@ -1,4 +1,4 @@
-function DQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal') {
+function DoubleDQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal') {
     this.env = _env;
     this.x = _x;
     this.y = _y;
@@ -88,6 +88,7 @@ function DQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal') {
     }
 
     this.train_model = async function() {
+        // const population = new Array(this.memory.getLength()).fill(0).map((c,i) => i);
         const population = new Array(this.memory.length).fill(0).map((c,i) => i);
         const mini_batch = sample(population, this.batch_size);
 
@@ -112,9 +113,12 @@ function DQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal') {
         const batch_done = tf.tensor1d(array_done);
 
         const target = this.model.predict(batch_prev_state);
+        // Using Online Network, from St+1 determine the index of the best action At+1.
+        const target_val_action = this.model.predict(batch_next_state);
         const target_val = this.target_model.predict(batch_next_state);
 
         let target_data = target.dataSync();
+        let target_val_action_data = target_val_action.dataSync();
         let target_val_data = target_val.dataSync();
 
         for (let i = 0; i < this.batch_size; i += 1) {
@@ -122,10 +126,15 @@ function DQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal') {
                 target_data[i * this.action_size + array_action[i]] = array_reward[i];
             }
             else {
+                const action_array = target_val_action_data.slice(i * this.action_size, (i+1) * this.action_size);
+                const action_array_max_q = Math.max(...action_array);
+                const action_selected_by_q = action_array.indexOf(action_array_max_q);
+
+                // Using Target Network, from St+1 get the Q-value of that action.
                 target_data[i * this.action_size + array_action[i]] =
                     array_reward[i] +
                     this.gamma *
-                    Math.max(...target_val_data.slice(i * this.action_size, (i+1) * this.action_size));
+                    target_val_data.slice(i * this.action_size, (i+1) * this.action_size)[action_selected_by_q];
             }
         }
 
@@ -139,6 +148,7 @@ function DQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal') {
                 batch_next_state.dispose();
                 batch_done.dispose();
                 target.dispose();
+                target_val_action.dispose();
                 target_val.dispose();
             });
     }

@@ -1,3 +1,27 @@
+class QLayer extends tf.layers.Layer {
+    constructor(config) {
+        super(config);
+    }
+
+    computeOutputShape(inputShape) {
+        // tf.util.assert(inputShape.length === 2 && Array.isArray(inputShape[0]),
+        //     () => `Expected exactly 2 input shapes. But got: ${inputShape}`);
+        // return inputShape[0];
+        return inputShape[1];
+    }
+
+    call(inputs, kwargs) {
+        const [v_final, adv_final] = inputs;
+        const mean = tf.mean(adv_final, 1).div(4).reshape([-1,1]);
+        return adv_final.add(v_final).sub(mean);
+    }
+
+    static get className() {
+        return 'QLayer';
+    }
+}
+tf.serialization.registerClass(QLayer);
+
 function DuelingDQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal') {
     this.env = _env;
     this.x = _x;
@@ -68,10 +92,15 @@ function DuelingDQNAgent(_env, _x, _y, _canvas, kernelInitializer='randomNormal'
             kernelInitializer: kernelInitializer
         }).apply(adv_dense);
 
-        // const output = tf.layers.add().apply([v_final, adv_final, -tf.div(tf.mean(adv_final, -1), 4)]);
-        const output = tf.layers.add().apply([v_final, adv_final]);
+        const q_output = new QLayer({
 
-        const model = tf.model({inputs: input_state, outputs: output});
+        }).apply([v_final, adv_final]);
+
+        // const output = tf.layers.add().apply([v_final, adv_final, -tf.div(tf.mean(adv_final, -1), 4)]);
+        // const output = tf.layers.add().apply([v_final, adv_final]);
+
+        // const model = tf.model({inputs: input_state, outputs: output});
+        const model = tf.model({inputs: input_state, outputs: q_output});
 
         model.summary();
 

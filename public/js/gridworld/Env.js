@@ -221,6 +221,11 @@ function Env(_w, _canvas) {
                             ctx.lineTo(x * this.grid_width + this.grid_width * 0.1, y * this.grid_width + this.grid_width * 0.9);
                             ctx.stroke();
                             break;
+
+                        case 'wall':
+                            ctx.fillRect(x * this.grid_width, y * this.grid_width, this.grid_width, this.grid_width);
+                            break;
+
                     }
                     ctx.closePath();
                 }

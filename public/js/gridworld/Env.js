@@ -187,7 +187,6 @@ function Env(_w, _canvas) {
         this.drawOutline();
         this.drawInfo();
 
-        let ctx = this.canvas.getContext('2d');
         let entity;
 
         for (let y = 0; y < this.height; y += 1) {

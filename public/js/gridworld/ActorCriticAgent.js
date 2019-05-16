@@ -85,14 +85,12 @@ function ActorCriticAgent(_env, _x, _y, _canvas) {
         }).apply(conv2);
 
         const flat = tf.layers.flatten({}).apply(conv3);
-        // const input_action = tf.input({shape: [4]});
-        // const concat = tf.layers.concatenate().apply([flat, input_action]);
+        
         const dense1 = tf.layers.dense({
             units: 16,
             activation: 'relu',
             kernelInitializer : 'glorotUniform'
-        // }).apply(concat);
-    }).apply(flat);
+        }).apply(flat);
 
         const output = tf.layers.dense({
             units: 1,
@@ -101,13 +99,11 @@ function ActorCriticAgent(_env, _x, _y, _canvas) {
         }).apply(dense1);
 
         const model = tf.model({
-            // inputs: [input_state, input_action],
             inputs: input_state,
             outputs: output
         });
         model.summary();
 
-        // const optimizer = tf.train.adam(1e-5);
         const optimizer = tf.train.adam(1e-4);
         model.compile({
             optimizer: optimizer,
@@ -123,26 +119,15 @@ function ActorCriticAgent(_env, _x, _y, _canvas) {
 
         const input = tf.tensor4d(state, [1, 7, 7, 1]);
         const next_input = tf.tensor4d(next_state, [1, 7, 7, 1]);
-        // const next_action = this.actor.predict(next_input);
-        // const action_tensor = tf.tensor1d([action], 'int32');
-        // const now_action = tf.oneHot(action_tensor, this.action_size);
 
-        // const value = this.critic.predict([input, now_action]);
-        // const next_value = this.critic.predict([next_input, next_action]);
         const value = this.critic.predict(input).flatten().get(0);
         const next_value = this.critic.predict(next_input).flatten().get(0);
 
-        // let value_v = value.flatten().get(0);
-        // let next_value_v = next_value.flatten().get(0);
-
         if (done) {
-            // advantages[action] = reward - value_v;
             advantages[action] = reward - value;
             target[0] = reward;
         }
         else {
-            // advantages[action] = reward + this.gamma * next_value_v - value_v;
-            // target[0] = reward + this.gamma * next_value_v;
             advantages[action] = reward + this.gamma * next_value - value;
             target[0] = reward + this.gamma * next_value;
         }
@@ -155,14 +140,10 @@ function ActorCriticAgent(_env, _x, _y, _canvas) {
                 tf.dispose(advantages);
             });
 
-        // await this.critic.fit([input, now_action], target, {batchSize: 1, epoch: 1})
         await this.critic.fit(input, target, {batchSize: 1, epoch: 1})
             .then(() => {
                 tf.dispose(input);
                 tf.dispose(next_input);
-                // tf.dispose(next_action);
-                // tf.dispose(action_tensor);
-                // tf.dispose(now_action);
                 tf.dispose(value);
                 tf.dispose(next_value);
                 tf.dispose(target);

@@ -1,4 +1,4 @@
-function ActorCriticAgent(_env, _x, _y, _canvas) {
+function A3CAgent_Worker(_env, _x, _y, _canvas, shared_agent) {
     this.env = _env;
     this.x = _x;
     this.y = _y;
@@ -16,6 +16,17 @@ function ActorCriticAgent(_env, _x, _y, _canvas) {
     this.action_size = 4;
     this.actor = createActorNetwork(this);
     this.critic = createCriticNetwork(this);
+
+    this.update_from_shared_agent = function() {
+        tf.tidy(() => {
+            for (let i = 0; i < this.actor.weights.length; i += 1) {
+                this.actor.weights[i].val.assign(shared_agent.actor.weights[i].val);
+            }
+            for (let i = 0; i < this.critic.weights.length; i += 1) {
+                this.critic.weights[i].val.assign(shared_agent.critic.weights[i].val);
+            }
+        });
+    }
 
     function createActorNetwork(agent) {
         const model = tf.sequential();
@@ -138,12 +149,12 @@ function ActorCriticAgent(_env, _x, _y, _canvas) {
         advantages = tf.tensor2d(advantages, [1, this.action_size], 'float32');
         target = tf.tensor1d(target, 'float32');
 
-        await this.actor.fit(input, advantages, {batchSize: 1, epoch: 1})
+        await shared_agent.actor.fit(input, advantages, {batchSize: 1, epoch: 1})
             .then(() => {
                 tf.dispose(advantages);
             });
 
-        await this.critic.fit(input, target, {batchSize: 1, epoch: 1})
+        await shared_agent.critic.fit(input, target, {batchSize: 1, epoch: 1})
             .then(() => {
                 tf.dispose(input);
                 tf.dispose(next_input);
@@ -211,6 +222,15 @@ function ActorCriticAgent(_env, _x, _y, _canvas) {
             h = (this.visionForward * 2 + 1) * grid_width;
             if (top + h > this.env.grid_W * grid_width) {
                 h = this.env.grid_W * grid_width - top;
+            }
+
+            if (left < 0) {
+                w += left;
+                left = 0;
+            }
+            if (top < 0) {
+                h += top;
+                top = 0;
             }
 
             ctx.save();

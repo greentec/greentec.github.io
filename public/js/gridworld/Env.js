@@ -60,7 +60,7 @@ function Env(_w, _canvas) {
         ctx.closePath();
     }
 
-    this.drawRewardGraph = function(rewards_array, indent_x, indent_y) {
+    this.drawRewardGraph = function(rewards_array, indent_x, indent_y, total_episode=this.episodes+1) {
         let max = Math.max(...rewards_array);
         let min = Math.min(...rewards_array);
         if (max === min) {
@@ -94,7 +94,7 @@ function Env(_w, _canvas) {
         ctx.fillText(max, 0, graph_indent);
         ctx.fillText(min, 0, graph_indent + graph_height);
 
-        ctx.fillText(this.episodes+1, graph_indent + graph_width - 10, graph_indent + graph_height + 20);
+        ctx.fillText(total_episode, graph_indent + graph_width - 10, graph_indent + graph_height + 20);
 
         ctx.closePath();
 

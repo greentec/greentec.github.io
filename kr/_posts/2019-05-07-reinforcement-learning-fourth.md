@@ -596,12 +596,6 @@ async function iterate(is_loop = true) {
             ctx.closePath();
 
             ctx.beginPath();
-            ctx.fillStyle = 'white';
-            ctx.font = '14px monospace';
-            ctx.fillText(`epsilon: ${epsilon}`, env.grid_W * env.grid_width + 20, env.grid_W * env.grid_width + 40);
-            ctx.closePath();
-
-            ctx.beginPath();
             ctx.fillStyle = 'limegreen';
             ctx.font = '14px monospace';
             let avg = rewards_array.reduce((acc, cur) => acc+cur, 0) / rewards_array.length;
@@ -1408,13 +1402,7 @@ async function iterate(is_loop = true) {
             ctx.font = '11px monospace';
             ctx.fillText(title, env.grid_W * env.grid_width + 10, 10);
             ctx.closePath();
-
-            ctx.beginPath();
-            ctx.fillStyle = 'white';
-            ctx.font = '14px monospace';
-            ctx.fillText(`epsilon: ${epsilon}`, env.grid_W * env.grid_width + 20, env.grid_W * env.grid_width + 40);
-            ctx.closePath();
-
+            
             ctx.beginPath();
             ctx.fillStyle = 'limegreen';
             ctx.font = '14px monospace';

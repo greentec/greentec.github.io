@@ -9,6 +9,8 @@ function ActorCriticAgent(_env, _x, _y, _canvas) {
     this.action = null;
     this.reward = 0;
     this.ball_count = 0;
+    this.key = false;
+
     this.learn_step = 10;
     this.batch_size = 64;
     this.gamma = 0.99;
@@ -154,17 +156,34 @@ function ActorCriticAgent(_env, _x, _y, _canvas) {
     }
 
     this.step = function(action) {
+        let entity;
+
         if (this.x + dirs[action][0] >= 0 && this.x + dirs[action][0] < this.env.width) {
-            this.x += dirs[action][0];
+            entity = this.env.grid[this.y][this.x + dirs[action][0]][0];
+            if (entity === undefined ||
+                (entity.type === 'key') ||
+                (entity.type === 'door' && this.key === true) ||
+                (entity.type === 'ball') ||
+                (entity.type === 'goal')) {
+
+                this.x += dirs[action][0];
+            }
         }
         if (this.y + dirs[action][1] >= 0 && this.y + dirs[action][1] < this.env.height) {
-            this.y += dirs[action][1];
+            entity = this.env.grid[this.y + dirs[action][1]][this.x][0];
+            if (entity === undefined ||
+                (entity.type === 'key') ||
+                (entity.type === 'door' && this.key === true) ||
+                (entity.type === 'ball') ||
+                (entity.type === 'goal')) {
+
+                this.y += dirs[action][1];
+            }
         }
         this.dir = action;
 
         let reward = 0;
         let done = false;
-        let entity;
 
         if (this.env.grid[this.y][this.x].length !== 0) {
             for (let i = 0; i < this.env.grid[this.y][this.x].length; i += 1) {
@@ -183,6 +202,13 @@ function ActorCriticAgent(_env, _x, _y, _canvas) {
                 }
                 else if (entity.type === 'box') {
                     done = true;
+                }
+                else if (entity.type === 'door') {
+                    this.env.grid[this.y][this.x].pop();
+                }
+                else if (entity.type === 'key') {
+                    this.key = true;
+                    this.env.grid[this.y][this.x].pop();
                 }
             }
         }

@@ -14,6 +14,8 @@ function Env(_w, _canvas) {
     this.balls_count = 0;
     this.boxes_count = 0;
     this.marks_count = 0;
+    this.keys_count = 0;
+    this.doors_count = 0;
 
     this.agent = null;
     const ctx = this.canvas.getContext('2d');
@@ -111,6 +113,143 @@ function Env(_w, _canvas) {
         ctx.closePath();
 
         ctx.restore();
+    }
+
+    this.setEntityWithWall = function(agent, info) {
+        this.agent = agent;
+
+        if (!this.grid) {
+            this.initGrid(this.grid_W, this.grid_W);
+        }
+
+        for (let key in info) {
+            switch (key) {
+                case 'ball':
+                    this.balls_count = info[key];
+                    break;
+
+                case 'door':
+                    this.doors_count = info[key];
+                    break;
+
+                case 'key':
+                    this.keys_count = info[key];
+                    break;
+            }
+        }
+
+        // walls
+        let horizontal = Math.random() < 0.5 ? true : false;
+        let wall_index;
+        let door_index;
+        let key_list = [];
+        let ball_list = [];
+        if (horizontal) {
+            do {
+                wall_index = Math.floor(Math.random() * (this.grid_W - 2)) + 1;
+            } while (agent.y === wall_index);
+            door_index = Math.floor(Math.random() * this.grid_W);
+
+            for (let i = 0; i < this.grid_W; i += 1) {
+                if (i !== door_index) {
+                    this.grid[wall_index][i].push( new Entity(wall_index, i, 0, 'GREY', 'wall') );
+                }
+                else {
+                    if (info.hasOwnProperty('door') === true) {
+                        this.grid[wall_index][i].push( new Entity(wall_index, i, 0, 'PURPLE', 'door') );
+                    }
+                }
+            }
+
+            for (let y = 0; y < this.grid_W; y += 1) {
+                for (let x = 0; x < this.grid_W; x += 1) {
+                    if ((agent.y < wall_index && y < wall_index) ||
+                        (agent.y > wall_index && y > wall_index)) {
+                        // key - must be in the same room
+                        key_list.push(y.toString() + '#' + x.toString());
+                    }
+                    else if ((agent.y < wall_index && y > wall_index) ||
+                             (agent.y > wall_index && y < wall_index)){
+                        // ball - must be in the other room
+                        ball_list.push(y.toString() + '#' + x.toString());
+                    }
+                }
+            }
+        }
+        else {
+            do {
+                wall_index = Math.floor(Math.random() * (this.grid_W - 2)) + 1;
+            } while (agent.x === wall_index);
+            door_index = Math.floor(Math.random() * this.grid_W);
+
+            for (let i = 0; i < this.grid_W; i += 1) {
+                if (i !== door_index) {
+                    this.grid[i][wall_index].push( new Entity(i, wall_index, 0, 'GREY', 'wall') );
+                }
+                else {
+                    if (info.hasOwnProperty('door') === true) {
+                        this.grid[i][wall_index].push( new Entity(i, wall_index, 1, 'PURPLE', 'door') );
+                    }
+                }
+            }
+
+            for (let y = 0; y < this.grid_W; y += 1) {
+                for (let x = 0; x < this.grid_W; x += 1) {
+                    if ((agent.x < wall_index && x < wall_index) ||
+                        (agent.x > wall_index && x > wall_index)) {
+                        // key - must be in the same room
+                        key_list.push(y.toString() + '#' + x.toString());
+                    }
+                    else if ((agent.x < wall_index && x > wall_index) ||
+                             (agent.x > wall_index && x < wall_index)){
+                        // ball - must be in the other room
+                        ball_list.push(y.toString() + '#' + x.toString());
+                    }
+                }
+            }
+        }
+
+        let population = new Array(this.grid_W * this.grid_W).fill(0).map((c,i) => i);
+        let entity_pos_array = this.sample(population, population.length);
+
+        if (info.hasOwnProperty('ball') === true) {
+            for (let i = 0; i < this.balls_count; i++) {
+                let pos = entity_pos_array.pop();
+                let x = pos % this.grid_W;
+                let y = Math.floor(pos / this.grid_W);
+                // if (x !== agent.x && y !== agent.y) {
+                if (this.grid[y][x].length === 0 &&
+                    (x === agent.x && y === agent.y) === false &&
+                    ball_list.indexOf(y.toString() + '#' + x.toString()) !== -1) {
+                    if (info.hasOwnProperty('key') === true) {
+                        this.grid[y][x].push( new Entity(y, x, 1, 'GREEN', 'ball') );
+                    }
+                    else {
+                        this.grid[y][x].push( new Entity(y, x, 3, 'GREEN', 'ball') );
+                    }
+                }
+                else {
+                    i -= 1;
+                }
+            }
+        }
+
+        if (info.hasOwnProperty('key') === true) {
+            for (let i = 0; i < this.keys_count; i++) {
+                let pos = entity_pos_array.pop();
+                let x = pos % this.grid_W;
+                let y = Math.floor(pos / this.grid_W);
+                // if (x !== agent.x && y !== agent.y) {
+                if (this.grid[y][x].length === 0 &&
+                    (x === agent.x && y === agent.y) === false &&
+                    key_list.indexOf(y.toString() + '#' + x.toString()) !== -1) {
+                    this.grid[y][x].push( new Entity(y, x, 1, 'PURPLE', 'key') );
+                }
+                else {
+                    i -= 1;
+                }
+            }
+        }
     }
 
     this.setEntity = function(agent, info, init_pos = null) {
@@ -225,11 +364,56 @@ function Env(_w, _canvas) {
                             ctx.fillRect(x * this.grid_width, y * this.grid_width, this.grid_width, this.grid_width);
                             break;
 
+                        case 'door':
+                            ctx.strokeStyle = colors[entity.color];
+                            ctx.lineWidth = 2;
+                            ctx.rect((x + 0.1) * this.grid_width, (y + 0.1) * this.grid_width, this.grid_width * 0.8, this.grid_width * 0.8);
+
+                            ctx.moveTo(x * this.grid_width + this.grid_width * 0.66, y * this.grid_width + this.grid_width * 0.38);
+                            ctx.arc(x * this.grid_width + this.grid_width * 0.5,
+                                    y * this.grid_width + this.grid_width * 0.38,
+                                    this.grid_width * 0.16,
+                                    Math.PI,
+                                    0);
+                            ctx.rect(x * this.grid_width + this.grid_width * 0.25,
+                                     y * this.grid_width + this.grid_width * 0.38,
+                                     this.grid_width * 0.5,
+                                     this.grid_width * 0.42);
+
+                            ctx.moveTo(x * this.grid_width + this.grid_width * 0.58, y * this.grid_width + this.grid_width * 0.55);
+                            ctx.arc(x * this.grid_width + this.grid_width * 0.5,
+                                    y * this.grid_width + this.grid_width * 0.55,
+                                    this.grid_width * 0.08,
+                                    0,
+                                    Math.PI * 2);
+                            ctx.moveTo(x * this.grid_width + this.grid_width * 0.5, y * this.grid_width + this.grid_width * 0.63);
+                            ctx.lineTo(x * this.grid_width + this.grid_width * 0.5, y * this.grid_width + this.grid_width * 0.8);
+
+                            ctx.stroke();
+                            break;
+
+                        case 'key':
+                            ctx.strokeStyle = colors[entity.color];
+                            ctx.lineWidth = 3;
+                            ctx.arc(x * this.grid_width + this.grid_width * 0.5,
+                                    y * this.grid_width + this.grid_width * 0.25,
+                                    this.grid_width * 0.18,
+                                    0,
+                                    Math.PI * 2);
+                            ctx.moveTo(x * this.grid_width + this.grid_width * 0.5, y * this.grid_width + this.grid_width * 0.45);
+                            ctx.lineTo(x * this.grid_width + this.grid_width * 0.5, y * this.grid_width + this.grid_width * 0.85);
+                            ctx.lineTo(x * this.grid_width + this.grid_width * 0.75, y * this.grid_width + this.grid_width * 0.85);
+                            ctx.moveTo(x * this.grid_width + this.grid_width * 0.5, y * this.grid_width + this.grid_width * 0.6);
+                            ctx.lineTo(x * this.grid_width + this.grid_width * 0.70, y * this.grid_width + this.grid_width * 0.6);
+                            ctx.stroke();
+                            break;
+
                     }
                     ctx.closePath();
                 }
             }
         }
+        ctx.lineWidth = 1;
     };
 
 

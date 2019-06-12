@@ -2,6 +2,7 @@ function Env(_w, _canvas) {
     this.canvas = _canvas;
     this.grid = null;
     this.grid_W = _w;
+    this.grid_W_max = 8;
     this.grid_width = 30;
     this.width = null;
     this.height = null;
@@ -31,6 +32,7 @@ function Env(_w, _canvas) {
 
         this.width = w;
         this.height = h;
+        this.grid_W = w;
 
         this.canvas.style.backgroundColor = 'rgb(0,0,0)';
     }

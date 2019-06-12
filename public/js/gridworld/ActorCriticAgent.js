@@ -9,6 +9,7 @@ function ActorCriticAgent(_env, _x, _y, _canvas) {
     this.action = null;
     this.reward = 0;
     this.ball_count = 0;
+    this.door_count = 0;
     this.key = false;
 
     this.learn_step = 10;
@@ -204,6 +205,7 @@ function ActorCriticAgent(_env, _x, _y, _canvas) {
                     done = true;
                 }
                 else if (entity.type === 'door') {
+                    this.door_count -= 1;
                     this.env.grid[this.y][this.x].pop();
                 }
                 else if (entity.type === 'key') {

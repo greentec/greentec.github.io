@@ -177,7 +177,7 @@ window.addEventListener('resize', function() {
 ![](<../images/rl_3_7.png>)
 <small>그림 5</small>
 
-그러면 2의 방법대로 겹치는 격자에 대해서 reward 값의 평균을 내보면 그림 9와 같이 됩니다.
+그러면 2의 방법대로 겹치는 격자에 대해서 reward 값의 평균을 내보면 그림 6과 같이 됩니다.
 
 ![](<../images/rl_3_8.png>)
 <small>그림 6</small>

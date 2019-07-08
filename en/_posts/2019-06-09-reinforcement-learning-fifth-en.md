@@ -307,7 +307,7 @@ Now, if you continue reading this series, you expect that performance will be be
 
 Since the agent learns based on uncertain information, the average reward graph on the left has a large fluctuation. In the average reward, the difference between A2C and A3C is not big, but the success rate[^3] on the right side is higher than that of A3C.
 
-[^3]: maxStep 을 넘기 전에 ball을 획득한 episode 수 / 전체 episode 수 * 100
+[^3]: (Number of episodes that acquired the ball before passing maxStep) / (total number of episodes) * 100
 
 
 &nbsp;
@@ -1306,7 +1306,7 @@ Curriculum Learning is based on a [paper](<https://dl.acm.org/citation.cfm?id=15
 Recently, deep learning and reinforcement learning have attracted attention, and curriculum learning, which improves general learning methods, is attracting attention as well. Curriculum learning is also available for Grid World, which is a common practice.
 
 ![](<../images/rl5_12.png>)
-<small>Figure 11. 네트워크가 준비되지 않은 상태에서 어려운 문제를 많이 만나지 않도록 쉬운 문제를 먼저 제시해줍니다.</small>
+<small>Figure 11. It presents easy problems first so that agent do not get to see a lot of difficult problems when your network is not ready.</small>
 
 The agent has to solve `two-room-door-key`, and the learning environment is randomly presented from 6x6 to the existing 8x8 grid. As learning progresses, larger environments are presented frequently. The larger the environment, the smaller the area the agent can see at one time than the entire environment, which makes the agent difficult to unravel.
 

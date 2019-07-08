@@ -305,7 +305,7 @@ Now, if you continue reading this series, you expect that performance will be be
 ![](<../images/rl5_2.png>)
 <small>Figure 3. Comparison of A2C and A3C performance for `two-room` problems</small>
 
-에이전트가 불확실한 정보를 바탕으로 학습하기 때문에 왼쪽의 average reward 그래프에서는 변동폭이 큽니다. average reward에서는 A2C와 A3C의 차이가 크지 않은 것 같지만 오른쪽의 성공률[^3]을 보면 A3C의 성공률이 좀 더 높습니다.
+Since the agent learns based on uncertain information, the average reward graph on the left has a large fluctuation. In the average reward, the difference between A2C and A3C is not big, but the success rate[^3] on the right side is higher than that of A3C.
 
 [^3]: maxStep 을 넘기 전에 ball을 획득한 episode 수 / 전체 episode 수 * 100
 

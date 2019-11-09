@@ -213,6 +213,24 @@
                             mouse.x = (mouseX / renderer.domElement.width) * 2 - 1;
                             mouse.y = -(mouseY / renderer.domElement.height) * 2 + 1;
                         }, false);
+
+                        let fullscreen_button = document.createElement('input');
+                        fullscreen_button.type = 'button';
+                        fullscreen_button.value = '🔎';
+                        fullscreen_button.id = 'editor_canvas_fullscreen_button_' + i.toString();
+                        addClass(fullscreen_button, 'fullscreen_button');
+                        editor.display.wrapper.parentNode.appendChild(fullscreen_button);
+
+                        fullscreen_button.addEventListener('click', function(event) {
+                            if (isInFullScreen()) {
+                                exitFullScreen();
+                            }
+                            else {
+                                const idx = fullscreen_button.id.split('_').pop();
+                                const canvas = document.getElementById('editor_canvas_' + idx);
+                                enterFullScreen(canvas);
+                            }
+                        });
                     }
 
                     function onWindowResize(event) {
@@ -484,6 +502,51 @@ void main(){
         else if (hasClass(el, className)) {
             var reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
             el.className=el.className.replace(reg, ' ')
+        }
+    }
+
+    function isInFullScreen() {
+        return (document.fullscreenElement && document.fullscreenElement !== null) ||
+                (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+                (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+                (document.msFullscreenElement && document.msFullscreenElement !== null);
+    }
+
+    // Enter fullscreen
+    function enterFullScreen(canvas){
+        if (canvas.RequestFullScreen) {
+            canvas.RequestFullScreen();
+        }
+        else if (canvas.webkitRequestFullScreen) {
+            canvas.webkitRequestFullScreen();
+        }
+        else if (canvas.mozRequestFullScreen) {
+            canvas.mozRequestFullScreen();
+        }
+        else if (canvas.msRequestFullscreen) {
+            canvas.msRequestFullscreen();
+        }
+        else {
+            alert("This browser doesn't supporter fullscreen");
+        }
+    }
+
+    // Exit fullscreen
+    function exitFullScreen(){
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+        else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+        else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        }
+        else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        else {
+            alert("Exit fullscreen doesn't work");
         }
     }
 })();

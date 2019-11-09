@@ -415,6 +415,24 @@ void main(){
 
                         onWindowResize();
                         window.addEventListener('resize', onWindowResize, false);
+
+                        let fullscreen_button = document.createElement('input');
+                        fullscreen_button.type = 'button';
+                        fullscreen_button.value = '🔎';
+                        fullscreen_button.id = 'editor_canvas_fullscreen_button_' + i.toString();
+                        addClass(fullscreen_button, 'fullscreen_button');
+                        editor.display.wrapper.parentNode.appendChild(fullscreen_button);
+
+                        fullscreen_button.addEventListener('click', function(event) {
+                            if (isInFullScreen()) {
+                                exitFullScreen();
+                            }
+                            else {
+                                const idx = fullscreen_button.id.split('_').pop();
+                                const canvas = document.getElementById('editor_canvas_' + idx);
+                                enterFullScreen(canvas);
+                            }
+                        });
                     }
 
                     function onWindowResize(event) {

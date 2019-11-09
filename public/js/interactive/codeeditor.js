@@ -183,8 +183,8 @@
                         scene.add(mesh);
                         let canvas = document.createElement('canvas');
                         canvas.id = 'editor_canvas_' + i.toString();
-                        canvas.width = 360;
-                        canvas.height = 280;
+                        canvas.width = 720;
+                        canvas.height = 560;
                         renderer = new THREE.WebGLRenderer({alpha: true, canvas: canvas});
                         renderer.setPixelRatio(window.devicePixelRatio);
                         editor.display.wrapper.parentNode.appendChild(renderer.domElement);
@@ -392,8 +392,8 @@ void main(){
                         scene.add(mesh);
                         let canvas = document.createElement('canvas');
                         canvas.id = 'editor_canvas_' + i.toString();
-                        canvas.width = 360;
-                        canvas.height = 280;
+                        canvas.width = 720;
+                        canvas.height = 560;
                         renderer = new THREE.WebGLRenderer({alpha: true, canvas: canvas});
                         renderer.setPixelRatio(window.devicePixelRatio);
                         editor.display.wrapper.parentNode.appendChild(renderer.domElement);

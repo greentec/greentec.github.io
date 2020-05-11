@@ -170,9 +170,9 @@ window.addEventListener('resize', function() {
 그리고 episode 를 반복하면서 격자가 가진 값을 업데이트 해줍니다. 어떻게 업데이트를 해야할까요? 1) 새로운 값으로 덮어씌우기, 2) 평균 취하기. 1번보다는 2번이 안정적으로 보입니다.
 
 ![](<../images/rl_3_5.png>)
-<small>그림 4. steps: 22, reward: -1.1</small>
+<small>그림 4. steps: 20, reward: -1.1</small>
 
-그림 4의 episode 에서 에이전트는 조금 더 헤매기는 했지만 목표를 찾는 데에 성공했습니다. 이때 최종 reward 는 각 step 마다 -0.1, 마지막에 목표에서 +1.0 을 받았기 때문에 $$-0.1 \times 21 + 1.0 = -1.1$$ 이 됩니다.
+그림 4의 episode 에서 에이전트는 조금 더 헤매기는 했지만 목표를 찾는 데에 성공했습니다. 이때 최종 reward 는 각 step 마다 -0.1, 마지막에 목표에서 +1.0 을 받았기 때문에 $$-0.1 \times 19 + 1.0 = -0.9$$ 가 됩니다.
 
 ![](<../images/rl_3_7.png>)
 <small>그림 5</small>

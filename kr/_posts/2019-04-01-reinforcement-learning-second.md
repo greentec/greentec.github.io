@@ -85,6 +85,7 @@ function iterate(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
     ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
 
     env.steps += 1;
@@ -389,6 +390,7 @@ function iterate(is_loop = true) {
     q_array[state_idx + action] = Math.floor(q_array[state_idx + action] * 100) / 100;
 
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
     ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
 
     env.steps += 1;
@@ -622,6 +624,7 @@ function run(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
 
     ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
 
@@ -654,6 +657,7 @@ async function iterate(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
     const next_state = getVision(agent);
     agent.append_sample(state, action, reward, next_state, done);
 

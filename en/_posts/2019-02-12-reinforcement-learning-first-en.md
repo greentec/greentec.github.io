@@ -91,6 +91,7 @@ function iterate(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
     ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
 
     env.steps += 1;
@@ -170,9 +171,9 @@ The next action is to refer to the reward that was stored in the grid, not the r
 It will update the value of the grid while repeating the episode. How do we update? 1) Overwrite with new value, 2) Take average. The second option appears to be more stable than the first one.
 
 ![](<../images/rl_3_5.png>)
-<small>Figure 4. steps: 22, reward: -1.1</small>
+<small>Figure 4. steps: 20, reward: -0.9</small>
 
-In the episode shown in Figure 4, the agent wandered a bit further but succeeded in finding the target. The final reward is $$-0.1 \times 21 + 1.0 = -1.1$$ because -0.1 for each step and the final target is +1.0.
+In the episode shown in Figure 4, the agent wandered a bit further but succeeded in finding the target. The final reward is $$-0.1 \times 19 + 1.0 = -0.9$$ because -0.1 for each step and the final target is +1.0.
 
 ![](<../images/rl_3_7.png>)
 <small>Figure 5</small>
@@ -294,6 +295,7 @@ function iterate(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
     ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
 
     env.steps += 1;
@@ -507,6 +509,7 @@ function iterate(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
     ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
 
     env.steps += 1;
@@ -735,6 +738,7 @@ function iterate(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
     ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
 
     env.steps += 1;
@@ -952,6 +956,7 @@ function iterate(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
     ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
 
     env.steps += 1;

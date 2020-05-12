@@ -221,6 +221,7 @@ function run(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
 
     ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
 
@@ -259,6 +260,7 @@ async function iterate(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
     const next_state = getVision(agent);
     await agent.train_model(state, action, reward, next_state, done);
 
@@ -497,6 +499,7 @@ function run(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
 
     ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
 
@@ -536,6 +539,7 @@ async function iterate(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
     const next_state = getVision(agent);
     // await agent.train_model(state, action, reward, next_state, done);
 
@@ -787,6 +791,7 @@ async function iterate(is_loop = true) {
         let reward, done;
         [reward, done] = agent.step(action);
         agent.reward += reward;
+        agent.reward = parseFloat((agent.reward).toFixed(2));
         const next_state = getVision(agent);
         await agent.train_model(state, action, reward, next_state, done);
 
@@ -1306,6 +1311,7 @@ function run(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
 
     ctx.clearRect(0, 0, env.grid_W * env.grid_width + 10, canvas.height);
 
@@ -1344,6 +1350,7 @@ async function iterate(is_loop = true) {
     let reward, done;
     [reward, done] = agent.step(action);
     agent.reward += reward;
+    agent.reward = parseFloat((agent.reward).toFixed(2));
     const next_state = getVision(agent);
     // await agent.train_model(state, action, reward, next_state, done);
 
@@ -1402,7 +1409,7 @@ async function iterate(is_loop = true) {
             ctx.font = '11px monospace';
             ctx.fillText(title, env.grid_W * env.grid_width + 10, 10);
             ctx.closePath();
-            
+
             ctx.beginPath();
             ctx.fillStyle = 'limegreen';
             ctx.font = '14px monospace';

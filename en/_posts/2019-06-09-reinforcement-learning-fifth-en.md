@@ -26,7 +26,7 @@ Like `ball-find-3`, the agent only has visibility for a limited space of 7x7 aro
 
 Random actions will be very inefficient especially within these wall constraints. Recent challenges in Reinforcement Learning present a difficult problem where agents with random actions rarely score.[^1] Montezuma's Revenge, rated as the hardest game in the Atari game, is difficult to score even with a DQN.[^2]
 
-[^1]: One of the [CoG 2019](<http://ieee-cog.org/>) [competitions](<http://ieee-cog.org/competitions_conference/>), [Bot Bowl I](<https://bot-bowl.com/>), is based on the Warhammer franchise's [Blood Bowl](<https://store.steampowered.com/app/236690/Blood_Bowl_2/>), an interpretation of football as a turn-based game. They've played 350,000 games with a random action agent, but it's a tough one to score. [Paper Link](<https://njustesen.files.wordpress.com/2018/06/justesen2018blood1.pdf>)
+[^1]: One of the [CoG 2019](<http://ieee-cog.org/>) [competitions](<http://ieee-cog.org/competitions_conference/>), [Bot Bowl I](<https://bot-bowl.com/>), is based on the Warhammer franchise's [Blood Bowl](<https://store.steampowered.com/app/236690/Blood_Bowl_2/>), an interpretation of football as a turn-based game. They've played 350,000 games with a random action agent, but it's a tough one to score. [Paper Link](<https://njustesen.github.io/njustesen/publications/justesen2018blood.pdf>)
 
 ![](<../images/rl5_1.gif>)
 <small>Figure 2. If you try to play Montezuma's multiplayer game as a random agent, you will not get enough points. [Source Link](<https://openai.com/blog/learning-montezumas-revenge-from-a-single-demonstration/>)</small>

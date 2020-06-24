@@ -27,7 +27,7 @@ chartjs: true
 
 랜덤한 행동은 특히 이러한 벽의 제약조건 안에서는 몹시 비효율적으로 동작할 것입니다. 강화학습에서 최근에 제시되는 문제들을 보면 랜덤한 행동을 하는 에이전트가 점수를 거의 내지 못하는 어려운 문제를 제시합니다.[^1] 아타리 게임 중에서 가장 어려운 게임으로 평가되는 몬테주마의 복수(Montezuma's Revenge)는 DQN으로 학습시켜도 점수를 내지 못할 정도로 어렵습니다.[^2]
 
-[^1]: [CoG 2019](<http://ieee-cog.org/>)의 [Competition](<http://ieee-cog.org/competitions_conference/>) 종목 중 하나인 [Bot Bowl I](<https://bot-bowl.com/>)은 미식 축구를 턴제 게임으로 해석한 [워해머 프랜차이즈의 게임 Blood Bowl](<https://store.steampowered.com/app/236690/Blood_Bowl_2/>)을 기반으로 하고 있습니다. 랜덤 행동 에이전트로 350,000게임을 진행했지만 1점도 내지 못할 만큼 어려운 문제입니다. [논문 링크](<https://njustesen.files.wordpress.com/2018/06/justesen2018blood1.pdf>)
+[^1]: [CoG 2019](<http://ieee-cog.org/>)의 [Competition](<http://ieee-cog.org/competitions_conference/>) 종목 중 하나인 [Bot Bowl I](<https://bot-bowl.com/>)은 미식 축구를 턴제 게임으로 해석한 [워해머 프랜차이즈의 게임 Blood Bowl](<https://store.steampowered.com/app/236690/Blood_Bowl_2/>)을 기반으로 하고 있습니다. 랜덤 행동 에이전트로 350,000게임을 진행했지만 1점도 내지 못할 만큼 어려운 문제입니다. [논문 링크](<https://njustesen.github.io/njustesen/publications/justesen2018blood.pdf>)
 
 ![](<../images/rl5_1.gif>)
 <small>그림 2. 몬테주마의 복수 게임을 랜덤 에이전트로 플레이하려고 하면 점수를 거의 내지 못합니다. [출처 링크](<https://openai.com/blog/learning-montezumas-revenge-from-a-single-demonstration/>)</small>

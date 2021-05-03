@@ -164,11 +164,16 @@
                         // texture check
                         if (hasClass(text_area, 'texture')) {
                             for (let i = 0; i < 8; i++) {
-                                let texture = 'texture' + (i).toString();
-                                if (text_area.dataset[texture]) {
-                                    uniforms[texture] = {
+                                let texture_id = 'texture' + (i).toString();
+                                if (text_area.dataset[texture_id]) {
+                                    const texture = new THREE.TextureLoader().load(text_area.dataset[texture_id]);
+                                    texture.minFilter = THREE.NearestFilter;
+                                    texture.magFilter = THREE.NearestFilter;
+                                    texture.wrapS = THREE.RepeatWrapping;
+                                    texture.wrapT = THREE.RepeatWrapping;
+                                    uniforms[texture_id] = {
                                         type: 't',
-                                        value: new THREE.TextureLoader().load(text_area.dataset[texture])
+                                        value: texture
                                     }
                                 }
                             }

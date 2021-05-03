@@ -56,6 +56,9 @@ void main() {
 7행 대신 6행을 써도 상관이 없기 때문에, `floor` 함수를 사용하지 않고 `uv` 만 사용하겠습니다. 다음은 `p` 라는 값을 화면에 표시해보는 코드입니다.
 
 
+&nbsp;
+## 불이 밝아지는 효과
+
 <div>
 <textarea class='codeeditor fragment texture' data-texture0='../images/shadertoy_bayer.png' data-texture0_filter='nearest'>
 uniform sampler2D texture0;

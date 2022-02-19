@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Just Weather and Date</title>
+        <link rel='stylesheet' href='semantic.min.css'/>
+    	<link rel='stylesheet' href='custom.css'/>
+    	<script src='jquery-3.1.0.min.js'></script>
+        <script src='semantic.min.js'></script>
+        <style>
+            .vertical-horizontal-center {
+                margin: 0;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                -ms-transform: translateY(-50%) translateX(-50%);
+                transform: translateY(-50%) translateX(-50%);
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <div class='vertical-horizontal-center'>
+                <div class='ui huge statistic'>
+                    <div class='value' id='now_date_div'>
+                    </div>
+                    <div class='label' id='now_date_label'>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            let now_date;
+            function init() {
+                loop();
+            }
+
+            function drawDate() {
+                now_date = new Date();
+                const now_date_div = document.getElementById('now_date_div');
+                now_date_div.innerText = `${now_date.getMonth() + 1} / ${now_date.getDate()}`;
+                const now_date_label = document.getElementById('now_date_label');
+                now_date_label.innerText = `${now_date.toLocaleString('en-us', {weekday:'long'})}`
+            }
+
+            function loop() {
+                drawDate();
+
+
+                window.requestAnimationFrame(loop);
+            }
+            window.onload = init;
+        </script>
+    </body>
+</html>

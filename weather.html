@@ -7,6 +7,7 @@
     	<link rel='stylesheet' href='custom.css'/>
     	<script src='jquery-3.1.0.min.js'></script>
         <script src='semantic.min.js'></script>
+        <script src='weather.min.js'></script>
         <style>
             .vertical-horizontal-center {
                 margin: 0;
@@ -15,6 +16,30 @@
                 left: 50%;
                 -ms-transform: translateY(-50%) translateX(-50%);
                 transform: translateY(-50%) translateX(-50%);
+            }
+            #now_date_div {
+                font-size: 15rem !important;
+            }
+            #now_time_div {
+                font-size: 12rem !important;
+            }
+            #now_date_label {
+                font-size: 4rem !important;
+            }
+            #now_feels_like_div {
+                font-size: 2rem !important;
+            }
+            #now_temp_max_div {
+                font-size: 2rem !important;
+            }
+            #now_temp_min_div {
+                font-size: 2rem !important;
+            }
+            #now_humidity_div {
+                font-size: 2rem !important;
+            }
+            #weather_icon {
+                display: inline;
             }
         </style>
     </head>
@@ -27,25 +52,105 @@
                     <div class='label' id='now_date_label'>
                     </div>
                 </div>
+                <br/>
+                <div class='ui huge statistic'>
+                    <div class='value' id='now_time_div'>
+                    </div>
+                </div>
+                <br/>
+                <div class='ui fluid segment'>
+                    <img class="ui tiny image" id='weather_icon' src="">
+                    <div class='ui statistic'>
+                        <div class='value' id='now_temp_div'>
+                        </div>
+                        <div class='label' id='now_weather_div'>
+                        </div>
+                    </div>
+                    <div class='ui statistic'>
+                        <div class='value' id='now_feels_like_div'>
+                        </div>
+                        <div class='label'>체감온도
+                        </div>
+                    </div>
+                    <div class='ui statistic'>
+                        <div class='value' id='now_temp_max_div'>
+                        </div>
+                        <div class='label'>최고기온
+                        </div>
+                    </div>
+                    <div class='ui statistic'>
+                        <div class='value' id='now_temp_min_div'>
+                        </div>
+                        <div class='label'>최저기온
+                        </div>
+                    </div>
+                    <div class='ui statistic'>
+                        <div class='value' id='now_humidity_div'>
+                        </div>
+                        <div class='label'>습도
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <script>
+            let start_date;
             let now_date;
+            let weather_api_key = '1f7125d6573be3bdb8714a6097fee94f';
+            let weather_city_id = '1832427'; // yong in
+
             function init() {
+                start_date = new Date();
+                drawWeather();
                 loop();
             }
 
+            function drawWeather() {
+                Weather.setApiKey(weather_api_key);
+                Weather.getCurrentByCityId(weather_city_id, function(current) {
+                    console.log(current);
+
+                    const weather_icon = document.getElementById('weather_icon');
+                    weather_icon.setAttribute('src', `http://openweathermap.org/img/w/${current.data.weather[0].icon}.png`);
+
+                    let temp = Math.floor((current.data.main.temp/10 - 32) / 1.8 * 10) / 10;
+                    let temp_max = Math.floor((current.data.main.temp_max/10 - 32) / 1.8 * 10) / 10;
+                    let temp_min = Math.floor((current.data.main.temp_min/10 - 32) / 1.8 * 10) / 10;
+                    let feels_like = Math.floor((current.data.main.feels_like/10 - 32) / 1.8 * 10) / 10;
+                    let humidity = current.data.main.humidity;
+                    const now_temp_div = document.getElementById('now_temp_div');
+                    now_temp_div.innerText = `${temp}°C`;
+                    const now_feels_like_div = document.getElementById('now_feels_like_div');
+                    now_feels_like_div.innerText = `${feels_like}°C`;
+                    const now_temp_max_div = document.getElementById('now_temp_max_div');
+                    now_temp_max_div.innerText = `${temp_max}°C`;
+                    const now_temp_min_div = document.getElementById('now_temp_min_div');
+                    now_temp_min_div.innerText = `${temp_min}°C`;
+                    const now_humidity_div = document.getElementById('now_humidity_div');
+                    now_humidity_div.innerText = `${humidity}%`;
+                    const now_weather_div = document.getElementById('now_weather_div');
+                    now_weather_div.innerText = `${current.data.weather[0].main}`;
+                });
+            }
+
             function drawDate() {
-                now_date = new Date();
                 const now_date_div = document.getElementById('now_date_div');
                 now_date_div.innerText = `${now_date.getMonth() + 1} / ${now_date.getDate()}`;
                 const now_date_label = document.getElementById('now_date_label');
                 now_date_label.innerText = `${now_date.toLocaleString('en-us', {weekday:'long'})}`
+                const now_time_div = document.getElementById('now_time_div');
+                now_time_div.innerText = `${now_date.toString().split(' ')[4]}`;
             }
 
             function loop() {
+                now_date = new Date();
                 drawDate();
 
+                // 1 hour later
+                if (start_date - now_date > 60 * 60 * 1000) {
+                    start_date = now_date;
+                    drawWeather();
+                }
 
                 window.requestAnimationFrame(loop);
             }

@@ -10,7 +10,7 @@
         <script src='weather.min.js'></script>
         <style>
             body {
-                background-color: #282c34;
+                background-color: black;
             }
             .vertical-horizontal-center {
                 margin: 0;
@@ -24,10 +24,16 @@
                 font-size: 15rem !important;
             }
             #now_time_div {
-                font-size: 12rem !important;
+                font-size: 10rem !important;
             }
             #now_date_label {
                 font-size: 4rem !important;
+            }
+            #now_temp_div {
+                font-size: 5rem !important;
+            }
+            #now_weather_div {
+                font-size: 3rem !important;
             }
             #now_feels_like_div {
                 font-size: 2rem !important;
@@ -61,7 +67,7 @@
                     </div>
                 </div>
                 <br/>
-                <div class='ui fluid inverted segment'>
+                <div class='ui fluid black inverted segment'>
                     <img class="ui tiny image" id='weather_icon' src="">
                     <div class='ui grey inverted statistic'>
                         <div class='value' id='now_temp_div'>

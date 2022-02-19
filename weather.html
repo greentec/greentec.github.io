@@ -156,7 +156,7 @@
                 drawDate();
 
                 // 1 hour later
-                if (start_date - now_date > 60 * 60 * 1000) {
+                if (now_date - start_date > 60 * 60 * 1000) {
                     start_date = now_date;
                     drawWeather();
                 }

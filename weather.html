@@ -122,10 +122,10 @@
                     const weather_icon = document.getElementById('weather_icon');
                     weather_icon.setAttribute('src', `http://openweathermap.org/img/w/${current.data.weather[0].icon}.png`);
 
-                    let temp = Math.floor((current.data.main.temp/10 - 32) / 1.8 * 10) / 10;
-                    let temp_max = Math.floor((current.data.main.temp_max/10 - 32) / 1.8 * 10) / 10;
-                    let temp_min = Math.floor((current.data.main.temp_min/10 - 32) / 1.8 * 10) / 10;
-                    let feels_like = Math.floor((current.data.main.feels_like/10 - 32) / 1.8 * 10) / 10;
+                    let temp = Math.floor((current.data.main.temp - 273.15) * 10) / 10;
+                    let temp_max = Math.floor((current.data.main.temp_max - 273.15) / 1.8 * 10) / 10;
+                    let temp_min = Math.floor((current.data.main.temp_min - 273.15) / 1.8 * 10) / 10;
+                    let feels_like = Math.floor((current.data.main.feels_like - 273.15) / 1.8 * 10) / 10;
                     let humidity = current.data.main.humidity;
                     const now_temp_div = document.getElementById('now_temp_div');
                     now_temp_div.innerText = `${temp}°C`;

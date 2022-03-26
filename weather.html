@@ -155,8 +155,8 @@
                 now_date = new Date();
                 drawDate();
 
-                // 1 hour later
-                if (now_date - start_date > 60 * 60 * 1000) {
+                // 15 minutes later
+                if (now_date - start_date > 15 * 60 * 1000) {
                     start_date = now_date;
                     drawWeather();
                 }

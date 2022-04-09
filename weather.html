@@ -50,6 +50,9 @@
             #weather_icon {
                 display: inline;
             }
+            .darkgrey {
+                color: #333333 !important;
+            }
         </style>
     </head>
     <body>
@@ -159,11 +162,52 @@
                 if (now_date - start_date > 15 * 60 * 1000) {
                     start_date = now_date;
                     drawWeather();
+
+                    let hours = now_date.getHours();
+                    if (hours >= 18 || hours < 6) {
+                        const div_array = document.querySelectorAll('.grey');
+                        for (let i = 0; i < div_array.length; i += 1) {
+                            if (!hasClass(div_array[i], 'darkgrey')) {
+                                addClass(div_array[i], 'darkgrey');
+                            }
+                        }
+                    }
+                    else {
+                        const div_array = document.querySelectorAll('.darkgrey');
+                        for (let i = 0; i < div_array.length; i += 1) {
+                            if (hasClass(div_array[i], 'darkgrey')) {
+                                removeClass(div_array[i], 'darkgrey');
+                            }
+                        }
+                    }
                 }
 
                 window.requestAnimationFrame(loop);
             }
+
             window.onload = init;
+
+            function hasClass(el, className) {
+                if (el.classList)
+                    return el.classList.contains(className)
+                else
+                    return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'))
+            }
+
+            function addClass(el, className) {
+                if (el.classList)
+                    el.classList.add(className)
+                else if (!hasClass(el, className)) el.className += " " + className
+            }
+
+            function removeClass(el, className) {
+                if (el.classList)
+                    el.classList.remove(className)
+                else if (hasClass(el, className)) {
+                    var reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
+                    el.className=el.className.replace(reg, ' ')
+                }
+            }
         </script>
     </body>
 </html>

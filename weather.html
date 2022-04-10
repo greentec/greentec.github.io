@@ -117,20 +117,10 @@
 
                 let hours = start_date.getHours();
                 if (hours >= 18 || hours < 6) {
-                    const div_array = document.querySelectorAll('.grey');
-                    for (let i = 0; i < div_array.length; i += 1) {
-                        if (!hasClass(div_array[i], 'darkgrey')) {
-                            addClass(div_array[i], 'darkgrey');
-                        }
-                    }
+                    document.body.style.opacity = 0.1;
                 }
                 else {
-                    const div_array = document.querySelectorAll('.darkgrey');
-                    for (let i = 0; i < div_array.length; i += 1) {
-                        if (hasClass(div_array[i], 'darkgrey')) {
-                            removeClass(div_array[i], 'darkgrey');
-                        }
-                    }
+                    document.body.style.opacity = 1;
                 }
 
                 loop();
@@ -184,20 +174,10 @@
 
                     let hours = now_date.getHours();
                     if (hours >= 18 || hours < 6) {
-                        const div_array = document.querySelectorAll('.grey');
-                        for (let i = 0; i < div_array.length; i += 1) {
-                            if (!hasClass(div_array[i], 'darkgrey')) {
-                                addClass(div_array[i], 'darkgrey');
-                            }
-                        }
+                        document.body.style.opacity = 0.1;
                     }
                     else {
-                        const div_array = document.querySelectorAll('.darkgrey');
-                        for (let i = 0; i < div_array.length; i += 1) {
-                            if (hasClass(div_array[i], 'darkgrey')) {
-                                removeClass(div_array[i], 'darkgrey');
-                            }
-                        }
+                        document.body.style.opacity = 1;
                     }
                 }
 

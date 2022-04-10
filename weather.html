@@ -117,10 +117,10 @@
 
                 let hours = start_date.getHours();
                 if (hours >= 18 || hours < 6) {
-                    document.body.style.opacity = 0.1;
+                    document.querySelectorAll('div').forEach(c => c.style.color = '#111111');
                 }
                 else {
-                    document.body.style.opacity = 1;
+                    document.querySelectorAll('div').forEach(c => c.style.color = '#DCDDDE');
                 }
 
                 loop();
@@ -174,10 +174,10 @@
 
                     let hours = now_date.getHours();
                     if (hours >= 18 || hours < 6) {
-                        document.body.style.opacity = 0.1;
+                        document.querySelectorAll('div').forEach(c => c.style.color = '#111111');
                     }
                     else {
-                        document.body.style.opacity = 1;
+                        document.querySelectorAll('div').forEach(c => c.style.color = '#DCDDDE');
                     }
                 }
 

@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Allow: /ads.txt
 
 Sitemap: https://greentec.github.io/sitemap.xml

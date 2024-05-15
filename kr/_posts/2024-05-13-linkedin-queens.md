@@ -329,6 +329,7 @@ draw();</textarea>
 ![](<../images/linkedin_queens_10.gif>)
 <small>영역 조건을 구하는 알고리즘의 실행 결과</small>
 
+
 &nbsp;
 ## 마치며
 

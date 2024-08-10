@@ -1,6 +1,26 @@
 var homepage = {};
 
 homepage.cardList = {
+  'metro' : {
+    imageSrc : 'playground/image/metro.png',
+    link : 'https://www.fxhash.xyz/generative/15606',
+    desc : 'Javascript, fxhash link'
+  },
+  'maze' : {
+    imageSrc : 'playground/image/maze.png',
+    link : 'https://www.fxhash.xyz/generative/13625',
+    desc : 'Javascript, fxhash link'
+  },
+  'zero-player stained glass' : {
+    imageSrc : 'playground/image/zeroPlayerStainedGlass.png',
+    link : 'https://www.fxhash.xyz/generative/10204',
+    desc : 'Javascript, fxhash link'
+  },
+  'zero-player game' : {
+    imageSrc : 'playground/image/zeroPlayerGame.png',
+    link : 'https://www.fxhash.xyz/generative/9690',
+    desc : 'Javascript, fxhash link'
+  },
   'WaterColor' : {
     imageSrc : 'playground/image/watercolor.png',
     link : 'https://codepen.io/greentec/pen/Ogrjwx',

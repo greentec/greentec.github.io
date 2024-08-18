@@ -11,11 +11,11 @@
   <nav class="sidebar-nav">
     {% if page.lang == 'kr' %}
       <a class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}" href="{{ site.baseurl }}/">Home</a>
-      <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/homepage.html">Inventory</a>
+      <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/homepage.html">Portfolio</a>
       <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/tags">Tags</a>
     {% else %}
       <a class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}" href="{{ site.baseurl }}/index_en/">Home</a>
-      <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/homepage.html">Inventory</a>
+      <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/homepage.html">Portfolio</a>
       <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}/tags_en">Tags</a>
     {% endif %}
     <!-- {% assign posts_list = site.posts | sort:"url" %} -->
